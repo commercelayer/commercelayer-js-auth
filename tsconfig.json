@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist/",
+    "baseUrl": "./",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "target": "es5",
+    "declaration": true,
+    "lib": ["esnext", "dom.iterable", "dom"],
+    "resolveJsonModule": true
+  },
+  "include": ["src/**/*", "helpers"],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,56 @@
+{
+	"name": "commercelayer-js-auth",
+	"version": "1.0.0",
+	"description": "Commerce Layer Javascript Auth",
+	"repository": {
+		"url": "https://github.com/commercelayer/commercelayer-js-auth.git"
+	},
+	"author": {
+		"name": "Alessandro Casazza",
+		"email": "alessandro@commercelayer.io"
+	},
+	"main": "./dist/resources/index.js",
+	"types": "./dist/resources/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"build": "rm -rf ./dist && tsc -p ./tsconfig.prod.json",
+		"watch": "webpack --progress --watch",
+		"start": "webpack-dev-server --config webpack.dev.js"
+	},
+	"license": "MIT",
+	"jest": {
+		"setupFiles": [
+			"dotenv/config"
+		],
+		"moduleFileExtensions": [
+			"ts",
+			"js"
+		],
+		"transform": {
+			"\\.(ts|js|snap)$": "ts-jest"
+		}
+	},
+	"dependencies": {
+		"@types/jest": "^24.0.22",
+		"@types/mocha": "^5.2.7",
+		"client-oauth2": "^4.2.5",
+		"dotenv": "^8.2.0",
+		"dotenv-webpack": "^1.7.0"
+	},
+	"devDependencies": {
+		"jest": "^24.9.0",
+		"path": "^0.12.7",
+		"query-string": "^6.8.3",
+		"ts-jest": "^24.1.0",
+		"ts-loader": "^6.2.1",
+		"typescript": "^3.7.2",
+		"webpack": "^4.41.2",
+		"webpack-cli": "^3.3.10",
+		"webpack-dev-server": "^3.9.0",
+		"webpack-merge": "^4.2.2"
+	}
+}
