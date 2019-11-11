@@ -102,7 +102,7 @@ First all, we want to remember our **authorization flows**:
   console.log('My access token: ', auth.accessToken)
   ```
 
-### 4. Webapp (browser mode)
+### 4. Webapp
 
 - Create a **webapp** application on [Commerce Layer](https://commercelayer.io/) and take note of your API credentials (base endpoint, client ID, secret ID, callback URL)
 
@@ -137,37 +137,6 @@ First all, we want to remember our **authorization flows**:
   
   console.log('My access token: ', auth.accessToken)
   ```
-
-### 5. Webapp (server-side mode)
-
-- Create a **webapp** application on [Commerce Layer](https://commercelayer.io/) and take note of your API credentials (base endpoint, client ID, secret ID, callback URL)
-
-- Write this code in your base application:
-
-  ```typescript
-  import express from 'express'
-  const app = express()
-  
-  const auth = webapp(
-    'YOUR_CLIENT_ID',
-    'YOUR_CLIENT_SECRET',
-    'YOUR_CALLBACK_URL',
-    'https://your-brand-name.commercelayer.io',
-    'market:{id}',
-    true
-  )
-  
-  app.get('/auth/commercelayer', (req, res) => {
-    res.redirect(auth.getUri())
-  })
-  
-  app.get('/auth/commercelayer/callback', async (req, res) => {
-    const auth = auth.getToken('req.originalUrl')
-    console.log('My access token: ', auth.accessToken)
-  })
-  ```
-  
-  
 
 ## License
 

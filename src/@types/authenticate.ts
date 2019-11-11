@@ -19,7 +19,6 @@ export interface Authenticate {
 		type: AuthType,
 		config: AuthConfig,
 		scope?: AuthScope,
-		serverSide?: boolean,
 		code?: string
 	): Promise<Token | CodeFlow | void>
 }

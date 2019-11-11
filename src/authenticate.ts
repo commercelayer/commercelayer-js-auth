@@ -3,17 +3,14 @@ import { Authenticate } from './@types/authenticate'
 import authorizationCode from './authorizationCode'
 
 // TODO: Add types
-const authenticate: Authenticate = async (
-	type,
-	credentials,
-	scope,
-	serverSide,
-	code
-) => {
+const authenticate: Authenticate = async (type, credentials, scope, code) => {
 	const auth = createAuth(credentials)
 	let r = null
 	const s = {
 		scope
+	}
+	if (!window && !window.document) {
+		throw new Error('This library works only in a Web context')
 	}
 	if (type === 'clientCredentials') {
 		r = await auth.credentials.getToken()
@@ -23,11 +20,7 @@ const authenticate: Authenticate = async (
 	}
 	if (type === 'authorizationCode') {
 		const uri = auth.code.getUri()
-		if (serverSide) {
-			r = auth.code
-		} else {
-			r = await authorizationCode(auth, uri, code)
-		}
+		r = await authorizationCode(auth, uri, code)
 	}
 	return r
 }

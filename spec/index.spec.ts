@@ -77,18 +77,6 @@ describe('Integration mode', () => {
 })
 
 describe('Webapp mode', () => {
-	test('server side mode', async () => {
-		const auth = await webapp(
-			'e7b8677322a437ee17c0f082afeee27c5722af4d12e8e8551acab00676cb73c5',
-			'682e2ab4f68f96b4722a3bea503965b7bfa1b31d962a87f0e1ed6726413d7c1c',
-			'https://localhost:8080',
-			'https://the-indigo-brand-2.commercelayer.co',
-			'market:56',
-			true
-		)
-		expect(auth).toHaveProperty('getUri')
-		expect(auth).toHaveProperty('getToken')
-	})
 	test('browser mode', async () => {
 		const jsdomOpen = window.open
 		window.open = (): any => {}

@@ -15,7 +15,6 @@ export default interface Webapp {
 		callbackUrl: CallbackUrl,
 		endpoint: Endpoint,
 		scopes?: AuthScope,
-		serverSide?: boolean,
 		code?: string
 	): AuthReturnType
 }
