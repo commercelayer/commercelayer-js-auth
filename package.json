@@ -1,5 +1,6 @@
 {
-	"name": "commercelayer-js-auth",
+	"name": "@commercelayer/js-auth",
+	"private": true,
 	"version": "1.0.0",
 	"description": "Commerce Layer Javascript Auth",
 	"repository": {
@@ -9,11 +10,9 @@
 		"name": "Alessandro Casazza",
 		"email": "alessandro@commercelayer.io"
 	},
-	"main": "./dist/resources/index.js",
-	"types": "./dist/resources/index.d.ts",
-	"files": [
-		"dist"
-	],
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": ["dist"],
 	"scripts": {
 		"test": "jest",
 		"test:watch": "jest --watch",
@@ -23,13 +22,8 @@
 	},
 	"license": "MIT",
 	"jest": {
-		"setupFiles": [
-			"dotenv/config"
-		],
-		"moduleFileExtensions": [
-			"ts",
-			"js"
-		],
+		"setupFiles": ["dotenv/config"],
+		"moduleFileExtensions": ["ts", "js"],
 		"transform": {
 			"\\.(ts|js|snap)$": "ts-jest"
 		}
