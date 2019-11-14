@@ -51,11 +51,11 @@ First all, we want to remember our **authorization flows**:
 - Write this code in your application:
 
   ```typescript
-  const auth = await salesChannel(
-    'YOUR_CLIENT_ID',
-    'https://your-brand-name.commercelayer.io',
-    'market:{id}'
-  )
+  const auth = await salesChannel({
+    clientId: 'YOUR_CLIENT_ID',
+    endpoint: 'https://yourdomain.commercelayer.io',
+    scopes: 'market:{id}'
+  })
   
   console.log('My access token: ', auth.accessToken) // Easy!
   ```
@@ -71,9 +71,11 @@ First all, we want to remember our **authorization flows**:
     password: 'MY_PASSWORD'
   }
   const auth = await salesChannel(
-    'YOUR_CLIENT_ID',
-    'https://your-brand-name.commercelayer.io',
-    'market:{id}',
+    {
+      clientId: 'YOUR_CLIENT_ID',
+      endpoint: 'https://yourdomain.commercelayer.io',
+      scopes: 'market:{id}'
+  	},
     user
   )
   
@@ -93,29 +95,31 @@ First all, we want to remember our **authorization flows**:
 - Write this code in your application:
 
   ```typescript
-  const auth = await integration(
-    'YOUR_CLIENT_ID',
-    'YOUR_SECRET_ID',
-    'https://your-brand-name.commercelayer.io'
-  )
+  const auth = await integration({
+    clientId: 'YOUR_CLIENT_ID',
+    clientSecret: 'YOUR_SECRET_ID',
+    endpoint: 'https://yourdomain.commercelayer.io'
+  })
   
   console.log('My access token: ', auth.accessToken)
   ```
 
 ### 4. Webapp
 
+> Available only for browser applications
+
 - Create a **webapp** application on [Commerce Layer](https://commercelayer.io/) and take note of your API credentials (base endpoint, client ID, secret ID, callback URL)
 
 - Write this code in your base application:
 
   ```typescript
-  const auth = webapp(
-    'YOUR_CLIENT_ID',
-    'YOUR_CLIENT_SECRET',
-    'YOUR_CALLBACK_URL',
-    'https://your-brand-name.commercelayer.io',
-    'market:{id}'
-  ) // return undefined
+  const auth = await webapp({
+    clientId: 'YOUR_CLIENT_ID',
+    clientSecret: 'YOUR_CLIENT_SECRET',
+    callbackUrl: 'YOUR_CALLBACK_URL',
+    endpoint: 'https://yourdomain.commercelayer.io',
+    scopes: 'market:{id}'
+  })
   ```
   
   this method will open a window where you can log in to authorise your application.
@@ -125,13 +129,13 @@ First all, we want to remember our **authorization flows**:
   ```js
   // https://your-domain.com/{your-callback-url}
   
-  const auth = await webapp(
-    'YOUR_CLIENT_ID',
-    'YOUR_CLIENT_SECRET',
-    'YOUR_CALLBACK_URL',
-    'https://your-brand-name.commercelayer.io',
-    'market:{id}',
-    false,
+  const auth = await webapp({
+      clientId: 'YOUR_CLIENT_ID',
+      clientSecret: 'YOUR_CLIENT_SECRET',
+      callbackUrl: 'YOUR_CALLBACK_URL',
+      endpoint: 'https://yourdomain.commercelayer.io',
+      scopes: 'market:{id}'
+  	},
     location.href
   ) // return undefined
   
