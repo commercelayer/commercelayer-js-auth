@@ -2,7 +2,7 @@ import authenticate from './authenticate'
 import { AuthConfig } from './@types/authenticate'
 import Integration from './@types/integration'
 
-const integration: Integration = async (clientId, clientSecret, endpoint, scopes, user) => {
+const integration: Integration = async ({clientId, clientSecret, endpoint, scopes}, user) => {
 	const credentials: AuthConfig = {
 		clientId,
 		clientSecret,

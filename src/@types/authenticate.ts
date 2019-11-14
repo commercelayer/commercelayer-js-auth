@@ -1,4 +1,4 @@
-import { Token, CodeFlow } from 'client-oauth2'
+import { AuthReturnType } from './index'
 
 export interface AuthConfig {
 	clientId: string
@@ -20,5 +20,5 @@ export interface Authenticate {
 		config: AuthConfig,
 		scope?: AuthScope,
 		code?: string
-	): Promise<Token | CodeFlow | void>
+	): AuthReturnType
 }

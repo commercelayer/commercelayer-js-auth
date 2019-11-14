@@ -2,12 +2,12 @@ import SalesChannel from './@types/salesChannel'
 import authenticate from './authenticate'
 import { AuthConfig } from './@types/authenticate'
 
-const salesChannel: SalesChannel = async (clientId, endpoint, scopes, user) => {
+const salesChannel: SalesChannel = async ({ clientId, endpoint, scopes }, user) => {
 	const credentials: AuthConfig = {
 		clientId,
 		clientSecret: '',
 		accessTokenUri: `${endpoint}/oauth/token`,
-		redirectUri: '',
+		redirectUri: null,
 		username: user?.username,
 		password: user?.password
 	}

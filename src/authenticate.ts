@@ -7,16 +7,18 @@ const authenticate: Authenticate = async (type, credentials, scope, code) => {
 	const auth = createAuth(credentials)
 	let r = null
 	const s = {
-		scope
+		body: {
+			scope
+		}
 	}
 	if (!window && !window.document) {
 		throw new Error('This library works only in a Web context')
 	}
 	if (type === 'clientCredentials') {
-		r = await auth.credentials.getToken()
+		r = await auth.credentials.getToken(s)
 	}
 	if (type === 'owner') {
-		r = await auth.owner.getToken(credentials.username, credentials.password)
+		r = await auth.owner.getToken(credentials.username, credentials.password, s)
 	}
 	if (type === 'authorizationCode') {
 		const uri = auth.code.getUri()
