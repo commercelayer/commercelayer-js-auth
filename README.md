@@ -98,7 +98,7 @@ Sales channel applications can use the [password](https://docs.commercelayer.io/
 
 Sales channel applications can use the [refresh token](https://docs.commercelayer.io/api/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option. So in this case, if the token is expired, you can refresh it by using the `refresh()` method:
 
-  ```js
+  ```
   const newToken = await auth.refresh()
   ```
 
@@ -158,7 +158,7 @@ In this case, first you need to get an authorization code, then you can exchange
       endpoint: 'https://yourdomain.commercelayer.io',
       scopes: 'market:{id}',
       location: 'location.href' // triggers the access token request
-    }) // return undefined
+    })
     
     console.log('My access token: ', auth.accessToken)
     ```
