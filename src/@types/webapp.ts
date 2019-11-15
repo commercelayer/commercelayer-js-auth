@@ -14,8 +14,9 @@ export interface WebappCredentials {
   callbackUrl: CallbackUrl
   endpoint: Endpoint
   scopes?: AuthScope
+  location?: string
 }
 
 export default interface Webapp {
-  (credentials: WebappCredentials, codeUri?: string): AuthReturnType
+  (credentials: WebappCredentials): AuthReturnType
 }
