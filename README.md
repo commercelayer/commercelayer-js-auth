@@ -140,7 +140,7 @@ In this case, first you need to get an authorization code, then you can exchange
     const auth = await webapp({
       clientId: 'your-client-id',
       clientSecret: 'your-client-secret',
-      callbackUrl: 'your-callback-url',
+      callbackUrl: 'https://yourdomain.com/callback',
       endpoint: 'https://yourdomain.commercelayer.io',
       scopes: 'market:{id}'
     })
@@ -149,7 +149,7 @@ In this case, first you need to get an authorization code, then you can exchange
 3. Once you've authorized the application, you will be redirected to the callback URL. Use this code to get the access token:
   
     ```
-    // https://your-domain.com/your-callback-url
+    // https://yourdomain.com/callback
     
     const auth = await webapp({
       clientId: 'your-client-id',
