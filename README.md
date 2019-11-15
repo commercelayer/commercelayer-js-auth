@@ -157,7 +157,7 @@ In this case, first you need to get an authorization code, then you can exchange
       callbackUrl: 'your-callback-url',
       endpoint: 'https://yourdomain.commercelayer.io',
       scopes: 'market:{id}',
-      location: 'location.href' // triggers the access token request
+      location: `${location.href}` // triggers the access token request
     })
     
     console.log('My access token: ', auth.accessToken)
