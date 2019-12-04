@@ -6,10 +6,11 @@
     "noImplicitAny": true,
     "target": "es5",
     "allowSyntheticDefaultImports": true,
-    "declaration": true,
     "lib": ["esnext", "dom.iterable", "dom"],
     "resolveJsonModule": true,
-    "types": ["node"]
+    "types": ["node"],
+    "module": "esnext",
+    "moduleResolution": "node"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "helpers"]

@@ -1,6 +1,5 @@
 {
   "name": "@commercelayer/js-auth",
-  "private": false,
   "version": "1.0.0",
   "description": "Commerce Layer Javascript Auth",
   "repository": {
@@ -21,7 +20,8 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
-    "build": "rm -rf ./dist && tsc -p ./tsconfig.prod.json",
+    "build": "tsdx build --tsconfig ./tsconfig.prod.json --entry ./src/index.ts",
+    "build:types": "dts-bundle-generator -o ./dist/types.d.ts ./src/@types/index.ts --project tsconfig.prod.json",
     "watch": "webpack --progress --watch",
     "start": "webpack-dev-server --config webpack.dev.js"
   },
@@ -41,6 +41,7 @@
     "dotenv-webpack": "^1.7.0"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.7.4",
     "jest": "^24.9.0",
     "path": "^0.12.7",
     "query-string": "^6.9.0",
