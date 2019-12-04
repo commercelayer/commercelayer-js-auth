@@ -11,17 +11,8 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": [
-    "dist",
-    "package.json",
-    "README.md"
-  ],
-  "keywords": [
-    "jamstack",
-    "headless",
-    "ecommerce",
-    "api"
-  ],
+  "files": ["dist", "package.json", "README.md"],
+  "keywords": ["jamstack", "headless", "ecommerce", "api"],
   "bugs": {
     "url": "https://github.com/commercelayer/commercelayer-js-auth/issues"
   },
@@ -36,25 +27,21 @@
   },
   "license": "MIT",
   "jest": {
-    "setupFiles": [
-      "dotenv/config"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "js"
-    ],
+    "setupFiles": ["dotenv/config"],
+    "moduleFileExtensions": ["ts", "js"],
     "transform": {
       "\\.(ts|js|snap)$": "ts-jest"
     }
   },
   "dependencies": {
-    "@types/jest": "^24.0.23",
-    "@types/mocha": "^5.2.7",
-    "client-oauth2": "^4.2.5",
-    "dotenv": "^8.2.0",
-    "dotenv-webpack": "^1.7.0"
+    "client-oauth2": "^4.2.5"
   },
   "devDependencies": {
+    "dotenv": "^8.2.0",
+    "dotenv-webpack": "^1.7.0",
+    "@types/jest": "^24.0.23",
+    "@types/mocha": "^5.2.7",
+
     "@babel/plugin-proposal-optional-chaining": "^7.7.4",
     "jest": "^24.9.0",
     "path": "^0.12.7",
