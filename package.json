@@ -1,6 +1,6 @@
 {
   "name": "@commercelayer/js-auth",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Commerce Layer Javascript Auth",
   "repository": {
     "url": "https://github.com/commercelayer/commercelayer-js-auth.git"
@@ -11,8 +11,17 @@
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "files": ["dist", "package.json", "README.md"],
-  "keywords": ["jamstack", "headless", "ecommerce", "api"],
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "keywords": [
+    "jamstack",
+    "headless",
+    "ecommerce",
+    "api"
+  ],
   "bugs": {
     "url": "https://github.com/commercelayer/commercelayer-js-auth/issues"
   },
@@ -27,8 +36,13 @@
   },
   "license": "MIT",
   "jest": {
-    "setupFiles": ["dotenv/config"],
-    "moduleFileExtensions": ["ts", "js"],
+    "setupFiles": [
+      "dotenv/config"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
     "transform": {
       "\\.(ts|js|snap)$": "ts-jest"
     }
