@@ -35,6 +35,9 @@
     "watch": "webpack --progress --watch",
     "start": "webpack-dev-server --config webpack.dev.js"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "license": "MIT",
   "jest": {
     "setupFiles": [

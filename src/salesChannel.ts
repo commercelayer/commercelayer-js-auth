@@ -6,6 +6,7 @@ const salesChannel: SalesChannel = async (
   { clientId, endpoint, scope },
   user
 ) => {
+  if (!scope) throw new Error('scope param is required.')
   const credentials: AuthConfig = {
     clientId,
     clientSecret: '',
