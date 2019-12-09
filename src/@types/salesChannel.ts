@@ -9,7 +9,11 @@ export interface User {
 export interface ClientCredentials {
   clientId: ClientId
   endpoint: Endpoint
-  scopes: AuthScope
+  scope: AuthScope
+}
+
+export interface GetCustomerToken {
+  (clientCredential: ClientCredentials, user: User): AuthReturnType
 }
 
 export default interface SalesChannel {
