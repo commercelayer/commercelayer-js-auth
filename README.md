@@ -1,6 +1,6 @@
 # Commerce Layer JS Auth
 
->A JavaScript Library wrapper that helps you to use the Commerce Layer API for [Authentication](https://docs.commercelayer.io/api/authentication).
+> A JavaScript Library wrapper that helps you to use the Commerce Layer API for [Authentication](https://docs.commercelayer.io/api/authentication).
 
 ### What is Commerce Layer?
 
@@ -23,13 +23,13 @@ yarn add @commercelayer/js-auth
 To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/) authorization flow by using a valid application as the client.
 
 | Grant type             | Sales channel | Integration | Webapp |
-| ---------------------- | ------- | ----------- | ------ |
-| **Client credentials** | ✅       | ✅           |        |
-| **Password**           | ✅       |             |        |
-| **Refresh token**      | ✅       |             | ✅      |
-| **Authorization code** |         |             | ✅      |
+| ---------------------- | ------------- | ----------- | ------ |
+| **Client credentials** | ✅            | ✅          |        |
+| **Password**           | ✅            |             |        |
+| **Refresh token**      | ✅            |             | ✅     |
+| **Authorization code** |               |             | ✅     |
 
-> Remember that, for security reasons, access tokens expire after **2 hours**. Refresh tokens expire after **2 weeks**. 
+> Remember that, for security reasons, access tokens expire after **2 hours**. Refresh tokens expire after **2 weeks**.
 
 ## Getting started
 
@@ -38,7 +38,13 @@ import CLayerAuth from '@commercelayer/js-auth'
 
 // or
 
-import { salesChannel, integration, webapp } from '@commercelayer/js-auth'
+import {
+  getSalesChannelToken,
+  getCustomerToken,
+  getIntegrationToken,
+  authorizeWebapp,
+  getWebappToken
+} from '@commercelayer/js-auth'
 ```
 
 ## Use cases
@@ -60,15 +66,15 @@ Sales channel applications use the [client credentials](https://docs.commercelay
 
 2. Use this code to get your access token:
 
-    ```
-    const auth = await salesChannel({
-        clientId: 'your-client-id',
-        endpoint: 'https://yourdomain.commercelayer.io',
-        scopes: 'market:{id}'
-      })
+   ```
+   const token = await getSalesChannelToken({
+       clientId: 'your-client-id',
+       endpoint: 'https://yourdomain.commercelayer.io',
+       scope: 'market:{id}'
+     })
 
-    console.log('My access token: ', auth.accessToken)
-    ```
+   console.log('My access token: ', token.accessToken)
+   ```
 
 ## Sales channel (password)
 
@@ -80,27 +86,27 @@ Sales channel applications can use the [password](https://docs.commercelayer.io/
 
 2. Use this code (changing user name and password with the customer credentials) to get the access token:
 
-    ```
-    const auth = await salesChannel(
-      {
-        clientId: 'your-client-id',
-        endpoint: 'https://yourdomain.commercelayer.io',
-        scopes: 'market:{id}'
-      },
-      {
-        username: 'john@example.com',
-        password: 'secret'
-      }
-    )
-    
-    console.log('My access token: ', auth.accessToken)
-    ```
+   ```
+   const token = await getCustomerToken(
+     {
+       clientId: 'your-client-id',
+       endpoint: 'https://yourdomain.commercelayer.io',
+       scope: 'market:{id}'
+     },
+     {
+       username: 'john@example.com',
+       password: 'secret'
+     }
+   )
+
+   console.log('My access token: ', token.accessToken)
+   ```
 
 Sales channel applications can use the [refresh token](https://docs.commercelayer.io/api/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option. So in this case, if the token is expired, you can refresh it by using the `refresh()` method:
 
-  ```
-  const newToken = await auth.refresh()
-  ```
+```
+const newToken = await token.refresh()
+```
 
 ## Integration (client credentials)
 
@@ -112,15 +118,15 @@ Integration applications use the [client credentials](https://docs.commercelayer
 
 2. Use this code to get the access token:
 
-    ```
-    const auth = await integration({
-      clientId: 'your-client-id',
-      clientSecret: 'your-client-secret',
-      endpoint: 'https://yourdomain.commercelayer.io'
-    })
-    
-    console.log('My access token: ', auth.accessToken)
-    ```
+   ```
+   const token = await getIntegrationToken({
+     clientId: 'your-client-id',
+     clientSecret: 'your-client-secret',
+     endpoint: 'https://yourdomain.commercelayer.io'
+   })
+
+   console.log('My access token: ', token.accessToken)
+   ```
 
 ## Webapp (authorization code)
 
@@ -136,33 +142,32 @@ In this case, first you need to get an authorization code, then you can exchange
 
 2. Use this code to open a new window and authorize your webapp on Commerce Layer:
 
-    ```
-    const auth = await webapp({
-      clientId: 'your-client-id',
-      clientSecret: 'your-client-secret',
-      callbackUrl: 'https://yourdomain.com/callback',
-      endpoint: 'https://yourdomain.commercelayer.io',
-      scopes: 'market:{id}'
-    })
-    ```
-  
-3. Once you've authorized the application, you will be redirected to the callback URL. Use this code to get the access token:
-  
-    ```
-    // https://yourdomain.com/callback
-    
-    const auth = await webapp({
-      clientId: 'your-client-id',
-      clientSecret: 'your-client-secret',
-      callbackUrl: 'your-callback-url',
-      endpoint: 'https://yourdomain.commercelayer.io',
-      scopes: 'market:{id}',
-      location: `${location.href}` // triggers the access token request
-    })
-    
-    console.log('My access token: ', auth.accessToken)
-    ```
+   ```
+   const token = await authorizeWebapp({
+     clientId: 'your-client-id',
+     clientSecret: 'your-client-secret',
+     callbackUrl: 'https://yourdomain.com/callback',
+     endpoint: 'https://yourdomain.commercelayer.io',
+     scope: 'market:{id}'
+   })
+   ```
 
+3. Once you've authorized the application, you will be redirected to the callback URL. Use this code to get the access token:
+
+   ```
+   // https://yourdomain.com/callback
+
+   const token = await getWebappToken({
+     clientId: 'your-client-id',
+     clientSecret: 'your-client-secret',
+     callbackUrl: 'your-callback-url',
+     endpoint: 'https://yourdomain.commercelayer.io',
+     scope: 'market:{id}',
+     callbackUrlWithCode: `https://yourdomain.com/callback?code=your-auth-code` // triggers the access token request
+   })
+
+   console.log('My access token: ', token.accessToken)
+   ```
 
 ## License
 
