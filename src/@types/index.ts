@@ -10,7 +10,9 @@ export type Endpoint = string
 export type AuthReturnType = Promise<Token> | null
 
 export default interface CLayerAuthInterface {
-	salesChannel: SalesChannel
-	integration: Integration
-	webapp: Webapp
+  getSalesChannelToken: SalesChannel
+  getCustomerToken: SalesChannel
+  getIntegrationToken: Integration
+  authorizeWebapp: Webapp
+  getWebappToken: Webapp
 }
