@@ -7,8 +7,8 @@ const webapp: Webapp = async ({
   clientSecret,
   callbackUrl,
   endpoint,
-  scopes,
-  location
+  scope,
+  callbackUrlWithCode
 }) => {
   const credentials: AuthConfig = {
     clientId,
@@ -17,7 +17,12 @@ const webapp: Webapp = async ({
     authorizationUri: `${endpoint}/oauth/authorize`,
     redirectUri: callbackUrl
   }
-  return await authenticate('authorizationCode', credentials, scopes, location)
+  return await authenticate(
+    'authorizationCode',
+    credentials,
+    scope,
+    callbackUrlWithCode
+  )
 }
 
 export default webapp

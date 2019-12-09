@@ -13,8 +13,16 @@ export interface WebappCredentials {
   clientSecret: ClientSecret
   callbackUrl: CallbackUrl
   endpoint: Endpoint
-  scopes?: AuthScope
-  location?: string
+  scope?: AuthScope
+  callbackUrlWithCode?: string
+}
+
+export interface WebappCredentialsToken extends WebappCredentials {
+  callbackUrlWithCode: string
+}
+
+export interface GetWebappToken {
+  (credentials: WebappCredentialsToken): AuthReturnType
 }
 
 export default interface Webapp {
