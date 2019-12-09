@@ -6,6 +6,13 @@
 
 [Commerce Layer](https://commercelayer.io/) is a headless platform that makes it easy to build enterprise-grade ecommerce into any website, by using the language, CMS, and tools you already master and love.
 
+# Getting started
+
+To get started with Commerce Layer JS Auth you need to install it and add it to your project.
+
+- [Installation](#installation) 
+- [Using E6 import](#using-es6-import)
+
 ## Installation
 
 Commerce Layer JS Auth is available as an npm package.
@@ -17,21 +24,9 @@ npm install @commercelayer/js-auth
 // yarn
 yarn add @commercelayer/js-auth
 ```
+## Using ES6 import
 
-## Authorization flows
-
-To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/) authorization flow by using a valid application as the client.
-
-| Grant type             | Sales channel | Integration | Webapp |
-| ---------------------- | ------------- | ----------- | ------ |
-| **Client credentials** | ✅            | ✅          |        |
-| **Password**           | ✅            |             |        |
-| **Refresh token**      | ✅            |             | ✅     |
-| **Authorization code** |               |             | ✅     |
-
-> Remember that, for security reasons, access tokens expire after **2 hours**. Refresh tokens expire after **2 weeks**.
-
-## Getting started
+You can use either the ES6 default or single/multiple named import with the SDK as follow:
 
 ```
 import CLayerAuth from '@commercelayer/js-auth'
@@ -47,7 +42,25 @@ import {
 } from '@commercelayer/js-auth'
 ```
 
-## Use cases
+> In the examples below, we will use the latter solution (named import) and define only the functions we need, based on what kind of app and authorization flow we're going to use.
+
+
+# Authorization flows
+
+To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/) authorization flow by using a valid application as the client.
+
+| Grant type             | Sales channel | Integration | Webapp |
+| ---------------------- | ------------- | ----------- | ------ |
+| **Client credentials** | ✅            | ✅          |        |
+| **Password**           | ✅            |             |        |
+| **Refresh token**      | ✅            |             | ✅     |
+| **Authorization code** |               |             | ✅     |
+
+> Remember that, for security reasons, access tokens expire after **2 hours**. Refresh tokens expire after **2 weeks**.
+
+Check our [API reference](https://docs.commercelayer.io/api/authentication) for further information on each single authorization flow.
+
+# Use cases
 
 Based on the authorization flow and application you want to use, you can get your access token in a few simple steps. These are the most common use cases:
 
@@ -74,6 +87,7 @@ Sales channel applications use the [client credentials](https://docs.commercelay
      })
 
    console.log('My access token: ', token.accessToken)
+   console.log('Expiration date: ', token.expires)
    ```
 
 ## Sales channel (password)
@@ -100,12 +114,15 @@ Sales channel applications can use the [password](https://docs.commercelayer.io/
    )
 
    console.log('My access token: ', token.accessToken)
+   console.log('Expiration date: ', token.expires)
    ```
 
 Sales channel applications can use the [refresh token](https://docs.commercelayer.io/api/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option. So in this case, if the token is expired, you can refresh it by using the `refresh()` method:
 
 ```
 const newToken = await token.refresh()
+
+console.log('New access token: ', newToken.accessToken)
 ```
 
 ## Integration (client credentials)
@@ -126,6 +143,7 @@ Integration applications use the [client credentials](https://docs.commercelayer
    })
 
    console.log('My access token: ', token.accessToken)
+   console.log('Expiration date: ', token.expires)
    ```
 
 ## Webapp (authorization code)
@@ -143,7 +161,7 @@ In this case, first you need to get an authorization code, then you can exchange
 2. Use this code to open a new window and authorize your webapp on Commerce Layer:
 
    ```
-   const token = await authorizeWebapp({
+   authorizeWebapp({
      clientId: 'your-client-id',
      clientSecret: 'your-client-secret',
      callbackUrl: 'https://yourdomain.com/callback',
@@ -152,21 +170,24 @@ In this case, first you need to get an authorization code, then you can exchange
    })
    ```
 
-3. Once you've authorized the application, you will be redirected to the callback URL. Use this code to get the access token:
+3. Once you've authorized the application, you will be redirected to the callback URL: 
+
+    ![Callback URL with Authorization Code](docs/images/auth-code-browser.jpg?raw=true "Callback URL with Authorization Code")
+
+    Use this code to get the access token:
 
    ```
-   // https://yourdomain.com/callback
-
    const token = await getWebappToken({
      clientId: 'your-client-id',
      clientSecret: 'your-client-secret',
-     callbackUrl: 'your-callback-url',
+     callbackUrl: 'https://yourdomain.com/callback',
      endpoint: 'https://yourdomain.commercelayer.io',
      scope: 'market:{id}',
-     callbackUrlWithCode: `https://yourdomain.com/callback?code=your-auth-code` // triggers the access token request
+     callbackUrlWithCode: 'https://yourdomain.com/callback?code=your-auth-code' // triggers the access token request
    })
 
    console.log('My access token: ', token.accessToken)
+   console.log('Expiration date: ', token.expires)
    ```
 
 ## License
