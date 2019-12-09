@@ -6,7 +6,7 @@ export interface IntegrationCredentials {
   clientId: ClientId
   clientSecret: ClientSecret
   endpoint: Endpoint
-  scopes?: AuthScope
+  scope?: AuthScope
 }
 
 export default interface Integration {
