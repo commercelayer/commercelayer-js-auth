@@ -1,26 +1,28 @@
-import webapp from '../src/webapp'
-import salesChannel from '../src/salesChannel'
-import integration from '../src/integration'
+import {
+  getSalesChannelToken,
+  getCustomerToken,
+  getIntegrationToken,
+  authorizeWebapp
+} from '../src'
 
 const S_CREDENTIALS = {
   clientId: process.env.SALES_CHANNEL_ID,
-  endpoint: 'https://the-blue-brand-2.commercelayer.co',
-  scopes: 'market:49'
+  endpoint: process.env.ENDPOINT,
+  scope: process.env.SCOPE
 }
 
 const I_CREDENTIALS = {
   clientId: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
-  endpoint: 'https://the-blue-brand-2.commercelayer.co'
+  endpoint: process.env.ENDPOINT
 }
 
 const W_CREDENTIALS = {
-  clientId: 'e7b8677322a437ee17c0f082afeee27c5722af4d12e8e8551acab00676cb73c5',
-  clientSecret:
-    '682e2ab4f68f96b4722a3bea503965b7bfa1b31d962a87f0e1ed6726413d7c1c',
-  callbackUrl: 'https://localhost:8080',
-  endpoint: 'https://the-indigo-brand-2.commercelayer.co',
-  scopes: 'market:56'
+  clientId: process.env.WEBAPP_CLIENT_ID,
+  clientSecret: process.env.WEBAPP_CLIENT_SECRET,
+  callbackUrl: process.env.CALLBACK_URL,
+  endpoint: process.env.ENDPOINT,
+  scope: process.env.SCOPE
 }
 
 const user = {
@@ -30,7 +32,7 @@ const user = {
 
 describe('Sales Channel mode', () => {
   test('Client credentials', async () => {
-    const auth: any = await salesChannel(S_CREDENTIALS)
+    const auth: any = await getSalesChannelToken(S_CREDENTIALS)
     expect(auth).toHaveProperty('accessToken')
     expect(auth).toHaveProperty('refresh')
     expect(auth).toHaveProperty('refreshToken')
@@ -41,7 +43,7 @@ describe('Sales Channel mode', () => {
     expect(auth.refreshToken).not.toBeDefined()
   })
   test('Password', async () => {
-    const auth: any = await salesChannel(S_CREDENTIALS, user)
+    const auth: any = await getCustomerToken(S_CREDENTIALS, user)
     expect(auth).toHaveProperty('accessToken')
     expect(auth).toHaveProperty('refresh')
     expect(auth).toHaveProperty('refreshToken')
@@ -55,7 +57,7 @@ describe('Sales Channel mode', () => {
 
 describe('Integration mode', () => {
   test('Client credentials', async () => {
-    const auth: any = await integration(I_CREDENTIALS)
+    const auth: any = await getIntegrationToken(I_CREDENTIALS)
     expect(auth).toHaveProperty('accessToken')
     expect(auth).toHaveProperty('refresh')
     expect(auth).toHaveProperty('refreshToken')
@@ -66,7 +68,7 @@ describe('Integration mode', () => {
     expect(auth.refreshToken).not.toBeDefined()
   })
   test('Password', async () => {
-    const auth: any = await integration(I_CREDENTIALS, user)
+    const auth: any = await getIntegrationToken(I_CREDENTIALS, user)
     expect(auth).toHaveProperty('accessToken')
     expect(auth).toHaveProperty('refresh')
     expect(auth).toHaveProperty('refreshToken')
@@ -82,7 +84,7 @@ describe('Webapp mode', () => {
   test('browser mode', async () => {
     const jsdomOpen = window.open
     window.open = (): any => {}
-    const auth = await webapp(W_CREDENTIALS)
+    const auth = await authorizeWebapp(W_CREDENTIALS)
     expect(auth).toBeNull()
     window.open = jsdomOpen
   })
