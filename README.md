@@ -56,7 +56,7 @@ To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/)
 | **Refresh token**      | ✅            |             | ✅     |
 | **Authorization code** |               |             | ✅     |
 
-> Remember that, for security reasons, access tokens expire after **2 hours**. Refresh tokens expire after **2 weeks**.
+> Remember that, for security reasons, access tokens expire after **2 hours**. Authorization codes expire after **10 minutes**.
 
 Check our [API reference](https://docs.commercelayer.io/api/authentication) for further information on each single authorization flow.
 
