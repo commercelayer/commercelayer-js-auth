@@ -10,9 +10,6 @@ const authenticate: Authenticate = async (type, credentials, scope, code) => {
       scope
     }
   }
-  if (!window && !window.document) {
-    throw new Error('This library works only in a Web context')
-  }
   if (type === 'clientCredentials') {
     r = await auth.credentials.getToken(s)
   }
