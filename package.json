@@ -55,21 +55,21 @@
     "client-oauth2": "^4.2.5"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
-    "@types/jest": "^24.0.23",
+    "@babel/plugin-proposal-optional-chaining": "^7.8.3",
+    "@types/jest": "^24.9.0",
     "@types/mocha": "^5.2.7",
     "dotenv": "^8.2.0",
     "dotenv-webpack": "^1.7.0",
-    "jest": "^24.9.0",
+    "jest": "^25.1.0",
     "path": "^0.12.7",
-    "query-string": "^6.9.0",
-    "ts-jest": "^24.2.0",
+    "query-string": "^6.10.1",
+    "ts-jest": "^24.3.0",
     "ts-loader": "^6.2.1",
-    "tsdx": "^0.11.0",
-    "typescript": "^3.7.3",
-    "webpack": "^4.41.2",
+    "tsdx": "^0.12.3",
+    "typescript": "^3.7.5",
+    "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10",
-    "webpack-dev-server": "^3.9.0",
+    "webpack-dev-server": "^3.10.1",
     "webpack-merge": "^4.2.2"
   }
 }
