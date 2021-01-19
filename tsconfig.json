@@ -1,13 +1,17 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
+    "outDir": "dist",
     "baseUrl": "./",
     "sourceMap": true,
     "noImplicitAny": true,
     "target": "es5",
     "declaration": true,
     "lib": ["esnext", "dom.iterable", "dom"],
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "#typings/*": ["src/typings/*"],
+      "#typings": ["src/typings/index"]
+    }
   },
   "include": ["src/**/*", "helpers"],
   "exclude": ["node_modules"]

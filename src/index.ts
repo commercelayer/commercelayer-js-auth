@@ -1,9 +1,9 @@
 import salesChannel from './salesChannel'
 import integration from './integration'
 import webapp from './webapp'
-import CLayerAuthInterface from './@types'
-import { GetCustomerToken } from './@types/salesChannel'
-import { GetWebappToken } from './@types/webapp'
+import CLayerAuthInterface from '#typings'
+import { GetCustomerToken } from '#typings/salesChannel'
+import { GetWebappToken } from './typings/webapp'
 
 const getSalesChannelToken = salesChannel
 const getCustomerToken: GetCustomerToken = salesChannel
@@ -17,7 +17,7 @@ export {
   getCustomerToken,
   getIntegrationToken,
   authorizeWebapp,
-  getWebappToken
+  getWebappToken,
 }
 
 const CLayerAuth: CLayerAuthInterface = {
@@ -25,7 +25,7 @@ const CLayerAuth: CLayerAuthInterface = {
   getCustomerToken,
   getIntegrationToken,
   authorizeWebapp,
-  getWebappToken
+  getWebappToken,
 }
 
 export default CLayerAuth

@@ -1,6 +1,6 @@
 import authenticate from './authenticate'
-import { AuthConfig } from './@types/authenticate'
-import Webapp from './@types/webapp'
+import { AuthConfig } from '#typings/authenticate'
+import Webapp from '#typings/webapp'
 
 const webapp: Webapp = async ({
   clientId,
@@ -8,14 +8,14 @@ const webapp: Webapp = async ({
   callbackUrl,
   endpoint,
   scope,
-  callbackUrlWithCode
+  callbackUrlWithCode,
 }) => {
   const credentials: AuthConfig = {
     clientId,
     clientSecret,
     accessTokenUri: `${endpoint}/oauth/token`,
     authorizationUri: `${endpoint}/oauth/authorize`,
-    redirectUri: callbackUrl
+    redirectUri: callbackUrl,
   }
   return await authenticate(
     'authorizationCode',

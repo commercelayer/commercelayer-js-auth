@@ -2,19 +2,19 @@ import {
   getSalesChannelToken,
   getCustomerToken,
   getIntegrationToken,
-  authorizeWebapp
+  authorizeWebapp,
 } from '../src'
 
 const S_CREDENTIALS = {
   clientId: process.env.SALES_CHANNEL_ID,
   endpoint: process.env.ENDPOINT,
-  scope: process.env.SCOPE
+  scope: process.env.SCOPE,
 }
 
 const I_CREDENTIALS = {
   clientId: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
-  endpoint: process.env.ENDPOINT
+  endpoint: process.env.ENDPOINT,
 }
 
 const W_CREDENTIALS = {
@@ -22,16 +22,17 @@ const W_CREDENTIALS = {
   clientSecret: process.env.WEBAPP_CLIENT_SECRET,
   callbackUrl: process.env.CALLBACK_URL,
   endpoint: process.env.ENDPOINT,
-  scope: process.env.SCOPE
+  scope: process.env.SCOPE,
 }
 
 const user = {
-  username: 'demo@commercelayer.co',
-  password: 'accountdemo'
+  username: 'alessandro@example.com',
+  password: '123456',
 }
 
 describe('Sales Channel mode', () => {
   test('Client credentials', async () => {
+    console.log('S_CREDENTIALS', S_CREDENTIALS)
     const auth: any = await getSalesChannelToken(S_CREDENTIALS)
     expect(auth).toHaveProperty('accessToken')
     expect(auth).toHaveProperty('refresh')

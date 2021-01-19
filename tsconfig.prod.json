@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
-    "baseUrl": "./src/",
+    "outDir": "dist",
+    "baseUrl": "src",
     "sourceMap": true,
     "noImplicitAny": true,
     "target": "es5",
@@ -10,7 +10,11 @@
     "resolveJsonModule": true,
     "types": ["node"],
     "module": "esnext",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "paths": {
+      "#typings/*": ["typings/*"],
+      "#typings": ["src/typings/index"]
+    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "helpers"]

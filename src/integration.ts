@@ -1,6 +1,6 @@
 import authenticate from './authenticate'
-import { AuthConfig } from './@types/authenticate'
-import Integration from './@types/integration'
+import { AuthConfig } from '#typings/authenticate'
+import Integration from '#typings/integration'
 
 const integration: Integration = async (
   { clientId, clientSecret, endpoint, scope },
@@ -12,7 +12,7 @@ const integration: Integration = async (
     accessTokenUri: `${endpoint}/oauth/token`,
     redirectUri: '',
     username: user?.username,
-    password: user?.password
+    password: user?.password,
   }
   return user
     ? authenticate('owner', credentials, scope)

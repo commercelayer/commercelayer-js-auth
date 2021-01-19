@@ -1,4 +1,4 @@
-import AuthorizationCode from './@types/authorizationCode'
+import AuthorizationCode from '#typings/authorizationCode'
 
 const authorizationCode: AuthorizationCode = async (auth, uri, code) => {
   if (code) {

@@ -1,6 +1,6 @@
-import SalesChannel from './@types/salesChannel'
+import SalesChannel from './typings/salesChannel'
 import authenticate from './authenticate'
-import { AuthConfig } from './@types/authenticate'
+import { AuthConfig } from '#typings/authenticate'
 
 const salesChannel: SalesChannel = async (
   { clientId, endpoint, scope },
@@ -13,7 +13,7 @@ const salesChannel: SalesChannel = async (
     accessTokenUri: `${endpoint}/oauth/token`,
     redirectUri: null,
     username: user?.username,
-    password: user?.password
+    password: user?.password,
   }
   return user
     ? authenticate('owner', credentials, scope)

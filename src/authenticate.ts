@@ -1,5 +1,5 @@
 import createAuth from './createAuth'
-import { Authenticate } from './@types/authenticate'
+import { Authenticate } from '#typings/authenticate'
 import authorizationCode from './authorizationCode'
 
 const authenticate: Authenticate = async (type, credentials, scope, code) => {
@@ -7,8 +7,8 @@ const authenticate: Authenticate = async (type, credentials, scope, code) => {
   let r = null
   const s = {
     body: {
-      scope
-    }
+      scope,
+    },
   }
   if (type === 'clientCredentials') {
     r = await auth.credentials.getToken(s)
