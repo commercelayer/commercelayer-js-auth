@@ -30,11 +30,13 @@
   "scripts": {
     "test": "tsdx test",
     "test:coverage": "tsdx test --coverage",
-    "test:watch": "jest --watch",
-    "build": "tsdx build --tsconfig ./tsconfig.prod.json --entry ./src/index.ts",
-    "build:types": "dts-bundle-generator -o ./dist/types.d.ts ./src/@types/index.ts --project tsconfig.prod.json",
-    "watch": "webpack --progress --watch",
-    "start": "webpack-dev-server --config webpack.dev.js"
+    "build": "tsdx build --tsconfig ./tsconfig.prod.json -i ./src/index.ts",
+    "version:patch": "npm version patch",
+    "version:minor": "npm version minor",
+    "version:major": "npm version major",
+    "publish:patch": "npm run build && npm run version:patch && git push --follow-tags && npm publish --access public",
+    "publish:minor": "npm run build && npm run version:minor && git push --follow-tags && npm publish --access public",
+    "publish:major": "npm run build && npm run version:major && git push --follow-tags && npm publish --access public"
   },
   "license": "MIT",
   "dependencies": {
