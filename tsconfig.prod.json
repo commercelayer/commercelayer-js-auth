@@ -13,7 +13,7 @@
     "moduleResolution": "node",
     "paths": {
       "#typings/*": ["typings/*"],
-      "#typings": ["src/typings/index"]
+      "#typings": ["typings/index"]
     }
   },
   "include": ["src/**/*"],
