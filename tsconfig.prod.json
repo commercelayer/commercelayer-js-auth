@@ -14,7 +14,13 @@
     "paths": {
       "#typings/*": ["typings/*"],
       "#typings": ["typings/index"]
-    }
+    },
+    "plugins": [
+      {
+        "transform": "@zerollup/ts-transform-paths",
+        "exclude": ["*"]
+      }
+    ]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts", "helpers"]
