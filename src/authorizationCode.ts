@@ -1,4 +1,4 @@
-import ClientOAuth2 = require('client-oauth2')
+import * as ClientOAuth2 from 'client-oauth2'
 import { AuthReturnType } from '#typings'
 
 export interface AuthorizationCode {
