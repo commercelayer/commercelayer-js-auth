@@ -1,6 +1,6 @@
 import createAuth from './createAuth'
-import { Authenticate } from '#typings/authenticate'
 import authorizationCode from './authorizationCode'
+import { Authenticate } from '#typings'
 
 const authenticate: Authenticate = async (type, credentials, scope, code) => {
   const auth = createAuth(credentials)

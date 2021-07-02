@@ -1,6 +1,34 @@
 import authenticate from './authenticate'
-import { AuthConfig } from '#typings/authenticate'
-import Webapp from '#typings/webapp'
+import {
+  ClientId,
+  ClientSecret,
+  CallbackUrl,
+  Endpoint,
+  AuthReturnType,
+  AuthConfig,
+  AuthScope,
+} from '#typings'
+
+export interface WebappCredentials {
+  clientId: ClientId
+  clientSecret: ClientSecret
+  callbackUrl: CallbackUrl
+  endpoint: Endpoint
+  scope?: AuthScope
+  callbackUrlWithCode?: string
+}
+
+export interface WebappCredentialsToken extends WebappCredentials {
+  callbackUrlWithCode: string
+}
+
+export interface GetWebappToken {
+  (credentials: WebappCredentialsToken): AuthReturnType
+}
+
+export interface Webapp {
+  (credentials: WebappCredentials): AuthReturnType
+}
 
 const webapp: Webapp = async ({
   clientId,

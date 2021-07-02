@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "outDir": "dist",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "sourceMap": true,
     "noImplicitAny": true,
     "target": "es5",
@@ -10,9 +10,10 @@
     "resolveJsonModule": true,
     "paths": {
       "#typings/*": ["src/typings/*"],
-      "#typings": ["src/typings/index"]
+      "#typings": ["src/typings/index"],
+      "@commercelayer/js-auth": ["src/index"]
     }
   },
-  "include": ["src/**/*", "helpers"],
+  "include": ["src/**/*", "helpers", "specs"],
   "exclude": ["node_modules"]
 }

@@ -1,6 +1,25 @@
 import authenticate from './authenticate'
-import { AuthConfig } from '#typings/authenticate'
-import Integration from '#typings/integration'
+import {
+  AuthConfig,
+  AuthReturnType,
+  AuthScope,
+  ClientId,
+  ClientSecret,
+  Endpoint,
+} from '#typings'
+import { User } from './salesChannel'
+
+export interface IntegrationCredentials {
+  clientId: ClientId
+  clientSecret: ClientSecret
+  endpoint: Endpoint
+  scope?: AuthScope
+}
+
+export type Integration = (
+  credentials: IntegrationCredentials,
+  user?: User
+) => AuthReturnType
 
 const integration: Integration = async (
   { clientId, clientSecret, endpoint, scope },

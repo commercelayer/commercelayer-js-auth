@@ -1,4 +1,9 @@
-import AuthorizationCode from '#typings/authorizationCode'
+import ClientOAuth2 = require('client-oauth2')
+import { AuthReturnType } from '#typings'
+
+export interface AuthorizationCode {
+  (auth: ClientOAuth2, uri: string, code?: string): AuthReturnType
+}
 
 const authorizationCode: AuthorizationCode = async (auth, uri, code) => {
   if (code) {

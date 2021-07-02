@@ -1,6 +1,26 @@
-import SalesChannel from './typings/salesChannel'
 import authenticate from './authenticate'
-import { AuthConfig } from '#typings/authenticate'
+import { AuthConfig, AuthScope } from '#typings'
+import { ClientId, Endpoint, AuthReturnType } from '#typings'
+
+export interface User {
+  username: string
+  password: string
+}
+
+export interface ClientCredentials {
+  clientId: ClientId
+  endpoint: Endpoint
+  scope: AuthScope
+}
+
+export type GetCustomerToken = (
+  clientCredential: ClientCredentials,
+  user: User
+) => AuthReturnType
+
+export interface SalesChannel {
+  (clientCredentials: ClientCredentials, user?: User): AuthReturnType
+}
 
 const salesChannel: SalesChannel = async (
   { clientId, endpoint, scope },

@@ -33,7 +33,7 @@ const user = {
 describe('Sales Channel mode', () => {
   test('Client credentials', async () => {
     console.log('S_CREDENTIALS', S_CREDENTIALS)
-    const auth: any = await getSalesChannelToken(S_CREDENTIALS)
+    const auth = await getSalesChannelToken(S_CREDENTIALS)
     expect(auth).toHaveProperty('accessToken')
     expect(auth).toHaveProperty('refresh')
     expect(auth).toHaveProperty('refreshToken')
@@ -44,12 +44,14 @@ describe('Sales Channel mode', () => {
     expect(auth.refreshToken).not.toBeDefined()
   })
   test('Password', async () => {
-    const auth: any = await getCustomerToken(S_CREDENTIALS, user)
+    const auth = await getCustomerToken(S_CREDENTIALS, user)
     expect(auth).toHaveProperty('accessToken')
     expect(auth).toHaveProperty('refresh')
     expect(auth).toHaveProperty('refreshToken')
     expect(auth).toHaveProperty('expires')
     expect(auth).toHaveProperty('tokenType')
+    expect(auth.data).toHaveProperty('owner_id')
+    expect(auth.data).toHaveProperty('owner_type')
     expect(typeof auth.accessToken).toBe('string')
     expect(auth.tokenType).toEqual('bearer')
     expect(auth.refreshToken).toBeDefined()
@@ -58,7 +60,7 @@ describe('Sales Channel mode', () => {
 
 describe('Integration mode', () => {
   test('Client credentials', async () => {
-    const auth: any = await getIntegrationToken(I_CREDENTIALS)
+    const auth = await getIntegrationToken(I_CREDENTIALS)
     expect(auth).toHaveProperty('accessToken')
     expect(auth).toHaveProperty('refresh')
     expect(auth).toHaveProperty('refreshToken')
@@ -69,7 +71,7 @@ describe('Integration mode', () => {
     expect(auth.refreshToken).not.toBeDefined()
   })
   test('Password', async () => {
-    const auth: any = await getIntegrationToken(I_CREDENTIALS, user)
+    const auth = await getIntegrationToken(I_CREDENTIALS, user)
     expect(auth).toHaveProperty('accessToken')
     expect(auth).toHaveProperty('refresh')
     expect(auth).toHaveProperty('refreshToken')
