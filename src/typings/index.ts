@@ -15,6 +15,7 @@ interface AuthData extends TokenData {
 export type AuthReturnType = Promise<
   Token & {
     data: AuthData
+    expires: Date
   }
 >
 
