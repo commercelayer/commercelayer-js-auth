@@ -7,7 +7,7 @@ export type Endpoint = string
 
 type TokenData = Token['data']
 
-interface AuthData extends TokenData {
+type AuthData = TokenData & {
   owner_id?: string
   owner_type?: string
 }
