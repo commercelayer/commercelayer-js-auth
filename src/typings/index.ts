@@ -15,7 +15,7 @@ type AuthData = TokenData & {
 export type AuthReturnType = Promise<
   Token & {
     data: AuthData
-    expires: Date
+    expires?: Date
   }
 >
 
