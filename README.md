@@ -1,19 +1,33 @@
 # Commerce Layer JS Auth
 
-> A JavaScript Library wrapper that helps you to use the Commerce Layer API for [Authentication](https://docs.commercelayer.io/api/authentication).
+A JavaScript Library wrapper that helps you use the Commerce Layer API for [Authentication](https://docs.commercelayer.io/api/authentication).
 
-### What is Commerce Layer?
+## What is Commerce Layer?
 
-[Commerce Layer](https://commercelayer.io/) is a headless platform that makes it easy to build enterprise-grade ecommerce into any website, by using the language, CMS, and tools you already master and love.
+[Commerce Layer](https://commercelayer.io) is a headless commerce platform and order management system that lets you add global shopping capabilities to any website, mobile app, chatbot, or IoT device, with ease. Perfect fit for the best-of-breed CMSs, static site generators, and any other tools you already master and love, our blazing-fast and secure API will help you make your content shoppable on a global scale.
 
-# Getting started
+## Table of contents
 
-To get started with Commerce Layer JS Auth you need to install it and add it to your project.
+- [Getting started](#getting-started)
+  - [Installation](#installation) 
+  - [Using E6 import](#using-es6-import)
+- [Authorization flows](#authorization-flows)
+- [Use cases](#use-cases)
+  - [Sales channel application with client credentials flow](#sales-channel-client-credentials)
+  - [Sales channel application with password flow](#sales-channel-password)
+  - [Integration application with client credentials flow](#integration-client-credentials)
+  - [Webapp application with authorization code flow](#webapp-authorization-code)
+- [Contributors guide](#contributors-guide)
+- [Need help?](#need-help)
+- [License](#license)
 
-- [Installation](#installation) 
-- [Using E6 import](#using-es6-import)
+---
 
-## Installation
+## Getting started
+
+To get started with Commerce Layer JS Auth, you need to install it and add it to your project.
+
+### Installation
 
 Commerce Layer JS Auth is available as an npm package.
 
@@ -24,7 +38,8 @@ npm install @commercelayer/js-auth
 // yarn
 yarn add @commercelayer/js-auth
 ```
-## Using ES6 import
+
+### Using ES6 import
 
 You can use either the ES6 default or single/multiple named import with the SDK as follow:
 
@@ -45,7 +60,7 @@ import {
 > In the examples below, we will use the latter solution (named import) and define only the functions we need, based on what kind of app and authorization flow we're going to use.
 
 
-# Authorization flows
+## Authorization flows
 
 To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/) authorization flow by using a valid application as the client.
 
@@ -60,7 +75,7 @@ To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/)
 
 Check our [API reference](https://docs.commercelayer.io/api/authentication) for further information on each single authorization flow.
 
-# Use cases
+## Use cases
 
 Based on the authorization flow and application you want to use, you can get your access token in a few simple steps. These are the most common use cases:
 
@@ -69,11 +84,11 @@ Based on the authorization flow and application you want to use, you can get you
 - [Integration application with client credentials flow](#integration-client-credentials)
 - [Webapp application with authorization code flow](#webapp-authorization-code)
 
-## Sales channel (client credentials)
+### Sales channel (client credentials)
 
 Sales channel applications use the [client credentials](https://docs.commercelayer.io/api/authentication/client-credentials) grant type to get a "guest" access token.
 
-### Steps
+#### Steps
 
 1. Create a **sales channel** application on Commerce Layer and take note of your API credentials (base endpoint, client ID, and the ID of the market you want to put in scope)
 
@@ -90,11 +105,11 @@ Sales channel applications use the [client credentials](https://docs.commercelay
    console.log('Expiration date: ', token.expires)
    ```
 
-## Sales channel (password)
+### Sales channel (password)
 
-Sales channel applications can use the [password](https://docs.commercelayer.io/api/authentication/password) grant type to exchange a customer credentials for an access token (i.e. to get a "logged" access token).
+Sales channel applications can use the [password](https://docs.commercelayer.io/api/authentication/password) grant type to exchange a customer credentials for an access token (i.e., to get a "logged" access token).
 
-### Steps
+#### Steps
 
 1. Create a **sales channel** application on Commerce Layer and take note of your API credentials (base endpoint, client ID, and the ID of the market you want to put in scope)
 
@@ -117,7 +132,7 @@ Sales channel applications can use the [password](https://docs.commercelayer.io/
    console.log('Expiration date: ', token.expires)
    ```
 
-Sales channel applications can use the [refresh token](https://docs.commercelayer.io/api/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option. So in this case, if the token is expired, you can refresh it by using the `refresh()` method:
+Sales channel applications can use the [refresh token](https://docs.commercelayer.io/api/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option. So, in this case, if the token is expired, you can refresh it by using the `refresh()` method:
 
 ```
 const newToken = await token.refresh()
@@ -125,11 +140,11 @@ const newToken = await token.refresh()
 console.log('New access token: ', newToken.accessToken)
 ```
 
-## Integration (client credentials)
+### Integration (client credentials)
 
 Integration applications use the [client credentials](https://docs.commercelayer.io/api/authentication/client-credentials) grant type to get an access token for themselves.
 
-### Steps
+#### Steps
 
 1. Create an **integration** application on Commerce Layer and take note of your API credentials (client ID, client secret, and base endpoint)
 
@@ -146,15 +161,15 @@ Integration applications use the [client credentials](https://docs.commercelayer
    console.log('Expiration date: ', token.expires)
    ```
 
-## Webapp (authorization code)
+### Webapp (authorization code)
 
 > Available only for browser applications
 
 Webapp applications use the [authorization code](https://docs.commercelayer.io/api/authentication/authorization-code) grant type to exchange an authorization code for an access token.
 
-### Steps
+#### Steps
 
-In this case, first you need to get an authorization code, then you can exchange it with an access token:
+In this case, first, you need to get an authorization code, then you can exchange it with an access token:
 
 1. Create a **webapp** application on Commerce Layer and take note of your API credentials (client ID, client secret, callback URL, base endpoint, and the ID of the market you want to put in scope)
 
@@ -189,6 +204,30 @@ In this case, first you need to get an authorization code, then you can exchange
    console.log('My access token: ', token.accessToken)
    console.log('Expiration date: ', token.expires)
    ```
+
+---
+
+## Contributors guide
+
+1. Fork [this repository](https://github.com/BolajiAyodeji/commercelayer-js-auth) (learn how to do this [here](https://help.github.com/articles/fork-a-repo)).
+
+2. Clone the forked repository like so:
+
+```bash
+git clone https://github.com/<your username>/commercelayer-js-auth.git && cd commercelayer-js-auth
+```
+
+3. Make your changes and create a pull request ([learn how to do this](https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request)).
+
+4. Someone will attend to your pull request and provide some feedback.
+
+## Need help?
+
+1. Request an invite to join [Commerce Layer's Slack community](https://commercelayer.io/developers) (kindly scroll down to the bottom of the page).
+
+2. Create an [issue](https://github.com/commercelayer/commercelayer-js-auth/issues) in this repository.
+
+3. Ping us [on Twitter](https://twitter.com/commercelayer).
 
 ## License
 
