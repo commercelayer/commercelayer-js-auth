@@ -3,6 +3,7 @@ import {
   getCustomerToken,
   getIntegrationToken,
   authorizeWebapp,
+  clientCredentials,
 } from '../src'
 
 const S_CREDENTIALS = {
@@ -32,7 +33,6 @@ const user = {
 
 describe('Sales Channel mode', () => {
   test('Client credentials', async () => {
-    console.log('S_CREDENTIALS', S_CREDENTIALS)
     const auth = await getSalesChannelToken(S_CREDENTIALS)
     expect(auth).toHaveProperty('accessToken')
     expect(auth).toHaveProperty('refresh')
@@ -90,5 +90,31 @@ describe('Webapp mode', () => {
     const auth = await authorizeWebapp(W_CREDENTIALS)
     expect(auth).toBeNull()
     window.open = jsdomOpen
+  })
+})
+
+describe('Client credentials', () => {
+  test('sales channel mode', async () => {
+    const auth = await clientCredentials(S_CREDENTIALS)
+    expect(auth).toHaveProperty('accessToken')
+    expect(auth).toHaveProperty('refresh')
+    expect(auth).toHaveProperty('refreshToken')
+    expect(auth).toHaveProperty('expires')
+    expect(auth).toHaveProperty('tokenType')
+    expect(typeof auth.accessToken).toBe('string')
+    expect(auth.tokenType).toEqual('bearer')
+    expect(auth.refreshToken).not.toBeDefined()
+  })
+
+  test('integration mode', async () => {
+    const auth = await clientCredentials(I_CREDENTIALS)
+    expect(auth).toHaveProperty('accessToken')
+    expect(auth).toHaveProperty('refresh')
+    expect(auth).toHaveProperty('refreshToken')
+    expect(auth).toHaveProperty('expires')
+    expect(auth).toHaveProperty('tokenType')
+    expect(typeof auth.accessToken).toBe('string')
+    expect(auth.tokenType).toEqual('bearer')
+    expect(auth.refreshToken).not.toBeDefined()
   })
 })
