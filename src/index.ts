@@ -1,6 +1,7 @@
 import salesChannel, { GetCustomerToken } from './salesChannel'
 import integration from './integration'
 import webapp, { GetWebappToken } from './webapp'
+import clientCredentials from './clientCredentials'
 
 const getSalesChannelToken = salesChannel
 const getCustomerToken: GetCustomerToken = salesChannel
@@ -10,18 +11,20 @@ const authorizeWebapp = webapp
 const getWebappToken: GetWebappToken = webapp
 
 export {
-  getSalesChannelToken,
+  authorizeWebapp,
+  clientCredentials,
   getCustomerToken,
   getIntegrationToken,
-  authorizeWebapp,
+  getSalesChannelToken,
   getWebappToken,
 }
 
 const CLayerAuth = {
-  getSalesChannelToken,
+  authorizeWebapp,
+  clientCredentials,
   getCustomerToken,
   getIntegrationToken,
-  authorizeWebapp,
+  getSalesChannelToken,
   getWebappToken,
 }
 
