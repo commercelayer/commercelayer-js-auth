@@ -4,7 +4,7 @@ import {
   getIntegrationToken,
   authorizeWebapp,
   clientCredentials,
-} from '../src'
+} from '../lib/esm'
 
 const S_CREDENTIALS = {
   clientId: process.env.SALES_CHANNEL_ID,

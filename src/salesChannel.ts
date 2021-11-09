@@ -1,6 +1,11 @@
 import authenticate from './authenticate'
-import { AuthConfig, AuthScope } from '#typings'
-import { ClientId, Endpoint, AuthReturnType } from '#typings'
+import {
+  ClientId,
+  Endpoint,
+  AuthReturnType,
+  AuthConfig,
+  AuthScope,
+} from './typings'
 
 export interface User {
   username: string
@@ -31,7 +36,7 @@ const salesChannel: SalesChannel = async (
     clientId,
     clientSecret: '',
     accessTokenUri: `${endpoint}/oauth/token`,
-    redirectUri: null,
+    redirectUri: undefined,
     username: user?.username,
     password: user?.password,
   }

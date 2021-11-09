@@ -7,7 +7,7 @@ import {
   AuthReturnType,
   AuthConfig,
   AuthScope,
-} from '#typings'
+} from './typings'
 
 export interface WebappCredentials {
   clientId: ClientId
