@@ -1,3 +1,10 @@
+## [2.2.2](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.1...v2.2.2) (2021-11-09)
+
+
+### Bug Fixes
+
+* Merge types ([810cc29](https://github.com/commercelayer/commercelayer-js-auth/commit/810cc293ce388c9d0e81c7046eeef9f0a5541065))
+
 ## [2.2.1](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.0...v2.2.1) (2021-11-09)
 
 
