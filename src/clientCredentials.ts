@@ -5,9 +5,9 @@ import {
   ClientId,
   ClientSecret,
   Endpoint,
-} from '#typings'
+} from './typings'
 
-export type Credentials = {
+export type ClientCredentials = {
   clientId: ClientId
   endpoint: Endpoint
 } & (
@@ -21,7 +21,7 @@ export type Credentials = {
     }
 )
 
-export default async function ClientCredentials(args: Credentials) {
+export default async function clientCredentials(args: ClientCredentials) {
   const { scope, endpoint, clientSecret = '', ...obj } = args
   const credentials: AuthConfig = {
     ...obj,

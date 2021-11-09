@@ -1,21 +1,10 @@
 import authenticate from './authenticate'
-import {
-  ClientId,
-  Endpoint,
-  AuthReturnType,
-  AuthConfig,
-  AuthScope,
-} from './typings'
+import { ClientCredentials } from './clientCredentials'
+import { AuthReturnType, AuthConfig } from './typings'
 
 export interface User {
   username: string
   password: string
-}
-
-export interface ClientCredentials {
-  clientId: ClientId
-  endpoint: Endpoint
-  scope: AuthScope
 }
 
 export type GetCustomerToken = (
