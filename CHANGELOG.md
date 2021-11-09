@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.0...v2.2.1) (2021-11-09)
+
+
+### Bug Fixes
+
+* Change lib path ([a75173e](https://github.com/commercelayer/commercelayer-js-auth/commit/a75173e69bbd97988bc7e186fca1a51bd6e5da42))
+
 # [2.2.0](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.1.0...v2.2.0) (2021-11-09)
 
 
