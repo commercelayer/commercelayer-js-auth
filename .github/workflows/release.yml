@@ -18,6 +18,8 @@ jobs:
           node-version: 16
       - name: Install dependencies
         run: npm i
+      - name: Run package
+        run: npm run build
       - name: Run specs
         env:
           ENDPOINT: ${{ secrets.ENDPOINT }}
@@ -29,8 +31,6 @@ jobs:
           WEBAPP_CLIENT_SECRET: ${{ secrets.WEBAPP_CLIENT_SECRET}}
           CALLBACK_URL: ${{ secrets.CALLBACK_URL}}
         run: npm test
-      - name: Run package
-        run: npm run build
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

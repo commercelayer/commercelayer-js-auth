@@ -1,4 +1,4 @@
-import * as ClientOAuth2 from 'client-oauth2'
+import ClientOAuth2 from 'client-oauth2'
 
 export interface AuthOptions extends ClientOAuth2.Options {
   clientId: string

@@ -13,10 +13,11 @@ type AuthData = TokenData & {
 }
 
 export type AuthReturnType = Promise<
-  Token & {
-    data: AuthData
-    expires?: Date
-  }
+  | (Token & {
+      data: AuthData
+      expires?: Date
+    })
+  | null
 >
 
 export interface AuthConfig {

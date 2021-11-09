@@ -6,7 +6,7 @@ import {
   ClientId,
   ClientSecret,
   Endpoint,
-} from '#typings'
+} from './typings'
 import { User } from './salesChannel'
 
 export interface IntegrationCredentials {
