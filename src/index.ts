@@ -2,7 +2,7 @@ import salesChannel, { GetCustomerToken, User } from './salesChannel'
 import integration from './integration'
 import webapp, { GetWebappToken } from './webapp'
 import clientCredentials, { ClientCredentials } from './clientCredentials'
-import { AuthReturnType, AuthScope } from './typings'
+import { AuthReturnType, AuthScope, ClientId, ClientSecret } from './typings'
 
 const getSalesChannelToken = salesChannel
 const getCustomerToken: GetCustomerToken = salesChannel
@@ -21,6 +21,8 @@ export {
   User,
   AuthReturnType,
   AuthScope,
+  ClientId,
+  ClientSecret
 }
 
 const CLayerAuth = {
