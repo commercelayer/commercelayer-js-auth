@@ -1,3 +1,10 @@
+## [2.2.3](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.2...v2.2.3) (2021-11-10)
+
+
+### Bug Fixes
+
+* export ClientId and ClientSecret types ([1a3506b](https://github.com/commercelayer/commercelayer-js-auth/commit/1a3506ba39a741ba735c082ad7e057b11331a668))
+
 ## [2.2.2](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.1...v2.2.2) (2021-11-09)
 
 
