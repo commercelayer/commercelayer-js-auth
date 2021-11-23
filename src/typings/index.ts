@@ -13,10 +13,11 @@ type AuthData = TokenData & {
 }
 
 export type AuthReturnType = Promise<
-  | (Token & {
+  | ((Omit<Token, 'refreshToken' | 'refresh'> & {
       data: AuthData
       expires?: Date
-    })
+    }) &
+      Partial<Pick<Token, 'refreshToken' | 'refresh'>>)
   | null
 >
 
