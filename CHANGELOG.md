@@ -1,3 +1,10 @@
+## [2.2.4](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.3...v2.2.4) (2021-11-23)
+
+
+### Bug Fixes
+
+* Set tokenRefresh and refresh as possibly undefined ([cadd19c](https://github.com/commercelayer/commercelayer-js-auth/commit/cadd19c97fe084ff0fe79589d671f9aaab525e26))
+
 ## [2.2.3](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.2...v2.2.3) (2021-11-10)
 
 
