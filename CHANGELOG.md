@@ -1,3 +1,10 @@
+## [2.2.6](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.5...v2.2.6) (2021-12-02)
+
+
+### Bug Fixes
+
+* Add tslib as dependency ([4db9ea8](https://github.com/commercelayer/commercelayer-js-auth/commit/4db9ea879ea483863d1b1a4880f1a7d2af8fadd9))
+
 ## [2.2.5](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.4...v2.2.5) (2021-12-02)
 
 
