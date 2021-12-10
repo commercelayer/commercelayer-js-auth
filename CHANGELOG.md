@@ -1,3 +1,10 @@
+## [2.2.7](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.6...v2.2.7) (2021-12-10)
+
+
+### Bug Fixes
+
+* Authentication with multiple scopes ([dad1d06](https://github.com/commercelayer/commercelayer-js-auth/commit/dad1d06d8b0d2e455334c9f323c14eec14e34a6b))
+
 ## [2.2.6](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.5...v2.2.6) (2021-12-02)
 
 
