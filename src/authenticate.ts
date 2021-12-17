@@ -22,7 +22,6 @@ const authenticate: Authenticate = async (type, credentials, scope, code) => {
     const uri = auth.code.getUri()
     authRes = await authorizationCode(auth, uri, code)
   }
-  
   return authRes
 }
 
