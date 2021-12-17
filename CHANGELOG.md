@@ -1,3 +1,10 @@
+## [2.2.8](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.7...v2.2.8) (2021-12-17)
+
+
+### Bug Fixes
+
+* Bump version ([aeb2b77](https://github.com/commercelayer/commercelayer-js-auth/commit/aeb2b77828f079b03d74e32a8b5f638bf3a593b4))
+
 ## [2.2.7](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.6...v2.2.7) (2021-12-10)
 
 
