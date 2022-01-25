@@ -1,6 +1,6 @@
 # Commerce Layer JS Auth
 
-A JavaScript Library wrapper that helps you use the Commerce Layer API for [Authentication](https://docs.commercelayer.io/api/authentication).
+A JavaScript Library wrapper that helps you use the Commerce Layer API for [Authentication](https://docs.commercelayer.io/developers/authentication).
 
 ## What is Commerce Layer?
 
@@ -9,7 +9,7 @@ A JavaScript Library wrapper that helps you use the Commerce Layer API for [Auth
 ## Table of contents
 
 - [Getting started](#getting-started)
-  - [Installation](#installation) 
+  - [Installation](#installation)
   - [Using E6 import](#using-es6-import)
 - [Authorization flows](#authorization-flows)
 - [Use cases](#use-cases)
@@ -59,7 +59,6 @@ import {
 
 > In the examples below, we will use the latter solution (named import) and define only the functions we need, based on what kind of app and authorization flow we're going to use.
 
-
 ## Authorization flows
 
 To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/) authorization flow by using a valid application as the client.
@@ -73,7 +72,7 @@ To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/)
 
 > Remember that, for security reasons, access tokens expire after **2 hours**. Authorization codes expire after **10 minutes**.
 
-Check our [API reference](https://docs.commercelayer.io/api/authentication) for further information on each single authorization flow.
+Check our [documentation](https://docs.commercelayer.io/developers/authentication) for further information on each single authorization flow.
 
 ## Use cases
 
@@ -86,7 +85,7 @@ Based on the authorization flow and application you want to use, you can get you
 
 ### Sales channel (client credentials)
 
-Sales channel applications use the [client credentials](https://docs.commercelayer.io/api/authentication/client-credentials) grant type to get a "guest" access token.
+Sales channel applications use the [client credentials](https://docs.commercelayer.io/developers/authentication/client-credentials) grant type to get a "guest" access token.
 
 #### Steps
 
@@ -107,7 +106,7 @@ Sales channel applications use the [client credentials](https://docs.commercelay
 
 ### Sales channel (password)
 
-Sales channel applications can use the [password](https://docs.commercelayer.io/api/authentication/password) grant type to exchange a customer credentials for an access token (i.e., to get a "logged" access token).
+Sales channel applications can use the [password](https://docs.commercelayer.io/developers/authentication/password) grant type to exchange a customer credentials for an access token (i.e., to get a "logged" access token).
 
 #### Steps
 
@@ -132,7 +131,7 @@ Sales channel applications can use the [password](https://docs.commercelayer.io/
    console.log('Expiration date: ', token.expires)
    ```
 
-Sales channel applications can use the [refresh token](https://docs.commercelayer.io/api/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option. So, in this case, if the token is expired, you can refresh it by using the `refresh()` method:
+Sales channel applications can use the [refresh token](https://docs.commercelayer.io/developers/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option. So, in this case, if the token is expired, you can refresh it by using the `refresh()` method:
 
 ```
 const newToken = await token.refresh()
@@ -142,7 +141,7 @@ console.log('New access token: ', newToken.accessToken)
 
 ### Integration (client credentials)
 
-Integration applications use the [client credentials](https://docs.commercelayer.io/api/authentication/client-credentials) grant type to get an access token for themselves.
+Integration applications use the [client credentials](https://docs.commercelayer.io/developers/authentication/client-credentials) grant type to get an access token for themselves.
 
 #### Steps
 
@@ -165,7 +164,7 @@ Integration applications use the [client credentials](https://docs.commercelayer
 
 > Available only for browser applications
 
-Webapp applications use the [authorization code](https://docs.commercelayer.io/api/authentication/authorization-code) grant type to exchange an authorization code for an access token.
+Webapp applications use the [authorization code](https://docs.commercelayer.io/developers/authentication/authorization-code) grant type to exchange an authorization code for an access token.
 
 #### Steps
 
@@ -185,11 +184,11 @@ In this case, first, you need to get an authorization code, then you can exchang
    })
    ```
 
-3. Once you've authorized the application, you will be redirected to the callback URL: 
+3. Once you've authorized the application, you will be redirected to the callback URL:
 
-    ![Callback URL with Authorization Code](docs/images/auth-code-browser.jpg?raw=true "Callback URL with Authorization Code")
+   ![Callback URL with Authorization Code](docs/images/auth-code-browser.jpg?raw=true 'Callback URL with Authorization Code')
 
-    Use this code to get the access token:
+   Use this code to get the access token:
 
    ```
    const token = await getWebappToken({
@@ -223,7 +222,7 @@ git clone https://github.com/<your username>/commercelayer-js-auth.git && cd com
 
 ## Need help?
 
-1. Request an invite to join [Commerce Layer's Slack community](https://commercelayer.io/developers) (kindly scroll down to the bottom of the page).
+1. Request an invite to join [Commerce Layer's Slack community](https://slack.commercelayer.app/).
 
 2. Create an [issue](https://github.com/commercelayer/commercelayer-js-auth/issues) in this repository.
 
