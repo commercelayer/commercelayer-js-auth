@@ -7,3 +7,4 @@ lib
 *.tgz
 *.rts*
 coverage
+.DS_Store
