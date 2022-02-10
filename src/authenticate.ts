@@ -1,20 +1,32 @@
 import createAuth from './createAuth'
 import authorizationCode from './authorizationCode'
 import { Authenticate } from '#typings'
+import ClientOAuth2 from 'client-oauth2'
 
-const authenticate: Authenticate = async (type, credentials, scope, code) => {
-  const auth = createAuth(credentials)
+const authenticate: Authenticate = async ({
+  type,
+  config,
+  scope,
+  code,
+  refreshToken,
+}) => {
+  const auth = createAuth(config)
   let authRes = null
-  const opts: any = {
+  const opts = {
     scopes: scope,
-  }
+  } as ClientOAuth2.Options
   if (type === 'clientCredentials') {
     authRes = await auth.credentials.getToken(opts)
   }
+  if (type === 'refreshToken' && refreshToken) {
+    authRes = await auth
+      .createToken('', refreshToken, 'refresh_token', {})
+      .refresh()
+  }
   if (type === 'owner') {
     authRes = await auth.owner.getToken(
-      credentials.username as string,
-      credentials.password as string,
+      config.username as string,
+      config.password as string,
       opts
     )
   }

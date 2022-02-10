@@ -23,11 +23,11 @@ export type ClientCredentials = {
 
 export default async function clientCredentials(args: ClientCredentials) {
   const { scope, endpoint, clientSecret = '', ...obj } = args
-  const credentials: AuthConfig = {
+  const config: AuthConfig = {
     ...obj,
     clientSecret,
     accessTokenUri: `${endpoint}/oauth/token`,
     redirectUri: '',
   }
-  return authenticate('clientCredentials', credentials, scope)
+  return authenticate({ type: 'clientCredentials', config, scope })
 }
