@@ -137,6 +137,18 @@ Sales channel applications can use the [refresh token](https://docs.commercelaye
 const newToken = await token.refresh()
 
 console.log('New access token: ', newToken.accessToken)
+
+// or
+
+const newToken = await getRefreshToken(
+  {
+    clientId: 'your-client-id',
+    endpoint: 'https://yourdomain.commercelayer.io',
+    scope: 'market:{id}',
+    refreshToken: 'your-refresh-token'
+  }
+)
+
 ```
 
 ### Integration (client credentials)

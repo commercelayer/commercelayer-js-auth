@@ -4,6 +4,7 @@ import {
   getIntegrationToken,
   authorizeWebapp,
   clientCredentials,
+  getRefreshToken,
 } from '../src'
 
 const S_CREDENTIALS = {
@@ -58,6 +59,35 @@ describe('Sales Channel mode', () => {
     expect(auth.tokenType).toEqual('bearer')
     expect(auth.refreshToken).toBeDefined()
   })
+  test('Password - Refresh token', async () => {
+    const auth = await getCustomerToken(S_CREDENTIALS, user)
+    expect(auth).toHaveProperty('accessToken')
+    expect(auth).toHaveProperty('refresh')
+    expect(auth).toHaveProperty('refreshToken')
+    expect(auth.refreshToken).toBeDefined()
+    expect(auth).toHaveProperty('expires')
+    expect(auth).toHaveProperty('tokenType')
+    expect(auth.data).toHaveProperty('owner_id')
+    expect(auth.data).toHaveProperty('owner_type')
+    expect(typeof auth.accessToken).toBe('string')
+    expect(auth.tokenType).toEqual('bearer')
+    expect(auth.refreshToken).toBeDefined()
+    const refreshAuth = await getRefreshToken({
+      ...S_CREDENTIALS,
+      refreshToken: auth.refreshToken,
+    })
+    expect(refreshAuth).toHaveProperty('accessToken')
+    expect(refreshAuth).toHaveProperty('refresh')
+    expect(refreshAuth).toHaveProperty('refreshToken')
+    expect(refreshAuth.refreshToken).toBeDefined()
+    expect(refreshAuth).toHaveProperty('expires')
+    expect(refreshAuth).toHaveProperty('tokenType')
+    expect(refreshAuth.data).toHaveProperty('owner_id')
+    expect(refreshAuth.data).toHaveProperty('owner_type')
+    expect(typeof refreshAuth.accessToken).toBe('string')
+    expect(refreshAuth.tokenType).toEqual('bearer')
+    expect(refreshAuth.refreshToken).toBeDefined()
+  })
 })
 
 describe('Integration mode', () => {
@@ -83,12 +113,38 @@ describe('Integration mode', () => {
     expect(auth.tokenType).toEqual('bearer')
     expect(auth.refreshToken).toBeDefined()
   })
+  test('Password - Refresh token', async () => {
+    const auth = await getIntegrationToken(I_CREDENTIALS, user)
+    expect(auth).toHaveProperty('accessToken')
+    expect(auth).toHaveProperty('refresh')
+    expect(auth).toHaveProperty('refreshToken')
+    expect(auth).toHaveProperty('expires')
+    expect(auth).toHaveProperty('tokenType')
+    expect(typeof auth.accessToken).toBe('string')
+    expect(auth.tokenType).toEqual('bearer')
+    expect(auth.refreshToken).toBeDefined()
+    const refreshAuth = await getRefreshToken({
+      ...I_CREDENTIALS,
+      refreshToken: auth.refreshToken,
+    })
+    expect(refreshAuth).toHaveProperty('accessToken')
+    expect(refreshAuth).toHaveProperty('refresh')
+    expect(refreshAuth).toHaveProperty('refreshToken')
+    expect(refreshAuth.refreshToken).toBeDefined()
+    expect(refreshAuth).toHaveProperty('expires')
+    expect(refreshAuth).toHaveProperty('tokenType')
+    expect(refreshAuth.data).toHaveProperty('owner_id')
+    expect(refreshAuth.data).toHaveProperty('owner_type')
+    expect(typeof refreshAuth.accessToken).toBe('string')
+    expect(refreshAuth.tokenType).toEqual('bearer')
+    expect(refreshAuth.refreshToken).toBeDefined()
+  })
 })
 
 describe('Webapp mode', () => {
   test('browser mode', async () => {
     const jsdomOpen = window.open
-    window.open = (): any => {}
+    window.open = () => undefined
     const auth = await authorizeWebapp(W_CREDENTIALS)
     expect(auth).toBeNull()
     window.open = jsdomOpen
