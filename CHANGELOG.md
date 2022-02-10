@@ -1,3 +1,21 @@
+# [3.0.0](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.9...v3.0.0) (2022-02-10)
+
+
+### Features
+
+* Add new getRefreshToken function, update specs and README ([0a4231b](https://github.com/commercelayer/commercelayer-js-auth/commit/0a4231ba552e7e973c0fcc09061bd5193f47750f))
+
+
+### Performance Improvements
+
+* Improve code and add new grant type `refresh_token` ([208d859](https://github.com/commercelayer/commercelayer-js-auth/commit/208d85925614bd9f4301468d2ec36ed65eaaf3b8))
+* Update deps and remove cjs build ([7612011](https://github.com/commercelayer/commercelayer-js-auth/commit/7612011dd2b7c63966f34fbfe3fd97777ea615c9))
+
+
+### BREAKING CHANGES
+
+* CommonJS version has been removed.
+
 ## [2.2.9](https://github.com/commercelayer/commercelayer-js-auth/compare/v2.2.8...v2.2.9) (2021-12-17)
 
 
