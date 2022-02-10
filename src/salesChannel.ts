@@ -21,7 +21,7 @@ const salesChannel: SalesChannel = async (
   user
 ) => {
   if (!scope) throw new Error('scope param is required.')
-  const credentials: AuthConfig = {
+  const config: AuthConfig = {
     clientId,
     clientSecret: '',
     accessTokenUri: `${endpoint}/oauth/token`,
@@ -30,8 +30,8 @@ const salesChannel: SalesChannel = async (
     password: user?.password,
   }
   return user
-    ? authenticate('owner', credentials, scope)
-    : authenticate('clientCredentials', credentials, scope)
+    ? authenticate({ type: 'owner', config, scope })
+    : authenticate({ type: 'clientCredentials', config, scope })
 }
 
 export default salesChannel

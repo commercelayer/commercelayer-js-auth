@@ -31,17 +31,24 @@ export interface AuthConfig {
   password?: string
 }
 
-export type AuthType = 'clientCredentials' | 'owner' | 'authorizationCode'
+export type AuthType =
+  | 'clientCredentials'
+  | 'owner'
+  | 'authorizationCode'
+  | 'refreshToken'
 
 export type AuthScope = string[] | string
 
+type AuthenticateParams = {
+  type: AuthType
+  config: AuthConfig
+  scope?: AuthScope
+  code?: string
+  refreshToken?: string
+}
+
 export interface Authenticate {
-  (
-    type: AuthType,
-    config: AuthConfig,
-    scope?: AuthScope,
-    code?: string
-  ): AuthReturnType
+  (params: AuthenticateParams): AuthReturnType
 }
 
 export interface AuthOptions extends Options {

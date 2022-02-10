@@ -3,26 +3,28 @@ import integration from './integration'
 import webapp, { GetWebappToken } from './webapp'
 import clientCredentials, { ClientCredentials } from './clientCredentials'
 import { AuthReturnType, AuthScope, ClientId, ClientSecret } from './typings'
+import getRefreshToken from './refreshToken'
 
-const getSalesChannelToken = salesChannel
+const authorizeWebapp = webapp
 const getCustomerToken: GetCustomerToken = salesChannel
 const getIntegrationToken = integration
-const authorizeWebapp = webapp
+const getSalesChannelToken = salesChannel
 const getWebappToken: GetWebappToken = webapp
 
 export {
+  AuthReturnType,
+  AuthScope,
+  ClientCredentials,
+  ClientId,
+  ClientSecret,
+  User,
   authorizeWebapp,
   clientCredentials,
   getCustomerToken,
   getIntegrationToken,
+  getRefreshToken,
   getSalesChannelToken,
   getWebappToken,
-  ClientCredentials,
-  User,
-  AuthReturnType,
-  AuthScope,
-  ClientId,
-  ClientSecret
 }
 
 const CLayerAuth = {
@@ -30,6 +32,7 @@ const CLayerAuth = {
   clientCredentials,
   getCustomerToken,
   getIntegrationToken,
+  getRefreshToken,
   getSalesChannelToken,
   getWebappToken,
 }
