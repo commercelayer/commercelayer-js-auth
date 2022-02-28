@@ -1,6 +1,6 @@
 {
   "name": "@commercelayer/js-auth",
-  "version": "3.0.0",
+  "version": "2.2.9",
   "description": "Commerce Layer Javascript Auth",
   "repository": {
     "url": "https://github.com/commercelayer/commercelayer-js-auth.git"
@@ -9,8 +9,9 @@
     "name": "Alessandro Casazza",
     "email": "alessandro@commercelayer.io"
   },
-  "module": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "types": "lib/esm/index.d.ts",
   "files": [
     "lib",
     "package.json",
@@ -30,7 +31,7 @@
   "scripts": {
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "build": "tsc -b tsconfig.json --v",
+    "build": "tsc -b tsconfig.json tsconfig.cjs.json --v",
     "lint": "eslint src",
     "postbuild": "minimize-js lib -w -s",
     "version:patch": "npm version patch",
