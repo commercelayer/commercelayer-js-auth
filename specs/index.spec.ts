@@ -59,6 +59,19 @@ describe('Sales Channel mode', () => {
     expect(auth.tokenType).toEqual('bearer')
     expect(auth.refreshToken).toBeDefined()
   })
+  test('Error Password', async () => {
+    const errorUser = {
+      username: 'alessandro@example.com',
+      password: '12345',
+    }
+    try {
+      await getCustomerToken(S_CREDENTIALS, errorUser)
+    } catch (e) {
+      expect(e).toHaveProperty('body')
+      expect(e.body).toHaveProperty('error')
+      expect(e.body.error).toEqual('invalid_grant')
+    }
+  })
   test('Password - Refresh token', async () => {
     const auth = await getCustomerToken(S_CREDENTIALS, user)
     expect(auth).toHaveProperty('accessToken')
