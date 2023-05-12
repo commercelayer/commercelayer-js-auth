@@ -1,0 +1,60 @@
+{
+  "name": "@commercelayer/js-auth",
+  "version": "2.3.0",
+  "description": "Commerce Layer Javascript Auth",
+  "repository": {
+    "url": "https://github.com/commercelayer/commercelayer-js-auth.git"
+  },
+  "author": {
+    "name": "Alessandro Casazza",
+    "email": "alessandro@commercelayer.io"
+  },
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "types": "lib/esm/index.d.ts",
+  "files": [
+    "lib",
+    "package.json",
+    "README.md"
+  ],
+  "keywords": [
+    "jamstack",
+    "headless",
+    "ecommerce",
+    "api",
+    "auth"
+  ],
+  "bugs": {
+    "url": "https://github.com/commercelayer/commercelayer-js-auth/issues"
+  },
+  "homepage": "https://github.com/commercelayer/commercelayer-js-auth#readme",
+  "scripts": {
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "test": "pnpm run lint && vitest run --silent",
+    "coverage": "vitest run --coverage",
+    "test:e2e": "NODE_ENV=test playwright test",
+    "test:e2e:coverage": "nyc pnpm test:e2e && pnpm coverage:report",
+    "coverage:report": "nyc report --reporter=html",
+    "build": "tsc -b tsconfig.prod.json tsconfig.prod.esm.json --verbose && pnpm postbuild",
+    "build:dev": "tsc -b tsconfig.prod.json tsconfig.prod.esm.json --verbose && tsc-alias -p tsconfig.prod.json && tsc-alias -p tsconfig.prod.esm.json",
+    "postbuild": "tsc-alias -p tsconfig.prod.json && tsc-alias -p tsconfig.prod.esm.json &&  minimize-js lib -w -s"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.1.2",
+    "@vitejs/plugin-react": "^4.0.0",
+    "@vitest/coverage-c8": "^0.31.0",
+    "jsdom": "^22.0.0",
+    "minimize-js": "^1.3.1",
+    "tsc-alias": "^1.8.6",
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.4",
+    "vite": "^4.3.5",
+    "vite-tsconfig-paths": "^4.2.0",
+    "vitest": "^0.31.0"
+  }
+}
