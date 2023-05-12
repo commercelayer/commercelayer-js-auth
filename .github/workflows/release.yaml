@@ -1,0 +1,22 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  github_release:
+    name: Trigger GitHub release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v3
+
+      - name: Create a draft GitHub release 🎁
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.COMMERCELAYER_CI_TOKEN }}
+          draft: true
+          prerelease: ${{ contains(github.ref, 'beta.') }}
+          generate_release_notes: true
+          discussion_category_name: Announcements
