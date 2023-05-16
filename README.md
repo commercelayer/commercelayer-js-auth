@@ -183,7 +183,7 @@ In this case, first, you need to get an authorization code, then you can exchang
   
 3. Once you've authorized the application, you will be redirected to the callback URL:
 
-   ![Callback URL with Authorization Code](./packages/docs/stories/assets/auth-code-browser.jpg)
+   ![Callback URL with Authorization Code](./images/auth-code-browser.jpg)
 
    Use this code to get the access token:
 
