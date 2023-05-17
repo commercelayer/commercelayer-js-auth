@@ -112,7 +112,7 @@ Sales channel applications can use the [password](https://docs.commercelayer.io/
   const token = await authentication('password', {
     clientId: 'your-client-id',
     slug: 'your-organization-slug',
-    scope: 'market:{id}'
+    scope: 'market:{id}',
     username: 'john@example.com',
     password: 'secret'
   })
