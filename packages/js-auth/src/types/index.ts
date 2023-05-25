@@ -54,9 +54,13 @@ export interface TBaseReturn {
    */
   tokenType: 'bearer'
   /**
-   * The expiration date of the access token.
+   * The access token expiration time in seconds.
    */
   expiresIn: number
+  /**
+   * The access token expiration date.
+   */
+  expires: Date
   /**
    * The access token scope (market, stock location).
    */
