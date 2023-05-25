@@ -21,6 +21,9 @@ describe('Authentication', () => {
     expect(res).toHaveProperty('expiresIn')
     expect(res).toHaveProperty('scope')
     expect(res).toHaveProperty('createdAt')
+    expect(res).toHaveProperty('expires')
+    expect(res.expires).toBeInstanceOf(Date)
+    expect(res.expires.getTime()).toBeGreaterThan(Date.now())
   })
   it('Get an error requesting a sales channel token', async () => {
     const res = await authentication('client_credentials', {
