@@ -8,6 +8,7 @@ import { type TPasswordReturn } from './password'
 export interface TAuthorizationCode extends TBaseOptions {
   code: string
   redirectUri: string
+  clientSecret: string
 }
 
 export interface TAuthorizationCodeReturn
