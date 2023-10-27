@@ -12,9 +12,9 @@
     "test": "pnpm -r test"
   },
   "devDependencies": {
-    "@commercelayer/eslint-config-ts": "^1.0.0",
+    "@commercelayer/eslint-config-ts": "^1.1.0",
     "husky": "^8.0.3",
-    "lerna": "^6.6.2",
-    "typescript": "^5.0.4"
+    "lerna": "^7.4.1",
+    "typescript": "^5.2.2"
   }
 }
