@@ -1,25 +1,32 @@
-import { type TReturn, type GrantType, type TOptions } from '#types'
+import type { TClientCredentials } from '#types/clientCredentials'
 import { camelCaseToSnake } from '#utils/camelCaseToSnake'
 import { snakeToCamelCase } from '#utils/snakeToCamelCase'
+import type { TBaseReturn } from './types'
 
-export async function authentication<G extends GrantType>(
-  grantType: G,
-  { domain = 'commercelayer.io', slug, ...options }: TOptions<G>
-): Promise<TReturn<G>> {
+export type TProvisioningOptions = Omit<TClientCredentials, 'slug' | 'scope'>
+export type TProvisioningReturn = TBaseReturn
+
+async function authentication({
+  domain = 'commercelayer.io',
+  ...options
+}: TProvisioningOptions): Promise<TProvisioningReturn> {
   const attributes = {
-    grant_type: grantType,
+    grant_type: 'client_credentials',
+    scope: 'provisioning-api',
     ...options
   }
+
   const body = Object.keys(attributes).reduce((acc: any, key) => {
     const camelKey = camelCaseToSnake(key)
     acc[camelKey] = attributes[key as keyof typeof attributes]
     return acc
   }, {})
-  return await fetch(`https://${slug}.${domain}/oauth/token`, {
+
+  return await fetch(`https://auth.${domain}/oauth/token`, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
+      'Content-Type': 'application/vnd.api+json',
+      Accept: 'application/vnd.api+json'
     },
     body: JSON.stringify(body)
   }).then(async (response) => {
@@ -29,11 +36,10 @@ export async function authentication<G extends GrantType>(
       const camelKey = snakeToCamelCase(key)
       acc[camelKey] = json[key]
       return acc
-    }, {}) as TReturn<G>
+    }, {}) as TProvisioningReturn
   })
 }
 
-export default authentication
-
-export { provisioning } from './provisioning'
-export const core = { authentication }
+export const provisioning = {
+  authentication
+}
