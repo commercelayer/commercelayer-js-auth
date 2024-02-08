@@ -45,17 +45,17 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "^20.8.9",
-    "@vitejs/plugin-react": "^4.1.0",
+    "@types/node": "^20.11.16",
+    "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-c8": "^0.33.0",
-    "jsdom": "^22.1.0",
+    "jsdom": "^24.0.0",
     "minimize-js": "^1.4.0",
     "tsc-alias": "^1.8.8",
     "tslib": "^2.6.2",
-    "typescript": "^5.2.2",
-    "vite": "^4.5.0",
-    "vite-tsconfig-paths": "^4.2.1",
-    "vitest": "^0.34.6"
+    "typescript": "^5.3.3",
+    "vite": "^5.1.0",
+    "vite-tsconfig-paths": "^4.3.1",
+    "vitest": "^1.2.2"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -37,12 +37,12 @@ export interface TBaseOptions {
 export type TOptions<TGrantType> = TGrantType extends 'password'
   ? TPassword
   : TGrantType extends 'refresh_token'
-  ? TRefreshToken
-  : TGrantType extends 'client_credentials'
-  ? TClientCredentials
-  : TGrantType extends 'authorization_code'
-  ? TAuthorizationCode
-  : never
+    ? TRefreshToken
+    : TGrantType extends 'client_credentials'
+      ? TClientCredentials
+      : TGrantType extends 'authorization_code'
+        ? TAuthorizationCode
+        : never
 
 export interface TBaseReturn {
   /**
@@ -82,9 +82,9 @@ export interface TBaseReturn {
 export type TReturn<TGrantType> = TGrantType extends 'password'
   ? TPasswordReturn
   : TGrantType extends 'refresh_token'
-  ? TPasswordReturn
-  : TGrantType extends 'client_credentials'
-  ? TBaseReturn
-  : TGrantType extends 'authorization_code'
-  ? TAuthorizationCodeReturn
-  : never
+    ? TPasswordReturn
+    : TGrantType extends 'client_credentials'
+      ? TBaseReturn
+      : TGrantType extends 'authorization_code'
+        ? TAuthorizationCodeReturn
+        : never
