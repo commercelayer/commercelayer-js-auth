@@ -5,6 +5,11 @@ import type { TBaseReturn } from './types'
 
 export type TProvisioningOptions = Omit<TClientCredentials, 'slug' | 'scope'>
 export type TProvisioningReturn = TBaseReturn
+export interface TokenJson {
+  expires: Date
+  expires_in: number
+  [key: string]: string | number | Date
+}
 
 async function authentication({
   domain = 'commercelayer.io',
@@ -30,7 +35,7 @@ async function authentication({
     },
     body: JSON.stringify(body)
   }).then(async (response) => {
-    const json = await response.json()
+    const json: TokenJson = await response.json()
     json.expires = new Date(Date.now() + json.expires_in * 1000)
     return Object.keys(json).reduce((acc: any, key) => {
       const camelKey = snakeToCamelCase(key)
