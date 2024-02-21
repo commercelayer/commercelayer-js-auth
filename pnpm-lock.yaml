@@ -22,6 +22,10 @@ importers:
         version: 5.3.3
 
   packages/js-auth:
+    dependencies:
+      tslib:
+        specifier: ^2.6.2
+        version: 2.6.2
     devDependencies:
       '@types/node':
         specifier: ^20.11.16
@@ -41,9 +45,6 @@ importers:
       tsc-alias:
         specifier: ^1.8.8
         version: 1.8.8
-      tslib:
-        specifier: ^2.6.2
-        version: 2.6.2
       typescript:
         specifier: ^5.3.3
         version: 5.3.3
@@ -6729,7 +6730,6 @@ packages:
 
   /tslib@2.6.2:
     resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
-    dev: true
 
   /tuf-js@1.1.7:
     resolution: {integrity: sha512-i3P9Kgw3ytjELUfpuKVDNBJvk4u5bXL6gskv572mcevPbSKCV3zt3djhmlEQ65yERjIbOSncy7U4cQJaB1CBCg==}
