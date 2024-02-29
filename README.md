@@ -17,6 +17,7 @@ A JavaScript Library wrapper that helps you use the Commerce Layer API for [Auth
   - [Sales channel application with password flow](#sales-channel-password)
   - [Integration application with client credentials flow](#integration-client-credentials)
   - [Webapp application with authorization code flow](#webapp-authorization-code)
+  - [Provisioning application](#provisioning)
 - [Contributors guide](#contributors-guide)
 - [Need help?](#need-help)
 - [License](#license)
@@ -31,7 +32,7 @@ To get started with Commerce Layer JS Auth, you need to install it and add it to
 
 Commerce Layer JS Auth is available as an npm package.
 
-```
+```bash
 // npm
 npm install @commercelayer/js-auth
 
@@ -43,7 +44,7 @@ yarn add @commercelayer/js-auth
 
 You can use either the ES6 default or single/multiple named import with the SDK as follow:
 
-```
+```ts
 import CLayerAuth from '@commercelayer/js-auth'
 
 // or
@@ -76,6 +77,7 @@ Based on the authorization flow and application you want to use, you can get you
 - [Sales channel application with password flow](#sales-channel-password)
 - [Integration application with client credentials flow](#integration-client-credentials)
 - [Webapp application with authorization code flow](#webapp-authorization-code)
+- [Provisioning application](#provisioning)
 
 ### Sales channel (client credentials)
 
@@ -141,7 +143,7 @@ Integration applications use the [client credentials](https://docs.commercelayer
 
 1. Create an **integration** application on Commerce Layer and take note of your API credentials (client ID, client secret, and base endpoint)
 
-2. Use this code to get the access token:
+2. Use this codes to get the access token:
 
 ```ts
    const token = await authentication('client_credentials', {
@@ -200,6 +202,28 @@ In this case, first, you need to get an authorization code, then you can exchang
      console.log('My access token: ', token.accessToken)
      console.log('Expiration date: ', token.expires)
   ```
+
+### Provisioning
+
+Provisioning applications use a specific authentication function which implicitly uses the [client credentials](https://docs.commercelayer.io/developers/authentication/client-credentials) grant type to get an access token.
+
+#### Steps
+
+1. Access your personal [provisioning](https://dashboard.commercelayer.io/user/provisioning_api) application on Commerce Layer dashboard and take note of your Provisioning API credentials (client ID, client secret)
+
+2. Use this codes to get the access token:
+
+```ts
+   import { provisioning } from '@commercelayer/js-auth'
+
+   const token = await provisioning.authentication({
+     clientId: 'your-client-id',
+     clientSecret: 'your-client-secret'
+   })
+
+   console.log('My access token: ', token.accessToken)
+   console.log('Expiration date: ', token.expires)
+```
   
 ---
 
