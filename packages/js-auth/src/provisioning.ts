@@ -13,6 +13,7 @@ export interface TokenJson {
 
 async function authentication({
   domain = 'commercelayer.io',
+  headers,
   ...options
 }: TProvisioningOptions): Promise<TProvisioningReturn> {
   const attributes = {
@@ -31,7 +32,8 @@ async function authentication({
     method: 'POST',
     headers: {
       'Content-Type': 'application/vnd.api+json',
-      Accept: 'application/vnd.api+json'
+      Accept: 'application/vnd.api+json',
+      ...headers
     },
     body: JSON.stringify(body)
   }).then(async (response) => {
