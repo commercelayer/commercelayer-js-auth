@@ -103,4 +103,25 @@ describe('Authentication', () => {
     expect(res2).toHaveProperty('ownerType')
     expect(res2).toHaveProperty('refreshToken')
   })
+  it('Set a custom header', async () => {
+    const res = await authentication('password', {
+      slug,
+      clientId,
+      domain,
+      username,
+      password,
+      scope,
+      headers: {
+        'X-My-Header': 'My-Value'
+      }
+    })
+    expect(res).toHaveProperty('accessToken')
+    expect(res).toHaveProperty('tokenType')
+    expect(res).toHaveProperty('expiresIn')
+    expect(res).toHaveProperty('scope')
+    expect(res).toHaveProperty('createdAt')
+    expect(res).toHaveProperty('ownerId')
+    expect(res).toHaveProperty('ownerType')
+    expect(res).toHaveProperty('refreshToken')
+  })
 })

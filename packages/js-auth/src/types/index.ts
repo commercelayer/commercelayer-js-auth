@@ -32,6 +32,10 @@ export interface TBaseOptions {
    * The Commerce Layer's domain.
    */
   domain?: string
+  /**
+   * The request headers.
+   */
+  headers?: HeadersInit
 }
 
 export type TOptions<TGrantType> = TGrantType extends 'password'

@@ -5,7 +5,7 @@ import { type TokenJson } from './provisioning'
 
 export async function authentication<G extends GrantType>(
   grantType: G,
-  { domain = 'commercelayer.io', slug, ...options }: TOptions<G>
+  { domain = 'commercelayer.io', slug, headers, ...options }: TOptions<G>
 ): Promise<TReturn<G>> {
   const attributes = {
     grant_type: grantType,
@@ -20,7 +20,8 @@ export async function authentication<G extends GrantType>(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Accept: 'application/json'
+      Accept: 'application/json',
+      ...headers
     },
     body: JSON.stringify(body)
   }).then(async (response) => {
