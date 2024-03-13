@@ -1,4 +1,4 @@
-import { authentication } from 'src'
+import { core } from 'src'
 
 const slug = process.env.VITE_TEST_SLUG
 const clientId = process.env.VITE_TEST_CLIENT_ID
@@ -11,7 +11,7 @@ const password = process.env.VITE_TEST_PASSWORD
 
 describe('Authentication', () => {
   it('Get a sales channel token', async () => {
-    const res = await authentication('client_credentials', {
+    const res = await core.authentication('client_credentials', {
       slug,
       clientId,
       domain
@@ -26,7 +26,7 @@ describe('Authentication', () => {
     expect(res.expires.getTime()).toBeGreaterThan(Date.now())
   })
   it('Get an error requesting a sales channel token', async () => {
-    const res = await authentication('client_credentials', {
+    const res = await core.authentication('client_credentials', {
       slug,
       clientId: 'wrong-client-id',
       domain,
@@ -41,7 +41,7 @@ describe('Authentication', () => {
     expect(res).not.toHaveProperty('createdAt')
   })
   it('Get a integration token', async () => {
-    const res = await authentication('client_credentials', {
+    const res = await core.authentication('client_credentials', {
       slug,
       clientId: integrationClientId,
       clientSecret,
@@ -54,7 +54,7 @@ describe('Authentication', () => {
     expect(res).toHaveProperty('createdAt')
   })
   it('Get a customer token', async () => {
-    const res = await authentication('password', {
+    const res = await core.authentication('password', {
       slug,
       clientId,
       domain,
@@ -72,7 +72,7 @@ describe('Authentication', () => {
     expect(res).toHaveProperty('refreshToken')
   })
   it('Refresh a customer token', async () => {
-    const res = await authentication('password', {
+    const res = await core.authentication('password', {
       slug,
       clientId,
       domain,
@@ -88,7 +88,7 @@ describe('Authentication', () => {
     expect(res).toHaveProperty('ownerId')
     expect(res).toHaveProperty('ownerType')
     expect(res).toHaveProperty('refreshToken')
-    const res2 = await authentication('refresh_token', {
+    const res2 = await core.authentication('refresh_token', {
       slug,
       clientId,
       domain,
@@ -104,7 +104,7 @@ describe('Authentication', () => {
     expect(res2).toHaveProperty('refreshToken')
   })
   it('Set a custom header', async () => {
-    const res = await authentication('password', {
+    const res = await core.authentication('password', {
       slug,
       clientId,
       domain,

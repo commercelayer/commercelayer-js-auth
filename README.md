@@ -33,26 +33,15 @@ To get started with Commerce Layer JS Auth, you need to install it and add it to
 Commerce Layer JS Auth is available as an npm package.
 
 ```bash
-// npm
+# npm
 npm install @commercelayer/js-auth
 
-// yarn
+# yarn
 yarn add @commercelayer/js-auth
+
+# pnpm
+pnpm add @commercelayer/js-auth
 ```
-
-### Using ES6 import
-
-You can use either the ES6 default or single/multiple named import with the SDK as follow:
-
-```ts
-import CLayerAuth from '@commercelayer/js-auth'
-
-// or
-
-import { authentication } from '@commercelayer/js-auth'
-```
-
-> In the examples below, we will use the latter solution (named import) and define only the functions we need, based on what kind of app and authorization flow we're going to use.
 
 ## Authorization flows
 
@@ -90,14 +79,16 @@ Sales channel applications use the [client credentials](https://docs.commercelay
 2. Use this code to get your access token:
 
 ```ts
-  const token = await authentication('client_credentials', {
-    clientId: 'your-client-id',
-    slug: 'your-organization-slug',
-    scope: 'market:{id}'
-  })
-  
-  console.log('My access token: ', token.accessToken)
-  console.log('Expiration date: ', token.expires)
+import { core } from '@commercelayer/js-auth'
+
+const token = await core.authentication('client_credentials', {
+  clientId: 'your-client-id',
+  slug: 'your-organization-slug',
+  scope: 'market:{id}'
+})
+
+console.log('My access token: ', token.accessToken)
+console.log('Expiration date: ', token.expires)
 ```
 
 ### Sales channel (password)
@@ -111,28 +102,32 @@ Sales channel applications can use the [password](https://docs.commercelayer.io/
 2. Use this code (changing user name and password with the customer credentials) to get the access token:
 
 ```ts
-  const token = await authentication('password', {
-    clientId: 'your-client-id',
-    slug: 'your-organization-slug',
-    scope: 'market:{id}',
-    username: 'john@example.com',
-    password: 'secret'
-  })
-  
-  console.log('My access token: ', token.accessToken)
-  console.log('Expiration date: ', token.expires)
-  console.log('My refresh token: ', token.refreshToken)
-  ```
+import { core } from '@commercelayer/js-auth'
+
+const token = await core.authentication('password', {
+  clientId: 'your-client-id',
+  slug: 'your-organization-slug',
+  scope: 'market:{id}',
+  username: 'john@example.com',
+  password: 'secret'
+})
+
+console.log('My access token: ', token.accessToken)
+console.log('Expiration date: ', token.expires)
+console.log('My refresh token: ', token.refreshToken)
+```
 
 Sales channel applications can use the [refresh token](https://docs.commercelayer.io/developers/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option:
 
 ```ts
-  const newToken = await authentication('refresh_token', {
-    clientId: 'your-client-id',
-    slug: 'your-organization-slug',
-    scope: 'market:{id}',
-    refreshToken: 'your-refresh-token'
-  })
+import { core } from '@commercelayer/js-auth'
+
+const newToken = await core.authentication('refresh_token', {
+  clientId: 'your-client-id',
+  slug: 'your-organization-slug',
+  scope: 'market:{id}',
+  refreshToken: 'your-refresh-token'
+})
 ```
 
 ### Integration (client credentials)
@@ -146,14 +141,16 @@ Integration applications use the [client credentials](https://docs.commercelayer
 2. Use this codes to get the access token:
 
 ```ts
-   const token = await authentication('client_credentials', {
-     clientId: 'your-client-id',
-     clientSecret: 'your-client-secret',
-     slug: 'your-organization-slug',
-   })
+import { core } from '@commercelayer/js-auth'
 
-   console.log('My access token: ', token.accessToken)
-   console.log('Expiration date: ', token.expires)
+const token = await core.authentication('client_credentials', {
+  clientId: 'your-client-id',
+  clientSecret: 'your-client-secret',
+  slug: 'your-organization-slug',
+})
+
+console.log('My access token: ', token.accessToken)
+console.log('Expiration date: ', token.expires)
 ```
 
 ### Webapp (authorization code)
@@ -171,16 +168,16 @@ In this case, first, you need to get an authorization code, then you can exchang
 2. Use this code to authorize your webapp on Commerce Layer:
 
   ```bash
-    curl -g -X GET \
+  curl -g -X GET \
     'https://dashboard.commercelayer.io/oauth/authorize?client_id=your-client-id&redirect_uri=https://yourdomain.com/redirect&scope=market:1234&response_type=code' \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json'
   ```
-  
+
   or copy and paste this URL in your browser:
-  
+
   ```bash
-    https://dashboard.commercelayer.io/oauth/authorize?client_id=your-client-id&redirect_uri=https://yourdomain.com/redirect&scope=market:1234&response_type=code
+  https://dashboard.commercelayer.io/oauth/authorize?client_id=your-client-id&redirect_uri=https://yourdomain.com/redirect&scope=market:1234&response_type=code
   ```
   
 3. Once you've authorized the application, you will be redirected to the callback URL:
@@ -190,17 +187,19 @@ In this case, first, you need to get an authorization code, then you can exchang
    Use this code to get the access token:
 
   ```ts
-     const token = await authentication('authorization_code', {
-       clientId: 'your-client-id',
-       clientSecret: 'your-client-secret',
-       callbackUrl: '<https://yourdomain.com/callback>',
-       slug: 'your-organization-slug',
-       scope: 'market:{id}',
-       code: 'your-auth-code'
-     })
-  
-     console.log('My access token: ', token.accessToken)
-     console.log('Expiration date: ', token.expires)
+  import { core } from '@commercelayer/js-auth'
+
+  const token = await core.authentication('authorization_code', {
+    clientId: 'your-client-id',
+    clientSecret: 'your-client-secret',
+    callbackUrl: '<https://yourdomain.com/callback>',
+    slug: 'your-organization-slug',
+    scope: 'market:{id}',
+    code: 'your-auth-code'
+  })
+
+  console.log('My access token: ', token.accessToken)
+  console.log('Expiration date: ', token.expires)
   ```
 
 ### Provisioning
@@ -214,15 +213,15 @@ Provisioning applications use a specific authentication function which implicitl
 2. Use this codes to get the access token:
 
 ```ts
-   import { provisioning } from '@commercelayer/js-auth'
+import { provisioning } from '@commercelayer/js-auth'
 
-   const token = await provisioning.authentication({
-     clientId: 'your-client-id',
-     clientSecret: 'your-client-secret'
-   })
+const token = await provisioning.authentication({
+  clientId: 'your-client-id',
+  clientSecret: 'your-client-secret'
+})
 
-   console.log('My access token: ', token.accessToken)
-   console.log('Expiration date: ', token.expires)
+console.log('My access token: ', token.accessToken)
+console.log('Expiration date: ', token.expires)
 ```
   
 ---
