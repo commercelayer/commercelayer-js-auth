@@ -9,17 +9,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: pnpm 🧰
-        uses: pnpm/action-setup@v2.2.2
+        uses: pnpm/action-setup@v3
         with:
           version: 8.x
 
       - name: Node 🧰
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18.x
+          node-version: 20.x
           cache: 'pnpm'
 
       - name: Install 📦
@@ -46,7 +46,7 @@ jobs:
       
       - name: Post to a Slack channel
         id: slack
-        uses: slackapi/slack-github-action@v1.22.0
+        uses: slackapi/slack-github-action@v1.25.0
         with:
           # Slack channel id, channel name, or user id to post message.
           # See also: https://api.slack.com/methods/chat.postMessage#channels
