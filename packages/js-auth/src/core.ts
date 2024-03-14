@@ -1,37 +1,17 @@
-import type { TReturn, GrantType, TOptions } from '#types/index.js'
-import { camelCaseToSnake } from '#utils/camelCaseToSnake.js'
-import { snakeToCamelCase } from '#utils/snakeToCamelCase.js'
-import type { TokenJson } from './provisioning.js'
+import type { GrantType, TOptions, TReturn } from '#types/index.js'
+import { doRequest } from '#utils/doRequest.js'
 
 async function authentication<G extends GrantType>(
   grantType: G,
   { domain = 'commercelayer.io', slug, headers, ...options }: TOptions<G>
 ): Promise<TReturn<G>> {
-  const attributes = {
-    grant_type: grantType,
-    ...options
-  }
-  const body = Object.keys(attributes).reduce((acc: any, key) => {
-    const camelKey = camelCaseToSnake(key)
-    acc[camelKey] = attributes[key as keyof typeof attributes]
-    return acc
-  }, {})
-  return await fetch(`https://${slug}.${domain}/oauth/token`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      ...headers
+  return await doRequest({
+    attributes: {
+      grant_type: grantType,
+      ...options
     },
-    body: JSON.stringify(body)
-  }).then(async (response) => {
-    const json: TokenJson = await response.json()
-    json.expires = new Date(Date.now() + json.expires_in * 1000)
-    return Object.keys(json).reduce((acc: any, key) => {
-      const camelKey = snakeToCamelCase(key)
-      acc[camelKey] = json[key]
-      return acc
-    }, {}) as TReturn<G>
+    endpoint: `https://${slug}.${domain}/oauth/token`,
+    headers
   })
 }
 

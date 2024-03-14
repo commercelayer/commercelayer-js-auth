@@ -11,7 +11,7 @@ describe('Provisioning', () => {
       clientId,
       clientSecret
     })
-   
+
     expect(res).toHaveProperty('accessToken')
     expect(res).toHaveProperty('tokenType')
     expect(res).toHaveProperty('expiresIn')
