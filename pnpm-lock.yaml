@@ -21,6 +21,18 @@ importers:
         specifier: ^5.4.2
         version: 5.4.2
 
+  examples/cjs:
+    dependencies:
+      '@commercelayer/js-auth':
+        specifier: workspace:^5.0.0
+        version: link:../../packages/js-auth
+
+  examples/esm:
+    dependencies:
+      '@commercelayer/js-auth':
+        specifier: workspace:^5.0.0
+        version: link:../../packages/js-auth
+
   packages/js-auth:
     devDependencies:
       '@types/node':
