@@ -1,0 +1,13 @@
+{
+  "private": true,
+  "name": "esm",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "serve": "npx serve"
+  },
+  "dependencies": {
+    "@commercelayer/js-auth": "workspace:^5.0.0"
+  }
+}

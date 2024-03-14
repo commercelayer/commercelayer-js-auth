@@ -9,13 +9,16 @@
     "name": "Alessandro Casazza",
     "email": "alessandro@commercelayer.io"
   },
-  "main": "lib/cjs/index.js",
-  "module": "lib/esm/index.js",
-  "types": "lib/esm/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.js",
   "files": [
-    "lib",
-    "package.json",
-    "README.md"
+    "dist"
   ],
   "keywords": [
     "jamstack",
@@ -32,32 +35,18 @@
     "lint": "eslint src --ext .ts,.tsx",
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "test": "pnpm run lint && vitest run --silent",
-    "coverage": "vitest run --coverage",
-    "test:e2e": "NODE_ENV=test playwright test",
-    "test:e2e:coverage": "nyc pnpm test:e2e && pnpm coverage:report",
-    "coverage:report": "nyc report --reporter=html",
-    "build": "tsc -b tsconfig.prod.json tsconfig.prod.esm.json --verbose && pnpm postbuild",
-    "build:dev": "tsc -b tsconfig.prod.json tsconfig.prod.esm.json --verbose && tsc-alias -p tsconfig.prod.json && tsc-alias -p tsconfig.prod.esm.json",
-    "postbuild": "tsc-alias -p tsconfig.prod.json && tsc-alias -p tsconfig.prod.esm.json &&  minimize-js lib -w -s"
+    "build": "tsup"
   },
   "publishConfig": {
     "access": "public"
   },
   "license": "MIT",
-  "dependencies": {
-    "tslib": "^2.6.2"
-  },
   "devDependencies": {
-    "@types/node": "^20.11.16",
-    "@vitejs/plugin-react": "^4.2.1",
-    "@vitest/coverage-c8": "^0.33.0",
-    "jsdom": "^24.0.0",
-    "minimize-js": "^1.4.0",
-    "tsc-alias": "^1.8.8",
-    "typescript": "^5.3.3",
-    "vite": "^5.1.0",
-    "vite-tsconfig-paths": "^4.3.1",
-    "vitest": "^1.2.2"
+    "@types/node": "^20.11.27",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.2",
+    "vite-tsconfig-paths": "^4.3.2",
+    "vitest": "^1.3.1"
   },
   "engines": {
     "node": ">=18.0.0"

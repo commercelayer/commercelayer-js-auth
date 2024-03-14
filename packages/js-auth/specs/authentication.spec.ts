@@ -1,4 +1,4 @@
-import { core } from 'src'
+import { core } from '../src/index.js'
 
 const slug = process.env.VITE_TEST_SLUG
 const clientId = process.env.VITE_TEST_CLIENT_ID

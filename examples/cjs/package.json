@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "cjs",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@commercelayer/js-auth": "workspace:^5.0.0"
+  }
+}

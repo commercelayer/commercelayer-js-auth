@@ -1,4 +1,4 @@
-import { provisioning } from 'src'
+import { provisioning } from '../src/index.js'
 
 const clientId = process.env.VITE_TEST_PROVISIONING_CLIENT_ID
 const clientSecret = process.env.VITE_TEST_PROVISIONING_CLIENT_SECRET
