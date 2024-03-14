@@ -10,7 +10,6 @@ A JavaScript Library wrapper that helps you use the Commerce Layer API for [Auth
 
 - [Getting started](#getting-started)
   - [Installation](#installation)
-  - [Using E6 import](#using-es6-import)
 - [Authorization flows](#authorization-flows)
 - [Use cases](#use-cases)
   - [Sales channel application with client credentials flow](#sales-channel-client-credentials)
