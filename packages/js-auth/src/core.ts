@@ -1,7 +1,7 @@
-import { type TReturn, type GrantType, type TOptions } from '#types'
-import { camelCaseToSnake } from '#utils/camelCaseToSnake'
-import { snakeToCamelCase } from '#utils/snakeToCamelCase'
-import { type TokenJson } from './provisioning'
+import type { TReturn, GrantType, TOptions } from '#types/index.js'
+import { camelCaseToSnake } from '#utils/camelCaseToSnake.js'
+import { snakeToCamelCase } from '#utils/snakeToCamelCase.js'
+import type { TokenJson } from './provisioning.js'
 
 async function authentication<G extends GrantType>(
   grantType: G,

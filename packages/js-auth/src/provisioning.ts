@@ -1,7 +1,7 @@
-import type { TClientCredentials } from '#types/clientCredentials'
-import { camelCaseToSnake } from '#utils/camelCaseToSnake'
-import { snakeToCamelCase } from '#utils/snakeToCamelCase'
-import type { TBaseReturn } from './types'
+import type { TClientCredentials } from '#types/clientCredentials.js'
+import { camelCaseToSnake } from '#utils/camelCaseToSnake.js'
+import { snakeToCamelCase } from '#utils/snakeToCamelCase.js'
+import type { TBaseReturn } from '#types/index.js'
 
 export type TProvisioningOptions = Omit<TClientCredentials, 'slug' | 'scope'>
 export type TProvisioningReturn = TBaseReturn

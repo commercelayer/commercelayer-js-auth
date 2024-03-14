@@ -1,10 +1,10 @@
-import { type TPasswordReturn, type TPassword } from '#types/password'
-import { type TRefreshToken } from '#types/refreshToken'
-import {
-  type TAuthorizationCodeReturn,
-  type TAuthorizationCode
-} from '#types/authorizationCode'
-import { type TClientCredentials } from '#types/clientCredentials'
+import type { TPasswordReturn, TPassword } from '#types/password.js'
+import type { TRefreshToken } from '#types/refreshToken.js'
+import type {
+  TAuthorizationCodeReturn,
+  TAuthorizationCode
+} from '#types/authorizationCode.js'
+import type { TClientCredentials } from '#types/clientCredentials.js'
 
 /**
  * The grant type. Possible values are: password, refresh_token, client_credentials, authorization_code.
