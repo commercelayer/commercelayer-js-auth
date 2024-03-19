@@ -1,7 +1,8 @@
 import type { GrantType, TOptions, TReturn } from '#types/index.js'
 
-import { camelCaseToSnake } from './utils/camelCaseToSnake.js'
-import { snakeToCamelCase } from './utils/snakeToCamelCase.js'
+import { camelCaseToSnakeCase } from '#utils/camelCaseToSnakeCase.js'
+import { mapKeys } from '#utils/mapKeys.js'
+import { snakeCaseToCamelCase } from '#utils/snakeCaseToCamelCase.js'
 
 interface TokenJson {
   expires: Date
@@ -18,13 +19,9 @@ async function doRequest<Output>({
   headers?: HeadersInit
   domain: string
 }): Promise<Output> {
-  const body = Object.keys(attributes).reduce((acc: any, key) => {
-    const camelKey = camelCaseToSnake(key)
-    acc[camelKey] = attributes[key]
-    return acc
-  }, {})
+  const body = mapKeys(attributes, camelCaseToSnakeCase)
 
-  return await fetch(`https://auth.${domain}/oauth/token`, {
+  const response = await fetch(`https://auth.${domain}/oauth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -32,15 +29,12 @@ async function doRequest<Output>({
       ...headers
     },
     body: JSON.stringify(body)
-  }).then(async (response) => {
-    const json: TokenJson = await response.json()
-    json.expires = new Date(Date.now() + json.expires_in * 1000)
-    return Object.keys(json).reduce((acc: any, key) => {
-      const camelKey = snakeToCamelCase(key)
-      acc[camelKey] = json[key]
-      return acc
-    }, {})
   })
+
+  const json: TokenJson = await response.json()
+  json.expires = new Date(Date.now() + json.expires_in * 1000)
+
+  return mapKeys(json, snakeCaseToCamelCase) as Output
 }
 
 export async function authenticate<G extends GrantType>(
