@@ -78,9 +78,9 @@ Sales channel applications use the [client credentials](https://docs.commercelay
 2. Use this code to get your access token:
 
 ```ts
-import { core } from '@commercelayer/js-auth'
+import { authenticate } from '@commercelayer/js-auth'
 
-const token = await core.authentication('client_credentials', {
+const token = await authenticate('client_credentials', {
   clientId: 'your-client-id'
 })
 
@@ -99,9 +99,9 @@ Sales channel applications can use the [password](https://docs.commercelayer.io/
 2. Use this code (changing user name and password with the customer credentials) to get the access token:
 
 ```ts
-import { core } from '@commercelayer/js-auth'
+import { authenticate } from '@commercelayer/js-auth'
 
-const token = await core.authentication('password', {
+const token = await authenticate('password', {
   clientId: 'your-client-id',
   username: 'john@example.com',
   password: 'secret'
@@ -115,9 +115,9 @@ console.log('My refresh token: ', token.refreshToken)
 Sales channel applications can use the [refresh token](https://docs.commercelayer.io/developers/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option:
 
 ```ts
-import { core } from '@commercelayer/js-auth'
+import { authenticate } from '@commercelayer/js-auth'
 
-const newToken = await core.authentication('refresh_token', {
+const newToken = await authenticate('refresh_token', {
   clientId: 'your-client-id',
   refreshToken: 'your-refresh-token'
 })
@@ -134,9 +134,9 @@ Integration applications use the [client credentials](https://docs.commercelayer
 2. Use this codes to get the access token:
 
 ```ts
-import { core } from '@commercelayer/js-auth'
+import { authenticate } from '@commercelayer/js-auth'
 
-const token = await core.authentication('client_credentials', {
+const token = await authenticate('client_credentials', {
   clientId: 'your-client-id',
   clientSecret: 'your-client-secret',
 })
@@ -179,9 +179,9 @@ In this case, first, you need to get an authorization code, then you can exchang
    Use this code to get the access token:
 
   ```ts
-  import { core } from '@commercelayer/js-auth'
+  import { authenticate } from '@commercelayer/js-auth'
 
-  const token = await core.authentication('authorization_code', {
+  const token = await authenticate('authorization_code', {
     clientId: 'your-client-id',
     clientSecret: 'your-client-secret',
     callbackUrl: '<https://yourdomain.com/callback>',
@@ -194,7 +194,7 @@ In this case, first, you need to get an authorization code, then you can exchang
 
 ### Provisioning
 
-Provisioning applications use a specific authentication function which implicitly uses the [client credentials](https://docs.commercelayer.io/developers/authentication/client-credentials) grant type to get an access token.
+Provisioning applications use the [client credentials](https://docs.commercelayer.io/developers/authentication/client-credentials) grant type to get an access token.
 
 #### Steps
 
@@ -203,9 +203,9 @@ Provisioning applications use a specific authentication function which implicitl
 2. Use this codes to get the access token:
 
 ```ts
-import { provisioning } from '@commercelayer/js-auth'
+import { authenticate } from '@commercelayer/js-auth'
 
-const token = await provisioning.authentication({
+const token = await authenticate('client_credentials', {
   clientId: 'your-client-id',
   clientSecret: 'your-client-secret'
 })
