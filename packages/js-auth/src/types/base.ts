@@ -43,11 +43,13 @@ export interface TBaseReturn {
    */
   createdAt: number
   /**
-   * The error code.
+   * The list of errors when something goes wrong.
    */
-  error?: string
-  /**
-   * The error description.
-   */
-  errorDescription?: string
+  errors?: Array<{
+    code: string
+    detail: string
+    meta: Record<string, unknown>
+    status: 401
+    title: string
+  }>
 }

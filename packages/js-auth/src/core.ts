@@ -3,14 +3,14 @@ import { doRequest } from '#utils/doRequest.js'
 
 async function authentication<G extends GrantType>(
   grantType: G,
-  { domain = 'commercelayer.io', slug, headers, ...options }: TOptions<G>
+  { domain = 'commercelayer.io', headers, ...options }: TOptions<G>
 ): Promise<TReturn<G>> {
   return await doRequest({
     attributes: {
       grant_type: grantType,
       ...options
     },
-    endpoint: `https://${slug}.${domain}/oauth/token`,
+    domain,
     headers
   })
 }

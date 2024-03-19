@@ -1,10 +1,7 @@
 import type { TOptions, TReturn } from '#types/index.js'
 import { doRequest } from '#utils/doRequest.js'
 
-export type TProvisioningOptions = Omit<
-  TOptions<'client_credentials'>,
-  'slug' | 'scope'
->
+export type TProvisioningOptions = Omit<TOptions<'client_credentials'>, 'scope'>
 
 export type TProvisioningReturn = TReturn<'client_credentials'>
 
@@ -16,10 +13,9 @@ async function authentication({
   return await doRequest({
     attributes: {
       grant_type: 'client_credentials',
-      scope: 'provisioning-api',
       ...options
     },
-    endpoint: `https://auth.${domain}/oauth/token`,
+    domain,
     headers
   })
 }

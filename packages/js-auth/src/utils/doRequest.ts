@@ -10,11 +10,11 @@ export interface TokenJson {
 export async function doRequest<Output>({
   attributes,
   headers,
-  endpoint
+  domain
 }: {
   attributes: Record<string, unknown>
   headers?: HeadersInit
-  endpoint: string
+  domain: string
 }): Promise<Output> {
   const body = Object.keys(attributes).reduce((acc: any, key) => {
     const camelKey = camelCaseToSnake(key)
@@ -22,7 +22,7 @@ export async function doRequest<Output>({
     return acc
   }, {})
 
-  return await fetch(endpoint, {
+  return await fetch(`https://auth.${domain}/oauth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

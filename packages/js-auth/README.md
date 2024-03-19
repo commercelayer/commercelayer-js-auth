@@ -81,9 +81,7 @@ Sales channel applications use the [client credentials](https://docs.commercelay
 import { core } from '@commercelayer/js-auth'
 
 const token = await core.authentication('client_credentials', {
-  clientId: 'your-client-id',
-  slug: 'your-organization-slug',
-  scope: 'market:{id}'
+  clientId: 'your-client-id'
 })
 
 console.log('My access token: ', token.accessToken)
@@ -105,8 +103,6 @@ import { core } from '@commercelayer/js-auth'
 
 const token = await core.authentication('password', {
   clientId: 'your-client-id',
-  slug: 'your-organization-slug',
-  scope: 'market:{id}',
   username: 'john@example.com',
   password: 'secret'
 })
@@ -123,8 +119,6 @@ import { core } from '@commercelayer/js-auth'
 
 const newToken = await core.authentication('refresh_token', {
   clientId: 'your-client-id',
-  slug: 'your-organization-slug',
-  scope: 'market:{id}',
   refreshToken: 'your-refresh-token'
 })
 ```
@@ -145,7 +139,6 @@ import { core } from '@commercelayer/js-auth'
 const token = await core.authentication('client_credentials', {
   clientId: 'your-client-id',
   clientSecret: 'your-client-secret',
-  slug: 'your-organization-slug',
 })
 
 console.log('My access token: ', token.accessToken)
@@ -192,8 +185,6 @@ In this case, first, you need to get an authorization code, then you can exchang
     clientId: 'your-client-id',
     clientSecret: 'your-client-secret',
     callbackUrl: '<https://yourdomain.com/callback>',
-    slug: 'your-organization-slug',
-    scope: 'market:{id}',
     code: 'your-auth-code'
   })
 
