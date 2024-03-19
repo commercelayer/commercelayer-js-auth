@@ -1,13 +1,15 @@
-import { camelCaseToSnake } from './camelCaseToSnake.js'
-import { snakeToCamelCase } from './snakeToCamelCase.js'
+import type { GrantType, TOptions, TReturn } from '#types/index.js'
 
-export interface TokenJson {
+import { camelCaseToSnake } from './utils/camelCaseToSnake.js'
+import { snakeToCamelCase } from './utils/snakeToCamelCase.js'
+
+interface TokenJson {
   expires: Date
   expires_in: number
   [key: string]: string | number | Date
 }
 
-export async function doRequest<Output>({
+async function doRequest<Output>({
   attributes,
   headers,
   domain
@@ -38,5 +40,19 @@ export async function doRequest<Output>({
       acc[camelKey] = json[key]
       return acc
     }, {})
+  })
+}
+
+export async function authenticate<G extends GrantType>(
+  grantType: G,
+  { domain = 'commercelayer.io', headers, ...options }: TOptions<G>
+): Promise<TReturn<G>> {
+  return await doRequest({
+    attributes: {
+      grant_type: grantType,
+      ...options
+    },
+    domain,
+    headers
   })
 }
