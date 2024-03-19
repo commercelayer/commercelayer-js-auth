@@ -1,9 +1,12 @@
-import type { TClientCredentials } from '#types/clientCredentials.js'
-import type { TBaseReturn } from '#types/index.js'
+import type { TOptions, TReturn } from '#types/index.js'
 import { doRequest } from '#utils/doRequest.js'
 
-export type TProvisioningOptions = Omit<TClientCredentials, 'slug' | 'scope'>
-export type TProvisioningReturn = TBaseReturn
+export type TProvisioningOptions = Omit<
+  TOptions<'client_credentials'>,
+  'slug' | 'scope'
+>
+
+export type TProvisioningReturn = TReturn<'client_credentials'>
 
 async function authentication({
   domain = 'commercelayer.io',
