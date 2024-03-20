@@ -8,7 +8,7 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { core } from '@commercelayer/js-auth'
+import { authenticate } from '@commercelayer/js-auth'
 
 export interface Env {
   // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
@@ -29,7 +29,7 @@ export interface Env {
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-    const auth = await core.authentication('client_credentials', {
+    const auth = await authenticate('client_credentials', {
       clientId: 'BISG8bb3GWpC8_D7Nt1SuWWdieS5bJq831A50LgB_Ig',
       scope: 'market:11279'
     })
