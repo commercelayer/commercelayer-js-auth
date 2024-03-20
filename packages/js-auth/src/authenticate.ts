@@ -1,4 +1,8 @@
-import type { GrantType, TOptions, TReturn } from '#types/index.js'
+import type {
+  GrantType,
+  AuthenticateOptions,
+  AuthenticateReturn
+} from '#types/index.js'
 
 import { camelCaseToSnakeCase } from '#utils/camelCaseToSnakeCase.js'
 import { mapKeys } from '#utils/mapKeys.js'
@@ -39,8 +43,8 @@ async function doRequest<Output>({
 
 export async function authenticate<G extends GrantType>(
   grantType: G,
-  { domain = 'commercelayer.io', headers, ...options }: TOptions<G>
-): Promise<TReturn<G>> {
+  { domain = 'commercelayer.io', headers, ...options }: AuthenticateOptions<G>
+): Promise<AuthenticateReturn<G>> {
   return await doRequest({
     attributes: {
       grant_type: grantType,

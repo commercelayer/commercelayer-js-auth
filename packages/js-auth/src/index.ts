@@ -1,3 +1,7 @@
 export { authenticate } from './authenticate.js'
 
-export type { GrantType, TOptions, TReturn } from './types/index.js'
+export type {
+  GrantType,
+  AuthenticateOptions,
+  AuthenticateReturn
+} from './types/index.js'

@@ -16,7 +16,7 @@ export type GrantType =
   | 'client_credentials'
   | 'authorization_code'
 
-export type TOptions<TGrantType extends GrantType> =
+export type AuthenticateOptions<TGrantType extends GrantType> =
   TGrantType extends 'password'
     ? TPasswordOptions
     : TGrantType extends 'refresh_token'
@@ -27,7 +27,7 @@ export type TOptions<TGrantType extends GrantType> =
           ? TAuthorizationCodeOptions
           : never
 
-export type TReturn<TGrantType extends GrantType> =
+export type AuthenticateReturn<TGrantType extends GrantType> =
   TGrantType extends 'password'
     ? TPasswordReturn
     : TGrantType extends 'refresh_token'

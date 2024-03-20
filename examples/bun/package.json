@@ -6,7 +6,10 @@
   "scripts": {
     "start": "bun run index.ts"
   },
+  "workspaces": [
+    "../../packages/*"
+  ],
   "dependencies": {
-    "@commercelayer/js-auth": "^5.2.0"
+    "@commercelayer/js-auth": "workspace:^5.0.0"
   }
 }
