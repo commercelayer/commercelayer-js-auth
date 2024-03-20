@@ -14,16 +14,17 @@ interface TokenJson {
   [key: string]: string | number | Date
 }
 
-async function doRequest<Output>({
-  attributes,
-  headers,
-  domain
-}: {
-  attributes: Record<string, unknown>
-  headers?: HeadersInit
-  domain: string
-}): Promise<Output> {
-  const body = mapKeys(attributes, camelCaseToSnakeCase)
+export async function authenticate<G extends GrantType>(
+  grantType: G,
+  { domain = 'commercelayer.io', headers, ...options }: AuthenticateOptions<G>
+): Promise<AuthenticateReturn<G>> {
+  const body = mapKeys(
+    {
+      grant_type: grantType,
+      ...options
+    },
+    camelCaseToSnakeCase
+  )
 
   const response = await fetch(`https://auth.${domain}/oauth/token`, {
     method: 'POST',
@@ -38,19 +39,5 @@ async function doRequest<Output>({
   const json: TokenJson = await response.json()
   json.expires = new Date(Date.now() + json.expires_in * 1000)
 
-  return mapKeys(json, snakeCaseToCamelCase) as Output
-}
-
-export async function authenticate<G extends GrantType>(
-  grantType: G,
-  { domain = 'commercelayer.io', headers, ...options }: AuthenticateOptions<G>
-): Promise<AuthenticateReturn<G>> {
-  return await doRequest({
-    attributes: {
-      grant_type: grantType,
-      ...options
-    },
-    domain,
-    headers
-  })
+  return mapKeys(json, snakeCaseToCamelCase) as unknown as AuthenticateReturn<G>
 }
