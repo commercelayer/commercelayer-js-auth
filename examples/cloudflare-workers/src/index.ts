@@ -31,7 +31,7 @@ export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const auth = await authenticate('client_credentials', {
       clientId: 'BISG8bb3GWpC8_D7Nt1SuWWdieS5bJq831A50LgB_Ig',
-      scope: 'market:11279'
+      scope: 'market:id:KoaJYhMVVj'
     })
 
     return new Response(`Hello World!\n\nThis is your token: ${auth.accessToken}`);

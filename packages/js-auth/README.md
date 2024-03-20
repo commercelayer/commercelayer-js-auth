@@ -161,7 +161,7 @@ In this case, first, you need to get an authorization code, then you can exchang
 
   ```bash
   curl -g -X GET \
-    'https://dashboard.commercelayer.io/oauth/authorize?client_id=your-client-id&redirect_uri=https://yourdomain.com/redirect&scope=market:1234&response_type=code' \
+    'https://dashboard.commercelayer.io/oauth/authorize?client_id=your-client-id&redirect_uri=https://yourdomain.com/redirect&scope=market:id:1234&response_type=code' \
     -H 'Accept: application/json' \
     -H 'Content-Type: application/json'
   ```
@@ -169,7 +169,7 @@ In this case, first, you need to get an authorization code, then you can exchang
   or copy and paste this URL in your browser:
 
   ```bash
-  https://dashboard.commercelayer.io/oauth/authorize?client_id=your-client-id&redirect_uri=https://yourdomain.com/redirect&scope=market:1234&response_type=code
+  https://dashboard.commercelayer.io/oauth/authorize?client_id=your-client-id&redirect_uri=https://yourdomain.com/redirect&scope=market:id:1234&response_type=code
   ```
   
 3. Once you've authorized the application, you will be redirected to the callback URL:

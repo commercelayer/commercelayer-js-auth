@@ -1,8 +1,12 @@
-import { authenticate } from '@commercelayer/js-auth'
+import { authenticate, TOptions, GrantType } from '@commercelayer/js-auth'
 
-const auth = await authenticate('client_credentials', {
+const grantType: GrantType = 'client_credentials'
+
+const options: TOptions<'client_credentials'> = {
   clientId: 'BISG8bb3GWpC8_D7Nt1SuWWdieS5bJq831A50LgB_Ig',
-  scope: 'market:11279'
-})
+  scope: 'market:id:KoaJYhMVVj'
+}
+
+const auth = await authenticate(grantType, options)
 
 console.log(auth)
