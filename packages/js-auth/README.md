@@ -17,6 +17,8 @@ A JavaScript Library wrapper that helps you use the Commerce Layer API for [Auth
   - [Integration application with client credentials flow](#integration-client-credentials)
   - [Webapp application with authorization code flow](#webapp-authorization-code)
   - [Provisioning application](#provisioning)
+- [Utilities](#utilities)
+  - [Decode an access token](#decode-an-access-token)
 - [Contributors guide](#contributors-guide)
 - [Need help?](#need-help)
 - [License](#license)
@@ -53,8 +55,6 @@ To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/)
 | **Refresh token**      | ✅            |             | ✅     |
 | **Authorization code** |               |             | ✅     |
 
-> Remember that, for security reasons, access tokens expire after **2 hours**. Authorization codes expire after **10 minutes**.
-
 Check our [documentation](https://docs.commercelayer.io/developers/authentication) for further information on each single authorization flow.
 
 ## Use cases
@@ -80,12 +80,12 @@ Sales channel applications use the [client credentials](https://docs.commercelay
 ```ts
 import { authenticate } from '@commercelayer/js-auth'
 
-const token = await authenticate('client_credentials', {
+const auth = await authenticate('client_credentials', {
   clientId: 'your-client-id'
 })
 
-console.log('My access token: ', token.accessToken)
-console.log('Expiration date: ', token.expires)
+console.log('My access token: ', auth.accessToken)
+console.log('Expiration date: ', auth.expires)
 ```
 
 ### Sales channel (password)
@@ -101,15 +101,15 @@ Sales channel applications can use the [password](https://docs.commercelayer.io/
 ```ts
 import { authenticate } from '@commercelayer/js-auth'
 
-const token = await authenticate('password', {
+const auth = await authenticate('password', {
   clientId: 'your-client-id',
   username: 'john@example.com',
   password: 'secret'
 })
 
-console.log('My access token: ', token.accessToken)
-console.log('Expiration date: ', token.expires)
-console.log('My refresh token: ', token.refreshToken)
+console.log('My access token: ', auth.accessToken)
+console.log('Expiration date: ', auth.expires)
+console.log('My refresh token: ', auth.refreshToken)
 ```
 
 Sales channel applications can use the [refresh token](https://docs.commercelayer.io/developers/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option:
@@ -136,13 +136,13 @@ Integration applications use the [client credentials](https://docs.commercelayer
 ```ts
 import { authenticate } from '@commercelayer/js-auth'
 
-const token = await authenticate('client_credentials', {
+const auth = await authenticate('client_credentials', {
   clientId: 'your-client-id',
   clientSecret: 'your-client-secret',
 })
 
-console.log('My access token: ', token.accessToken)
-console.log('Expiration date: ', token.expires)
+console.log('My access token: ', auth.accessToken)
+console.log('Expiration date: ', auth.expires)
 ```
 
 ### Webapp (authorization code)
@@ -157,21 +157,12 @@ In this case, first, you need to get an authorization code, then you can exchang
 
 1. Create a **webapp** application on Commerce Layer and take note of your API credentials (client ID, client secret, callback URL, base endpoint, and the ID of the market you want to put in scope)
 
-2. Use this code to authorize your webapp on Commerce Layer:
+2. Use this url to authorize your webapp on Commerce Layer:
 
   ```bash
-  curl -g -X GET \
-    'https://dashboard.commercelayer.io/oauth/authorize?client_id=your-client-id&redirect_uri=https://yourdomain.com/redirect&scope=market:id:1234&response_type=code' \
-    -H 'Accept: application/json' \
-    -H 'Content-Type: application/json'
+  https://dashboard.commercelayer.io/oauth/authorize?client_id={{your_client_id}}&redirect_uri={{your_redirect_uri}}&scope=market:id:xYZkjABcde&response_type=code&state=1a2b3c
   ```
 
-  or copy and paste this URL in your browser:
-
-  ```bash
-  https://dashboard.commercelayer.io/oauth/authorize?client_id=your-client-id&redirect_uri=https://yourdomain.com/redirect&scope=market:id:1234&response_type=code
-  ```
-  
 3. Once you've authorized the application, you will be redirected to the callback URL:
 
    ![Callback URL with Authorization Code](https://github.com/commercelayer/commercelayer-js-auth/assets/1681269/2a167283-a3a9-4d16-bb8f-a962a5fe8900)
@@ -181,15 +172,15 @@ In this case, first, you need to get an authorization code, then you can exchang
   ```ts
   import { authenticate } from '@commercelayer/js-auth'
 
-  const token = await authenticate('authorization_code', {
+  const auth = await authenticate('authorization_code', {
     clientId: 'your-client-id',
     clientSecret: 'your-client-secret',
     callbackUrl: '<https://yourdomain.com/callback>',
     code: 'your-auth-code'
   })
 
-  console.log('My access token: ', token.accessToken)
-  console.log('Expiration date: ', token.expires)
+  console.log('My access token: ', auth.accessToken)
+  console.log('Expiration date: ', auth.expires)
   ```
 
 ### Provisioning
@@ -205,15 +196,36 @@ Provisioning applications use the [client credentials](https://docs.commercelaye
 ```ts
 import { authenticate } from '@commercelayer/js-auth'
 
-const token = await authenticate('client_credentials', {
+const auth = await authenticate('client_credentials', {
   clientId: 'your-client-id',
   clientSecret: 'your-client-secret'
 })
 
-console.log('My access token: ', token.accessToken)
-console.log('Expiration date: ', token.expires)
+console.log('My access token: ', auth.accessToken)
+console.log('Expiration date: ', auth.expires)
 ```
-  
+
+## Utilities
+
+### Decode an access token
+
+We offer an helper method that is able to decode an access token. The return is fully typed.
+
+```ts
+import { authenticate, jwtDecode, jwtIsSalesChannel } from '@commercelayer/js-auth'
+
+const auth = await authenticate('client_credentials', {
+  clientId: 'your-client-id',
+  scope: 'market:code:europe'
+})
+
+const decodedJWT = jwtDecode(auth.accessToken)
+
+if (jwtIsSalesChannel(decodedJWT.payload)) {
+  console.log('organization slug is', decodedJWT.payload.organization.slug)
+}
+```
+
 ---
 
 ## Contributors guide
