@@ -1,13 +1,14 @@
-import type { TPasswordReturn, TPassword } from '#types/password.js'
-import type { TRefreshToken } from '#types/refreshToken.js'
 import type {
-  TAuthorizationCodeReturn,
-  TAuthorizationCode
-} from '#types/authorizationCode.js'
-import type { TClientCredentials } from '#types/clientCredentials.js'
+  TAuthorizationCodeOptions,
+  TAuthorizationCodeReturn
+} from './authorizationCode.js'
+import type { TBaseReturn } from './base.js'
+import type { TClientCredentialsOptions } from './clientCredentials.js'
+import type { TPasswordOptions, TPasswordReturn } from './password.js'
+import type { TRefreshTokenOptions } from './refreshToken.js'
 
 /**
- * The grant type. Possible values are: password, refresh_token, client_credentials, authorization_code.
+ * The grant type.
  */
 export type GrantType =
   | 'password'
@@ -15,80 +16,24 @@ export type GrantType =
   | 'client_credentials'
   | 'authorization_code'
 
-export interface TBaseOptions {
-  /**
-   * The application's client_id.
-   */
-  clientId: string
-  /**
-   * The access token scope (market, stock location).
-   */
-  scope?: string
-  /**
-   * The organization's slug.
-   */
-  slug: string
-  /**
-   * The Commerce Layer's domain.
-   */
-  domain?: string
-  /**
-   * The request headers.
-   */
-  headers?: HeadersInit
-}
+export type AuthenticateOptions<TGrantType extends GrantType> =
+  TGrantType extends 'password'
+    ? TPasswordOptions
+    : TGrantType extends 'refresh_token'
+      ? TRefreshTokenOptions
+      : TGrantType extends 'client_credentials'
+        ? TClientCredentialsOptions
+        : TGrantType extends 'authorization_code'
+          ? TAuthorizationCodeOptions
+          : never
 
-export type TOptions<TGrantType> = TGrantType extends 'password'
-  ? TPassword
-  : TGrantType extends 'refresh_token'
-    ? TRefreshToken
-    : TGrantType extends 'client_credentials'
-      ? TClientCredentials
-      : TGrantType extends 'authorization_code'
-        ? TAuthorizationCode
-        : never
-
-export interface TBaseReturn {
-  /**
-   * The access token.
-   */
-  accessToken: string
-  /**
-   * The token type.
-   */
-  tokenType: 'bearer'
-  /**
-   * The access token expiration time in seconds.
-   */
-  expiresIn: number
-  /**
-   * The access token expiration date.
-   */
-  expires: Date
-  /**
-   * The access token scope (market, stock location).
-   */
-  scope: string
-  /**
-   * The creation date of the access token.
-   */
-  createdAt: number
-  /**
-   * The error code.
-   */
-  error?: string
-  /**
-   * The error description.
-   */
-  errorDescription?: string
-}
-
-export type TReturn<TGrantType> = TGrantType extends 'password'
-  ? TPasswordReturn
-  : TGrantType extends 'refresh_token'
+export type AuthenticateReturn<TGrantType extends GrantType> =
+  TGrantType extends 'password'
     ? TPasswordReturn
-    : TGrantType extends 'client_credentials'
-      ? TBaseReturn
-      : TGrantType extends 'authorization_code'
-        ? TAuthorizationCodeReturn
-        : never
+    : TGrantType extends 'refresh_token'
+      ? TPasswordReturn
+      : TGrantType extends 'client_credentials'
+        ? TBaseReturn
+        : TGrantType extends 'authorization_code'
+          ? TAuthorizationCodeReturn
+          : never

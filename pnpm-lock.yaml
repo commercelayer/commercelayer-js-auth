@@ -24,7 +24,7 @@ importers:
   examples/bun:
     dependencies:
       '@commercelayer/js-auth':
-        specifier: ^5.2.0
+        specifier: workspace:^5.0.0
         version: link:../../packages/js-auth
 
   examples/cjs:

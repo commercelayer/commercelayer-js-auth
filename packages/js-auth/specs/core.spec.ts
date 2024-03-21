@@ -1,6 +1,5 @@
-import { core } from '../src/index.js'
+import { authenticate } from '../src/index.js'
 
-const slug = process.env.VITE_TEST_SLUG
 const clientId = process.env.VITE_TEST_CLIENT_ID
 const integrationClientId = process.env.VITE_TEST_INTEGRATION_CLIENT_ID
 const clientSecret = process.env.VITE_TEST_CLIENT_SECRET
@@ -11,8 +10,7 @@ const password = process.env.VITE_TEST_PASSWORD
 
 describe('Authentication', () => {
   it('Get a sales channel token', async () => {
-    const res = await core.authentication('client_credentials', {
-      slug,
+    const res = await authenticate('client_credentials', {
       clientId,
       domain
     })
@@ -26,14 +24,20 @@ describe('Authentication', () => {
     expect(res.expires.getTime()).toBeGreaterThan(Date.now())
   })
   it('Get an error requesting a sales channel token', async () => {
-    const res = await core.authentication('client_credentials', {
-      slug,
+    const res = await authenticate('client_credentials', {
       clientId: 'wrong-client-id',
       domain,
       scope
     })
-    expect(res).toHaveProperty('error')
-    expect(res).toHaveProperty('errorDescription')
+    expect(res).toHaveProperty('errors')
+    expect(res.errors).toBeInstanceOf(Array)
+    expect(res.errors?.[0]).toMatchObject({
+      code: 'UNAUTHORIZED',
+      detail:
+        'Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method.',
+      status: 401,
+      title: 'invalid_client'
+    })
     expect(res).not.toHaveProperty('accessToken')
     expect(res).not.toHaveProperty('tokenType')
     expect(res).not.toHaveProperty('expiresIn')
@@ -41,8 +45,7 @@ describe('Authentication', () => {
     expect(res).not.toHaveProperty('createdAt')
   })
   it('Get a integration token', async () => {
-    const res = await core.authentication('client_credentials', {
-      slug,
+    const res = await authenticate('client_credentials', {
       clientId: integrationClientId,
       clientSecret,
       domain
@@ -54,8 +57,7 @@ describe('Authentication', () => {
     expect(res).toHaveProperty('createdAt')
   })
   it('Get a customer token', async () => {
-    const res = await core.authentication('password', {
-      slug,
+    const res = await authenticate('password', {
       clientId,
       domain,
       username,
@@ -72,8 +74,7 @@ describe('Authentication', () => {
     expect(res).toHaveProperty('refreshToken')
   })
   it('Refresh a customer token', async () => {
-    const res = await core.authentication('password', {
-      slug,
+    const res = await authenticate('password', {
       clientId,
       domain,
       username,
@@ -88,11 +89,11 @@ describe('Authentication', () => {
     expect(res).toHaveProperty('ownerId')
     expect(res).toHaveProperty('ownerType')
     expect(res).toHaveProperty('refreshToken')
-    const res2 = await core.authentication('refresh_token', {
-      slug,
+    const res2 = await authenticate('refresh_token', {
       clientId,
       domain,
-      refreshToken: res.refreshToken
+      refreshToken: res.refreshToken,
+      scope
     })
     expect(res2).toHaveProperty('accessToken')
     expect(res2).toHaveProperty('tokenType')
@@ -104,8 +105,7 @@ describe('Authentication', () => {
     expect(res2).toHaveProperty('refreshToken')
   })
   it('Set a custom header', async () => {
-    const res = await core.authentication('password', {
-      slug,
+    const res = await authenticate('password', {
       clientId,
       domain,
       username,
