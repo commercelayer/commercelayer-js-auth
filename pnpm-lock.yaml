@@ -24,7 +24,7 @@ importers:
   examples/cjs:
     dependencies:
       '@commercelayer/js-auth':
-        specifier: workspace:^5.0.0
+        specifier: workspace:*
         version: link:../../packages/js-auth
 
   examples/cloudflare-workers:
