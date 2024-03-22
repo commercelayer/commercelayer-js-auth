@@ -10,7 +10,7 @@ export async function createAssertion(payload: {
     /** The customer or user you want to make the calls on behalf of. */
     owner: Owner
     /** Any other information (key/value pairs) you want to enrich the token with. */
-    custom_claim?: Record<string, string>
+    custom_claim?: Record<string, unknown>
   }
 }): Promise<string> {
   return await jwtEncode(payload, 'cl')
