@@ -43,7 +43,7 @@ interface CommerceLayerJWT {
 }
 
 type Payload =
-  | JWTProvisioning
+  | JWTUser
   | JWTDashboard
   | JWTIntegration
   | JWTSalesChannel
@@ -70,12 +70,12 @@ interface JWTBase {
   iss: string
 }
 
-type JWTProvisioning = JWTBase & {
+type JWTUser = JWTBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
     kind: 'user'
   }
-  /** The user authenticating to the Provisioning API */
+  /** The authenticated user. */
   user: {
     id: string
   }
@@ -86,21 +86,29 @@ type JWTDashboard = JWTBase & {
   application: {
     kind: 'dashboard'
   }
-  /** The user authenticating to the Dashboard */
+  /** The authenticated user. */
   user: {
     id: string
   }
 }
 
-type JWTCoreBase = JWTBase & {
-  /** The organization's unique ID. */
+type JWTOrganizationBase = JWTBase & {
+  /** The organization in scope. */
   organization: {
     id: string
     slug: string
     enterprise: boolean
     region: string
   }
-  /** The market(s) in scope. */
+  /**
+   * Any other information (key/value pairs) you want to enrich the token with,
+   * when using the [JWT Bearer flow](https://docs.commercelayer.io/core/authentication/jwt-bearer).
+   */
+  custom_claim?: Record<string, string>
+  /**
+   * The market(s) in scope.
+   * This is available only when the scope is defined in the request.
+   */
   market?: {
     id: string[]
     price_list_id: string
@@ -110,7 +118,7 @@ type JWTCoreBase = JWTBase & {
   }
 }
 
-type JWTWebApp = JWTCoreBase & {
+type JWTWebApp = JWTOrganizationBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
     kind: 'webapp'
@@ -122,7 +130,7 @@ type JWTWebApp = JWTCoreBase & {
   }
 }
 
-type JWTSalesChannel = JWTCoreBase & {
+type JWTSalesChannel = JWTOrganizationBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
     kind: 'sales_channel'
@@ -134,16 +142,14 @@ type JWTSalesChannel = JWTCoreBase & {
   }
 }
 
-type JWTIntegration = JWTCoreBase & {
+type JWTIntegration = JWTOrganizationBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
     kind: 'integration'
   }
 }
 
-export function jwtIsProvisioning(
-  payload: Payload
-): payload is JWTProvisioning {
+export function jwtIsUser(payload: Payload): payload is JWTUser {
   return payload.application.kind === 'user'
 }
 

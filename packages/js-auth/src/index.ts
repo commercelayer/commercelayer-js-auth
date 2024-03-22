@@ -3,7 +3,7 @@ export {
   jwtDecode,
   jwtIsDashboard,
   jwtIsIntegration,
-  jwtIsProvisioning,
+  jwtIsUser,
   jwtIsSalesChannel,
   jwtIsWebApp
 } from './jwtDecode.js'
