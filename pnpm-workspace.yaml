@@ -1,3 +1,5 @@
 packages:
   - 'packages/*'
-  - 'examples/*'
+  - 'examples/cjs'
+  - 'examples/cloudflare-workers'
+  - 'examples/esm'
