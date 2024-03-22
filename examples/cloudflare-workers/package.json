@@ -1,6 +1,7 @@
 {
-  "name": "cloudflare-workers",
   "private": true,
+  "name": "cloudflare-workers",
+  "version": "5.2.1",
   "scripts": {
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",

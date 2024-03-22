@@ -1,12 +1,13 @@
 {
   "private": true,
   "name": "cjs",
+  "version": "5.2.1",
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
-    "@commercelayer/js-auth": "workspace:^5.0.0"
+    "@commercelayer/js-auth": "workspace:*"
   }
 }
