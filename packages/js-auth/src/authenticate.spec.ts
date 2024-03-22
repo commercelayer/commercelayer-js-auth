@@ -1,4 +1,4 @@
-import { authenticate } from '../src/index.js'
+import { authenticate } from './index.js'
 
 const clientId = process.env.VITE_TEST_CLIENT_ID
 const integrationClientId = process.env.VITE_TEST_INTEGRATION_CLIENT_ID
@@ -8,12 +8,13 @@ const scope = process.env.VITE_TEST_SCOPE
 const username = process.env.VITE_TEST_USERNAME
 const password = process.env.VITE_TEST_PASSWORD
 
-describe('Authentication', () => {
+describe('Organization auth', () => {
   it('Get a sales channel token', async () => {
     const res = await authenticate('client_credentials', {
       clientId,
       domain
     })
+
     expect(res).toHaveProperty('accessToken')
     expect(res).toHaveProperty('tokenType')
     expect(res).toHaveProperty('expiresIn')
@@ -23,12 +24,14 @@ describe('Authentication', () => {
     expect(res.expires).toBeInstanceOf(Date)
     expect(res.expires.getTime()).toBeGreaterThan(Date.now())
   })
+
   it('Get an error requesting a sales channel token', async () => {
     const res = await authenticate('client_credentials', {
       clientId: 'wrong-client-id',
       domain,
       scope
     })
+
     expect(res).toHaveProperty('errors')
     expect(res.errors).toBeInstanceOf(Array)
     expect(res.errors?.[0]).toMatchObject({
@@ -38,24 +41,28 @@ describe('Authentication', () => {
       status: 401,
       title: 'invalid_client'
     })
+
     expect(res).not.toHaveProperty('accessToken')
     expect(res).not.toHaveProperty('tokenType')
     expect(res).not.toHaveProperty('expiresIn')
     expect(res).not.toHaveProperty('scope')
     expect(res).not.toHaveProperty('createdAt')
   })
+
   it('Get a integration token', async () => {
     const res = await authenticate('client_credentials', {
       clientId: integrationClientId,
       clientSecret,
       domain
     })
+
     expect(res).toHaveProperty('accessToken')
     expect(res).toHaveProperty('tokenType')
     expect(res).toHaveProperty('expiresIn')
     expect(res).toHaveProperty('scope')
     expect(res).toHaveProperty('createdAt')
   })
+
   it('Get a customer token', async () => {
     const res = await authenticate('password', {
       clientId,
@@ -64,6 +71,7 @@ describe('Authentication', () => {
       password,
       scope
     })
+
     expect(res).toHaveProperty('accessToken')
     expect(res).toHaveProperty('tokenType')
     expect(res).toHaveProperty('expiresIn')
@@ -73,6 +81,7 @@ describe('Authentication', () => {
     expect(res).toHaveProperty('ownerType')
     expect(res).toHaveProperty('refreshToken')
   })
+
   it('Refresh a customer token', async () => {
     const res = await authenticate('password', {
       clientId,
@@ -81,6 +90,7 @@ describe('Authentication', () => {
       password,
       scope
     })
+
     expect(res).toHaveProperty('accessToken')
     expect(res).toHaveProperty('tokenType')
     expect(res).toHaveProperty('expiresIn')
@@ -89,12 +99,14 @@ describe('Authentication', () => {
     expect(res).toHaveProperty('ownerId')
     expect(res).toHaveProperty('ownerType')
     expect(res).toHaveProperty('refreshToken')
+
     const res2 = await authenticate('refresh_token', {
       clientId,
       domain,
       refreshToken: res.refreshToken,
       scope
     })
+
     expect(res2).toHaveProperty('accessToken')
     expect(res2).toHaveProperty('tokenType')
     expect(res2).toHaveProperty('expiresIn')
@@ -104,6 +116,7 @@ describe('Authentication', () => {
     expect(res2).toHaveProperty('ownerType')
     expect(res2).toHaveProperty('refreshToken')
   })
+
   it('Set a custom header', async () => {
     const res = await authenticate('password', {
       clientId,
@@ -115,6 +128,7 @@ describe('Authentication', () => {
         'X-My-Header': 'My-Value'
       }
     })
+
     expect(res).toHaveProperty('accessToken')
     expect(res).toHaveProperty('tokenType')
     expect(res).toHaveProperty('expiresIn')
@@ -123,5 +137,24 @@ describe('Authentication', () => {
     expect(res).toHaveProperty('ownerId')
     expect(res).toHaveProperty('ownerType')
     expect(res).toHaveProperty('refreshToken')
+  })
+})
+
+describe('Provisioning auth', () => {
+  it('Get a provisioning token', async () => {
+    const res = await authenticate('client_credentials', {
+      domain: process.env.VITE_TEST_PROVISIONING_DOMAIN,
+      clientId: process.env.VITE_TEST_PROVISIONING_CLIENT_ID,
+      clientSecret: process.env.VITE_TEST_PROVISIONING_CLIENT_SECRET
+    })
+
+    expect(res).toHaveProperty('accessToken')
+    expect(res).toHaveProperty('tokenType')
+    expect(res).toHaveProperty('expiresIn')
+    expect(res).toHaveProperty('scope')
+    expect(res).toHaveProperty('createdAt')
+    expect(res).toHaveProperty('expires')
+    expect(res.expires).toBeInstanceOf(Date)
+    expect(res.expires.getTime()).toBeGreaterThan(Date.now())
   })
 })

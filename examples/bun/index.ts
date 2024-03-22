@@ -1,4 +1,4 @@
-import { authenticate, AuthenticateOptions, GrantType } from '@commercelayer/js-auth'
+import { authenticate, AuthenticateOptions, GrantType, jwtDecode, jwtIsSalesChannel } from '@commercelayer/js-auth'
 
 const grantType: GrantType = 'client_credentials'
 
@@ -10,3 +10,9 @@ const options: AuthenticateOptions<'client_credentials'> = {
 const auth = await authenticate(grantType, options)
 
 console.log(auth)
+
+const decodedJWT = jwtDecode(auth.accessToken)
+
+if (jwtIsSalesChannel(decodedJWT.payload)) {
+  console.log('organization slug is', decodedJWT.payload.organization.slug)
+}
