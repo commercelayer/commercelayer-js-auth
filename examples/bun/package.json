@@ -10,6 +10,6 @@
     "../../packages/*"
   ],
   "dependencies": {
-    "@commercelayer/js-auth": "workspace:^5.0.0"
+    "@commercelayer/js-auth": "workspace:*"
   }
 }

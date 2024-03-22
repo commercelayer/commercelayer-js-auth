@@ -30,7 +30,7 @@ importers:
   examples/cloudflare-workers:
     dependencies:
       '@commercelayer/js-auth':
-        specifier: workspace:^5.0.0
+        specifier: workspace:*
         version: link:../../packages/js-auth
     devDependencies:
       '@cloudflare/vitest-pool-workers':
@@ -52,7 +52,7 @@ importers:
   examples/esm:
     dependencies:
       '@commercelayer/js-auth':
-        specifier: workspace:^5.0.0
+        specifier: workspace:*
         version: link:../../packages/js-auth
 
   packages/js-auth:

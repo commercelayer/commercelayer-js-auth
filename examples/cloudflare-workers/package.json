@@ -8,7 +8,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@commercelayer/js-auth": "workspace:^5.0.0"
+    "@commercelayer/js-auth": "workspace:*"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.1.0",
