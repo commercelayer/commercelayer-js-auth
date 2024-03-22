@@ -1,3 +1,5 @@
+import { atob } from '#utils/base64.js'
+
 /**
  * Decode a Commerce Layer access token.
  */
@@ -8,24 +10,6 @@ export function jwtDecode(accessToken: string): CommerceLayerJWT {
     header: JSON.parse(header != null ? atob(header) : 'null'),
     payload: JSON.parse(payload != null ? atob(payload) : 'null')
   }
-}
-
-/**
- * The `atob()` function decodes a string of data
- * which has been encoded using [Base64](https://developer.mozilla.org/en-US/docs/Glossary/Base64) encoding.
- *
- * This method works both in Node.js and browsers.
- *
- * @link [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/atob)
- * @param encodedData A binary string (i.e., a string in which each character in the string is treated as a byte of binary data) containing base64-encoded data.
- * @returns An ASCII string containing decoded data from `encodedData`.
- */
-function atob(encodedData: string): string {
-  if (typeof window !== 'undefined') {
-    return window.atob(encodedData)
-  }
-
-  return Buffer.from(encodedData, 'base64').toString('binary')
 }
 
 interface CommerceLayerJWT {

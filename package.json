@@ -10,6 +10,7 @@
     "build": "pnpm --filter js-auth build",
     "prepare": "husky install",
     "test": "pnpm --filter js-auth test",
+    "test:watch": "pnpm --filter js-auth test:watch",
     "make:version": "lerna version --no-private",
     "example:cjs": "pnpm --filter cjs start",
     "example:esm": "pnpm --filter esm start",
