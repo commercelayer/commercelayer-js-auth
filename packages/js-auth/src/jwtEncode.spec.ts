@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 import { createAssertion } from './jwtEncode.js'
 
 describe('createAssertion', () => {
-  it('should be able to parse a "dashboard" access token.', async () => {
+  it('should be able to create a JWT assertion.', async () => {
     const payload = {
       'https://commercelayer.io/claims': {
         owner: {
@@ -19,7 +19,7 @@ describe('createAssertion', () => {
       algorithm: 'HS512'
     })
 
-    const assertion = await createAssertion(payload)
+    const assertion = await createAssertion({ payload })
 
     expect(assertion).toStrictEqual(jsonwebtokenAssertion)
   })

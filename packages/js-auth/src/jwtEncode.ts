@@ -5,15 +5,49 @@ interface Owner {
   id: string
 }
 
-export async function createAssertion(payload: {
-  'https://commercelayer.io/claims': {
-    /** The customer or user you want to make the calls on behalf of. */
-    owner: Owner
-    /** Any other information (key/value pairs) you want to enrich the token with. */
-    custom_claim?: Record<string, unknown>
-  }
-}): Promise<string> {
+/**
+ * Create a JWT assertion as the first step of the [JWT bearer token authorization grant flow](https://docs.commercelayer.io/core/authentication/jwt-bearer).
+ *
+ * The JWT assertion is a digitally signed JSON object containing information
+ * about the client and the user on whose behalf the access token is being requested.
+ *
+ * This JWT assertion can include information such as the issuer (typically the client),
+ * the owner (the user on whose behalf the request is made), and any other relevant claims.
+ *
+ * @example
+ * ```ts
+ * const assertion = await createAssertion({
+ *   payload: {
+ *     'https://commercelayer.io/claims': {
+ *       owner: {
+ *         type: 'Customer',
+ *         id: '4tepftJsT2'
+ *       },
+ *       custom_claim: {
+ *         customer: {
+ *           first_name: 'John',
+ *           last_name: 'Doe'
+ *         }
+ *       }
+ *     }
+ *   }
+ * })
+ * ```
+ */
+export async function createAssertion({ payload }: Assertion): Promise<string> {
   return await jwtEncode(payload, 'cl')
+}
+
+interface Assertion {
+  /** Assertion payload. */
+  payload: {
+    'https://commercelayer.io/claims': {
+      /** The customer or user you want to make the calls on behalf of. */
+      owner: Owner
+      /** Any other information (key/value pairs) you want to enrich the token with. */
+      custom_claim?: Record<string, unknown>
+    }
+  }
 }
 
 async function jwtEncode(

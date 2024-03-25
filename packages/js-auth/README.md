@@ -17,6 +17,7 @@ A JavaScript Library wrapper that helps you use the Commerce Layer API for [Auth
   - [Integration application with client credentials flow](#integration-client-credentials)
   - [Webapp application with authorization code flow](#webapp-authorization-code)
   - [Provisioning application](#provisioning)
+  - [JWT bearer](#jwt-bearer)
 - [Utilities](#utilities)
   - [Decode an access token](#decode-an-access-token)
 - [Contributors guide](#contributors-guide)
@@ -199,6 +200,50 @@ import { authenticate } from '@commercelayer/js-auth'
 const auth = await authenticate('client_credentials', {
   clientId: 'your-client-id',
   clientSecret: 'your-client-secret'
+})
+
+console.log('My access token: ', auth.accessToken)
+console.log('Expiration date: ', auth.expires)
+```
+
+### JWT bearer
+
+Commerce Layer, through OAuth2, provides the support of token exchange in the _on-behalf-of_ (delegation) scenario which allows,
+for example, to make calls on behalf of a user and get an access token of the requesting user without direct user interaction.
+**Sales channels** and **webapps** can accomplish it by leveraging the [JWT Bearer flow](https://docs.commercelayer.io/core/authentication/jwt-bearer),
+which allows a client application to obtain an access token using a JSON Web Token (JWT) [_assertion_](https://docs.commercelayer.io/core/authentication/jwt-bearer#creating-the-jwt-assertion).
+
+You can use this code to create an _assertion_:
+
+```ts
+const assertion = await createAssertion({
+  payload: {
+    'https://commercelayer.io/claims': {
+      owner: {
+        type: 'Customer',
+        id: '4tepftJsT2'
+      },
+      custom_claim: {
+        customer: {
+          first_name: 'John',
+          last_name: 'Doe'
+        }
+      }
+    }
+  }
+})
+```
+
+You can now get an access token using the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type:
+
+```ts
+import { authenticate } from '@commercelayer/js-auth'
+
+const auth = await authenticate('urn:ietf:params:oauth:grant-type:jwt-bearer', {
+  clientId: 'your-client-id',
+  clientSecret: 'your-client-secret',
+  scope: 'market:code:europe',
+  assertion
 })
 
 console.log('My access token: ', auth.accessToken)

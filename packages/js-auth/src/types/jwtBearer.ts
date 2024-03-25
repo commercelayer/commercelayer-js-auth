@@ -19,14 +19,7 @@ export interface TJwtBearerOptions extends TBaseOptions {
    *
    * @example
    * ```ts
-   * {
-   *   assertion: await createAssertion({
-   *     owner: {
-   *       type: 'Customer',
-   *       id: 'aEwdr55W'
-   *     }
-   *   })
-   * }
+   * import { createAssertion } from '@commercelayer/js-auth'
    * ```
    */
   assertion: string
