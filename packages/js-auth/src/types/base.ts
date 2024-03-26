@@ -39,7 +39,7 @@ export interface TBaseOptions {
   }
 }
 
-export interface TBaseReturn {
+export type TBaseReturn = {
   /**
    * The access token.
    */
@@ -64,6 +64,9 @@ export interface TBaseReturn {
    * The creation date of the access token.
    */
   createdAt: number
+} & TError
+
+export interface TError {
   /**
    * The list of errors when something goes wrong.
    */

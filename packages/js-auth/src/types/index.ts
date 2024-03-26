@@ -2,11 +2,11 @@ import type {
   TAuthorizationCodeOptions,
   TAuthorizationCodeReturn
 } from './authorizationCode.js'
-import type { TBaseReturn } from './base.js'
+import type { TBaseOptions, TBaseReturn, TError } from './base.js'
 import type { TClientCredentialsOptions } from './clientCredentials.js'
+import type { TJwtBearerOptions, TJwtBearerReturn } from './jwtBearer.js'
 import type { TPasswordOptions, TPasswordReturn } from './password.js'
 import type { TRefreshTokenOptions } from './refreshToken.js'
-import type { TJwtBearerOptions, TJwtBearerReturn } from './jwtBearer.js'
 
 /**
  * The grant type.
@@ -43,3 +43,12 @@ export type AuthenticateReturn<TGrantType extends GrantType> =
           : TGrantType extends 'authorization_code'
             ? TAuthorizationCodeReturn
             : never
+
+export type RevokeOptions = Pick<TBaseOptions, 'clientId' | 'domain'> & {
+  /** Your application's client secret (required for confidential API credentials and non-confidential API credentials without a customer or a user in the JWT only). */
+  clientSecret?: string
+  /** A valid access or refresh token. */
+  token: string
+}
+
+export type RevokeReturn = Pick<TError, 'errors'>
