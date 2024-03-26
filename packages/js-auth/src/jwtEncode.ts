@@ -1,4 +1,4 @@
-import { base64url } from '#utils/base64.js'
+import { encodeBase64URLSafe } from '#utils/base64.js'
 
 interface Owner {
   type: 'User' | 'Customer'
@@ -56,9 +56,9 @@ async function jwtEncode(
 ): Promise<string> {
   const header = { alg: 'HS512', typ: 'JWT' }
 
-  const encodedHeader = base64url(JSON.stringify(header))
+  const encodedHeader = encodeBase64URLSafe(JSON.stringify(header))
 
-  const encodedPayload = base64url(
+  const encodedPayload = encodeBase64URLSafe(
     JSON.stringify({
       ...payload,
       iat: Math.floor(new Date().getTime() / 1000)
@@ -90,5 +90,5 @@ async function createSignature(data: string, secret: string): Promise<string> {
     enc.encode(data)
   )
 
-  return base64url(String.fromCharCode(...new Uint8Array(signature)))
+  return encodeBase64URLSafe(String.fromCharCode(...new Uint8Array(signature)))
 }

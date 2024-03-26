@@ -1,4 +1,4 @@
-import { atob } from '#utils/base64.js'
+import { decodeBase64URLSafe } from '#utils/base64.js'
 
 /**
  * Decode a Commerce Layer access token.
@@ -7,8 +7,8 @@ export function jwtDecode(accessToken: string): CommerceLayerJWT {
   const [header, payload] = accessToken.split('.')
 
   return {
-    header: JSON.parse(header != null ? atob(header) : 'null'),
-    payload: JSON.parse(payload != null ? atob(payload) : 'null')
+    header: JSON.parse(header != null ? decodeBase64URLSafe(header) : 'null'),
+    payload: JSON.parse(payload != null ? decodeBase64URLSafe(payload) : 'null')
   }
 }
 
