@@ -1,4 +1,5 @@
 export { authenticate } from './authenticate.js'
+
 export {
   jwtDecode,
   jwtIsDashboard,
@@ -7,6 +8,8 @@ export {
   jwtIsSalesChannel,
   jwtIsWebApp
 } from './jwtDecode.js'
+
+export { createAssertion } from './jwtEncode.js'
 
 export type {
   AuthenticateOptions,
