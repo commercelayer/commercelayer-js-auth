@@ -18,6 +18,7 @@ A JavaScript Library wrapper that helps you use the Commerce Layer API for [Auth
   - [Webapp application with authorization code flow](#webapp-authorization-code)
   - [Provisioning application](#provisioning)
   - [JWT bearer](#jwt-bearer)
+  - [Revoking a token](#revoking-a-token)
 - [Utilities](#utilities)
   - [Decode an access token](#decode-an-access-token)
 - [Contributors guide](#contributors-guide)
@@ -248,6 +249,20 @@ const auth = await authenticate('urn:ietf:params:oauth:grant-type:jwt-bearer', {
 
 console.log('My access token: ', auth.accessToken)
 console.log('Expiration date: ', auth.expires)
+```
+
+### Revoking a token
+
+Any previously generated access tokens (refresh tokens included) can be [revoked](https://docs.commercelayer.io/core/authentication/revoking-a-token) before their natural expiration date.
+
+```ts
+import { revoke } from '@commercelayer/js-auth'
+
+await revoke({
+  clientId: 'your-client-id',
+  clientSecret: 'your-client-secret',
+  token: 'a-generated-access-token'
+})
 ```
 
 ## Utilities
