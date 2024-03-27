@@ -56,6 +56,7 @@ To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/)
 | **Password**           | ✅            |             |        |
 | **Refresh token**      | ✅            |             | ✅     |
 | **Authorization code** |               |             | ✅     |
+| **JWT bearer**         | ✅            |             | ✅     |
 
 Check our [documentation](https://docs.commercelayer.io/developers/authentication) for further information on each single authorization flow.
 
@@ -92,7 +93,7 @@ console.log('Expiration date: ', auth.expires)
 
 ### Sales channel (password)
 
-Sales channel applications can use the [password](https://docs.commercelayer.io/developers/authentication/password) grant type to exchange a customer credentials for an access token (i.e., to get a "logged" access token).
+Sales channel applications can use the [password](https://docs.commercelayer.io/developers/authentication/password) grant type to exchange customer credentials for an access token (i.e., to get a "logged" access token).
 
 #### Steps
 
@@ -133,7 +134,7 @@ Integration applications use the [client credentials](https://docs.commercelayer
 
 1. Create an **integration** application on Commerce Layer and take note of your API credentials (client ID, client secret, and base endpoint)
 
-2. Use this codes to get the access token:
+2. Use this code to get the access token:
 
 ```ts
 import { authenticate } from '@commercelayer/js-auth'
@@ -159,7 +160,7 @@ In this case, first, you need to get an authorization code, then you can exchang
 
 1. Create a **webapp** application on Commerce Layer and take note of your API credentials (client ID, client secret, callback URL, base endpoint, and the ID of the market you want to put in scope)
 
-2. Use this url to authorize your webapp on Commerce Layer:
+2. Use this URL to authorize your webapp on Commerce Layer:
 
   ```bash
   https://dashboard.commercelayer.io/oauth/authorize?client_id={{your_client_id}}&redirect_uri={{your_redirect_uri}}&scope=market:id:xYZkjABcde&response_type=code&state=1a2b3c
@@ -193,7 +194,7 @@ Provisioning applications use the [client credentials](https://docs.commercelaye
 
 1. Access your personal [provisioning](https://dashboard.commercelayer.io/user/provisioning_api) application on Commerce Layer dashboard and take note of your Provisioning API credentials (client ID, client secret)
 
-2. Use this codes to get the access token:
+2. Use this code to get the access token:
 
 ```ts
 import { authenticate } from '@commercelayer/js-auth'
@@ -212,9 +213,11 @@ console.log('Expiration date: ', auth.expires)
 Commerce Layer, through OAuth2, provides the support of token exchange in the _on-behalf-of_ (delegation) scenario which allows,
 for example, to make calls on behalf of a user and get an access token of the requesting user without direct user interaction.
 **Sales channels** and **webapps** can accomplish it by leveraging the [JWT Bearer flow](https://docs.commercelayer.io/core/authentication/jwt-bearer),
-which allows a client application to obtain an access token using a JSON Web Token (JWT) [_assertion_](https://docs.commercelayer.io/core/authentication/jwt-bearer#creating-the-jwt-assertion).
+which allows a client application to obtain an access token using a JSON Web Token (JWT) [assertion](https://docs.commercelayer.io/core/authentication/jwt-bearer#creating-the-jwt-assertion).
 
-You can use this code to create an _assertion_:
+#### Steps
+
+1. Use this code to create an assertion:
 
 ```ts
 const assertion = await createAssertion({
@@ -235,7 +238,7 @@ const assertion = await createAssertion({
 })
 ```
 
-You can now get an access token using the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type:
+2. Use this code to get the access token:
 
 ```ts
 import { authenticate } from '@commercelayer/js-auth'
@@ -253,7 +256,7 @@ console.log('Expiration date: ', auth.expires)
 
 ### Revoking a token
 
-Any previously generated access tokens (refresh tokens included) can be [revoked](https://docs.commercelayer.io/core/authentication/revoking-a-token) before their natural expiration date.
+Any previously generated access tokens (refresh tokens included) can be [revoked](https://docs.commercelayer.io/core/authentication/revoking-a-token) before their natural expiration date:
 
 ```ts
 import { revoke } from '@commercelayer/js-auth'
@@ -269,7 +272,7 @@ await revoke({
 
 ### Decode an access token
 
-We offer an helper method that is able to decode an access token. The return is fully typed.
+We offer a helper method to decode an access token. The return is fully typed:
 
 ```ts
 import { authenticate, jwtDecode, jwtIsSalesChannel } from '@commercelayer/js-auth'
