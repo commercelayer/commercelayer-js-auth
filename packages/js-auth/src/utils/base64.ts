@@ -11,8 +11,9 @@
  */
 export function encodeBase64URLSafe(stringToEncode: string): string {
   if (typeof window !== 'undefined') {
-    return window.btoa(
-      stringToEncode
+    return (
+      window
+        .btoa(stringToEncode)
         // Remove padding equal characters
         .replaceAll('=', '')
         // Replace characters according to base64url specifications
