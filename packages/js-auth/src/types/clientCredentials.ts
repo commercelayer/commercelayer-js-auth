@@ -1,4 +1,4 @@
-import type { TBaseOptions } from '#types/base.js'
+import type { TBaseOptions } from './base.js'
 
 /**
  * The client credentials grant type is used by clients to obtain an access token outside of the context of a user.

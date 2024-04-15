@@ -1,4 +1,4 @@
-import type { TBaseOptions } from '#types/base.js'
+import type { TBaseOptions } from './base.js'
 import type { TPasswordReturn } from './password.js'
 
 /**

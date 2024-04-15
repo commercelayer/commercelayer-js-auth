@@ -2,11 +2,11 @@ import type {
   GrantType,
   AuthenticateOptions,
   AuthenticateReturn
-} from '#types/index.js'
+} from './types/index.js'
 
-import { camelCaseToSnakeCase } from '#utils/camelCaseToSnakeCase.js'
-import { mapKeys } from '#utils/mapKeys.js'
-import { snakeCaseToCamelCase } from '#utils/snakeCaseToCamelCase.js'
+import { camelCaseToSnakeCase } from './utils/camelCaseToSnakeCase.js'
+import { mapKeys } from './utils/mapKeys.js'
+import { snakeCaseToCamelCase } from './utils/snakeCaseToCamelCase.js'
 
 interface TokenJson {
   expires: Date

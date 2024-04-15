@@ -1,4 +1,4 @@
-import type { TBaseOptions, TBaseReturn } from '#types/base.js'
+import type { TBaseOptions, TBaseReturn } from './base.js'
 
 /**
  * The password grant type is used by first-party clients to exchange a user's credentials for an access token.

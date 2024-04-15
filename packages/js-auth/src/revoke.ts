@@ -1,7 +1,7 @@
-import type { RevokeOptions, RevokeReturn } from '#types/index.js'
+import type { RevokeOptions, RevokeReturn } from './types/index.js'
 
-import { camelCaseToSnakeCase } from '#utils/camelCaseToSnakeCase.js'
-import { mapKeys } from '#utils/mapKeys.js'
+import { camelCaseToSnakeCase } from './utils/camelCaseToSnakeCase.js'
+import { mapKeys } from './utils/mapKeys.js'
 
 export async function revoke({
   domain = 'commercelayer.io',

@@ -1,4 +1,4 @@
-import type { TBaseOptions } from '#types/base.js'
+import type { TBaseOptions } from './base.js'
 
 /**
  * The refresh token grant type is used by clients to exchange a refresh token for an access token when the access token has expired.

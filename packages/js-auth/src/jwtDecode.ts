@@ -1,4 +1,4 @@
-import { decodeBase64URLSafe } from '#utils/base64.js'
+import { decodeBase64URLSafe } from './utils/base64.js'
 
 /**
  * Decode a Commerce Layer access token.

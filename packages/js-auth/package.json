@@ -37,7 +37,8 @@
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "test": "pnpm run lint && vitest run --silent",
     "test:watch": "vitest --silent",
-    "build": "tsup"
+    "build": "tsup",
+    "jsr:publish": "pnpm dlx jsr publish"
   },
   "publishConfig": {
     "access": "public"
