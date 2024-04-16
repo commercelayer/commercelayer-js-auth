@@ -1,10 +1,4 @@
-import {
-  authenticate,
-  jwtDecode,
-  jwtIsIntegration,
-  jwtIsSalesChannel,
-  revoke
-} from './index.js'
+import { authenticate, revoke } from './index.js'
 
 describe('Revoke', () => {
   it('should respond with error when something goes wrong', async () => {
@@ -34,15 +28,8 @@ describe('Revoke', () => {
 
     expect(authenticateResponse).toHaveProperty('accessToken')
 
-    const decoded = jwtDecode(authenticateResponse.accessToken)
-    if (!jwtIsIntegration(decoded.payload)) {
-      throw new Error('Something went wrong!')
-    }
-
-    const slug = decoded.payload.organization.slug
-
     const skusResponse1 = await fetch(
-      `https://${slug}.${process.env.VITE_TEST_DOMAIN}/api/skus?page[size]=1`,
+      `https://${process.env.VITE_TEST_SLUG}.${process.env.VITE_TEST_DOMAIN}/api/skus?page[size]=1`,
       {
         headers: {
           Accept: 'application/vnd.api+json',
@@ -65,7 +52,7 @@ describe('Revoke', () => {
     expect(revokeResponse).toStrictEqual({})
 
     const skusResponse2 = await fetch(
-      `https://${slug}.${process.env.VITE_TEST_DOMAIN}/api/skus?page[size]=2`,
+      `https://${process.env.VITE_TEST_SLUG}.${process.env.VITE_TEST_DOMAIN}/api/skus?page[size]=2`,
       {
         headers: {
           Accept: 'application/vnd.api+json',
@@ -95,15 +82,8 @@ describe('Revoke', () => {
 
     expect(authenticateResponse).toHaveProperty('accessToken')
 
-    const decoded = jwtDecode(authenticateResponse.accessToken)
-    if (!jwtIsSalesChannel(decoded.payload)) {
-      throw new Error('Something went wrong!')
-    }
-
-    const slug = decoded.payload.organization.slug
-
     const skusResponse1 = await fetch(
-      `https://${slug}.${process.env.VITE_TEST_DOMAIN}/api/skus?page[size]=1`,
+      `https://${process.env.VITE_TEST_SLUG}.${process.env.VITE_TEST_DOMAIN}/api/skus?page[size]=1`,
       {
         headers: {
           Accept: 'application/vnd.api+json',
@@ -126,7 +106,7 @@ describe('Revoke', () => {
     expect(revokeResponse).toStrictEqual({})
 
     const skusResponse2 = await fetch(
-      `https://${slug}.${process.env.VITE_TEST_DOMAIN}/api/skus?page[size]=2`,
+      `https://${process.env.VITE_TEST_SLUG}.${process.env.VITE_TEST_DOMAIN}/api/skus?page[size]=2`,
       {
         headers: {
           Accept: 'application/vnd.api+json',

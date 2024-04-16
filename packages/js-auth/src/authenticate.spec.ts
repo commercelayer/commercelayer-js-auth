@@ -62,7 +62,7 @@ describe('Organization auth', () => {
           public: true
         },
         organization: {
-          slug: 'the-blue-brand-3',
+          slug: process.env.VITE_TEST_SLUG,
           enterprise: true,
           region: 'eu-west-1'
         },
@@ -110,7 +110,7 @@ describe('Organization auth', () => {
           public: false
         },
         organization: {
-          slug: 'the-blue-brand-3',
+          slug: process.env.VITE_TEST_SLUG,
           enterprise: true,
           region: 'eu-west-1'
         },
@@ -163,7 +163,7 @@ describe('Organization auth', () => {
           public: true
         },
         organization: {
-          slug: 'the-blue-brand-3',
+          slug: process.env.VITE_TEST_SLUG,
           enterprise: true,
           region: 'eu-west-1'
         },
@@ -238,7 +238,7 @@ describe('Organization auth', () => {
           public: true
         },
         organization: {
-          slug: 'the-blue-brand-3',
+          slug: process.env.VITE_TEST_SLUG,
           enterprise: true,
           region: 'eu-west-1'
         },
@@ -307,12 +307,14 @@ describe('Provisioning auth', () => {
           kind: 'user',
           public: false
         },
-        scope: 'provisioning-api',
         test: false
       }
     })
 
     expect(jwtDecode(response.accessToken).payload).toHaveProperty('user.id')
+    expect(jwtDecode(response.accessToken).payload.scope).toContain(
+      'provisioning-api'
+    )
   })
 })
 
@@ -430,7 +432,7 @@ function runJWTBearerTests(
         organization: {
           enterprise: true,
           region: 'eu-west-1',
-          slug: 'the-blue-brand-3'
+          slug: process.env.VITE_TEST_SLUG
         },
         scope: 'market:all',
         test: true,
@@ -490,7 +492,7 @@ function runJWTBearerTests(
         organization: {
           enterprise: true,
           region: 'eu-west-1',
-          slug: 'the-blue-brand-3'
+          slug: process.env.VITE_TEST_SLUG
         },
         scope: 'market:all',
         test: true,
@@ -555,7 +557,7 @@ function runJWTBearerTests(
         organization: {
           enterprise: true,
           region: 'eu-west-1',
-          slug: 'the-blue-brand-3'
+          slug: process.env.VITE_TEST_SLUG
         },
         scope: 'market:all',
         test: true,
@@ -630,7 +632,7 @@ function runJWTBearerTests(
         organization: {
           enterprise: true,
           region: 'eu-west-1',
-          slug: 'the-blue-brand-3'
+          slug: process.env.VITE_TEST_SLUG
         },
         scope: 'market:all',
         test: true,
