@@ -1,7 +1,7 @@
 {
   "name": "@commercelayer/js-auth",
   "version": "6.0.1",
-  "description": "Commerce Layer Javascript Auth",
+  "description": "A JavaScript library designed to simplify authentication when interacting with the Commerce Layer API.",
   "repository": {
     "url": "https://github.com/commercelayer/commercelayer-js-auth.git"
   },
@@ -37,7 +37,8 @@
     "lint:fix": "eslint src --ext .ts,.tsx --fix",
     "test": "pnpm run lint && vitest run --silent",
     "test:watch": "vitest --silent",
-    "build": "tsup"
+    "build": "tsup",
+    "jsr:publish": "pnpm dlx jsr publish"
   },
   "publishConfig": {
     "access": "public"

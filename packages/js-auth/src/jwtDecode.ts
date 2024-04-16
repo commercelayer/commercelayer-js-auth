@@ -1,4 +1,4 @@
-import { decodeBase64URLSafe } from '#utils/base64.js'
+import { decodeBase64URLSafe } from './utils/base64.js'
 
 /**
  * Decode a Commerce Layer access token.
@@ -133,24 +133,49 @@ type JWTIntegration = JWTOrganizationBase & {
   }
 }
 
+/**
+ * Checks if the provided payload represents a `user`.
+ * @param payload The payload to be checked.
+ * @returns
+ */
 export function jwtIsUser(payload: Payload): payload is JWTUser {
   return payload.application.kind === 'user'
 }
 
+/**
+ * Checks if the provided payload represents a `dashboard`.
+ * @param payload The payload to be checked.
+ * @returns
+ */
 export function jwtIsDashboard(payload: Payload): payload is JWTDashboard {
   return payload.application.kind === 'dashboard'
 }
 
+/**
+ * Checks if the provided payload represents an `integration`.
+ * @param payload The payload to be checked.
+ * @returns
+ */
 export function jwtIsIntegration(payload: Payload): payload is JWTIntegration {
   return payload.application.kind === 'integration'
 }
 
+/**
+ * Checks if the provided payload represents a `sales_channel`.
+ * @param payload The payload to be checked.
+ * @returns
+ */
 export function jwtIsSalesChannel(
   payload: Payload
 ): payload is JWTSalesChannel {
   return payload.application.kind === 'sales_channel'
 }
 
+/**
+ * Checks if the provided payload represents a `webapp`.
+ * @param payload The payload to be checked.
+ * @returns
+ */
 export function jwtIsWebApp(payload: Payload): payload is JWTWebApp {
   return payload.application.kind === 'webapp'
 }

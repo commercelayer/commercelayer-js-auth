@@ -1,4 +1,4 @@
-import { encodeBase64URLSafe } from '#utils/base64.js'
+import { encodeBase64URLSafe } from './utils/base64.js'
 
 interface Owner {
   type: 'User' | 'Customer'

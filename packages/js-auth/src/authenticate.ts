@@ -2,11 +2,11 @@ import type {
   GrantType,
   AuthenticateOptions,
   AuthenticateReturn
-} from '#types/index.js'
+} from './types/index.js'
 
-import { camelCaseToSnakeCase } from '#utils/camelCaseToSnakeCase.js'
-import { mapKeys } from '#utils/mapKeys.js'
-import { snakeCaseToCamelCase } from '#utils/snakeCaseToCamelCase.js'
+import { camelCaseToSnakeCase } from './utils/camelCaseToSnakeCase.js'
+import { mapKeys } from './utils/mapKeys.js'
+import { snakeCaseToCamelCase } from './utils/snakeCaseToCamelCase.js'
 
 interface TokenJson {
   expires: Date
@@ -14,10 +14,34 @@ interface TokenJson {
   [key: string]: string | number | Date
 }
 
-export async function authenticate<G extends GrantType>(
-  grantType: G,
-  { domain = 'commercelayer.io', headers, ...options }: AuthenticateOptions<G>
-): Promise<AuthenticateReturn<G>> {
+/**
+ * Authenticate helper used to get the access token.
+ *
+ * _Please note that the authentication endpoint is subject to a [rate limit](https://docs.commercelayer.io/core/rate-limits)
+ * of **max 30 reqs / 1 min** both in live and test mode._
+ * @param grantType The type of OAuth 2.0 grant being used for authentication.
+ * @param options Authenticate options
+ * @returns
+ * @example
+ * ```ts
+ * import { authenticate } from '@commercelayer/js-auth'
+ *
+ * const auth = await authenticate('client_credentials', {
+ *   clientId: '{{ clientId }}',
+ *   scope: 'market:id:DGzAouppwn'
+ * })
+ *
+ * console.log(auth.accessToken)
+ * ```
+ */
+export async function authenticate<TGrantType extends GrantType>(
+  grantType: TGrantType,
+  {
+    domain = 'commercelayer.io',
+    headers,
+    ...options
+  }: AuthenticateOptions<TGrantType>
+): Promise<AuthenticateReturn<TGrantType>> {
   const body = mapKeys(
     {
       grant_type: grantType,
@@ -39,5 +63,8 @@ export async function authenticate<G extends GrantType>(
   const json: TokenJson = await response.json()
   json.expires = new Date(Date.now() + json.expires_in * 1000)
 
-  return mapKeys(json, snakeCaseToCamelCase) as unknown as AuthenticateReturn<G>
+  return mapKeys(
+    json,
+    snakeCaseToCamelCase
+  ) as unknown as AuthenticateReturn<TGrantType>
 }

@@ -1,8 +1,22 @@
-import type { RevokeOptions, RevokeReturn } from '#types/index.js'
+import type { RevokeOptions, RevokeReturn } from './types/index.js'
 
-import { camelCaseToSnakeCase } from '#utils/camelCaseToSnakeCase.js'
-import { mapKeys } from '#utils/mapKeys.js'
+import { camelCaseToSnakeCase } from './utils/camelCaseToSnakeCase.js'
+import { mapKeys } from './utils/mapKeys.js'
 
+/**
+ * Revoke a previously generated access token (refresh tokens included) before its natural expiration date.
+ *
+ * @param options Revoke options
+ * @returns
+ * @example
+ * ```ts
+ * await revoke({
+ *   clientId: '{{ integrationClientId }}',
+ *   clientSecret: '{{ integrationClientSecret }}',
+ *   token: authenticateResponse.accessToken
+ * })
+ * ```
+ */
 export async function revoke({
   domain = 'commercelayer.io',
   ...options

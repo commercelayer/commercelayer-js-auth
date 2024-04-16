@@ -1,11 +1,13 @@
-import type { TBaseOptions, TBaseReturn } from '#types/base.js'
+import type { TBaseOptions, TBaseReturn } from './base.js'
 
 /**
  * The password grant type is used by first-party clients to exchange a user's credentials for an access token.
  * @see https://docs.commercelayer.io/core/authentication/password
  */
 export interface TPasswordOptions extends TBaseOptions {
+  /** The customer's email address. */
   username: string
+  /** The customer's password */
   password: string
 }
 
