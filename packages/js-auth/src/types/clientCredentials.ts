@@ -5,5 +5,9 @@ import type { TBaseOptions } from './base.js'
  * @see https://docs.commercelayer.io/core/authentication/client-credentials
  */
 export interface TClientCredentialsOptions extends TBaseOptions {
+  /**
+   * Your application's client secret
+   * (required for [confidential](https://docs.commercelayer.io/core/authentication/client-credentials#integration) API credentials).
+   */
   clientSecret?: string
 }

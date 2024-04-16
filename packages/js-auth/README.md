@@ -1,6 +1,6 @@
 # Commerce Layer JS Auth
 
-A JavaScript Library wrapper that helps you use the Commerce Layer API for [Authentication](https://docs.commercelayer.io/developers/authentication).
+A JavaScript library designed to simplify [authentication](https://docs.commercelayer.io/developers/authentication) when interacting with the Commerce Layer API.
 
 ## What is Commerce Layer?
 

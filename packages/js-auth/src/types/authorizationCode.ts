@@ -6,8 +6,17 @@ import type { TPasswordReturn } from './password.js'
  * @see https://docs.commercelayer.io/core/authentication/authorization-code#getting-an-access-token
  */
 export interface TAuthorizationCodeOptions extends TBaseOptions {
+  /**
+   * The authorization code that [you got](https://docs.commercelayer.io/core/authentication/authorization-code#getting-an-authorization-code) from the redirect URI query string.
+   */
   code: string
+  /**
+   * Your application's redirect URI.
+   */
   redirectUri: string
+  /**
+   * Your application's client secret.
+   */
   clientSecret: string
 }
 

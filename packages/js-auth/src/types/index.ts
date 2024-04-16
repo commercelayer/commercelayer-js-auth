@@ -9,7 +9,7 @@ import type { TPasswordOptions, TPasswordReturn } from './password.js'
 import type { TRefreshTokenOptions } from './refreshToken.js'
 
 /**
- * The grant type.
+ * The type of OAuth 2.0 grant being used for authentication.
  */
 export type GrantType =
   | 'password'
@@ -18,6 +18,7 @@ export type GrantType =
   | 'authorization_code'
   | 'urn:ietf:params:oauth:grant-type:jwt-bearer'
 
+/** The options type for the `authenticate` helper. */
 export type AuthenticateOptions<TGrantType extends GrantType> =
   TGrantType extends 'urn:ietf:params:oauth:grant-type:jwt-bearer'
     ? TJwtBearerOptions
@@ -31,6 +32,7 @@ export type AuthenticateOptions<TGrantType extends GrantType> =
             ? TAuthorizationCodeOptions
             : never
 
+/** The return type of the `authenticate` helper. */
 export type AuthenticateReturn<TGrantType extends GrantType> =
   TGrantType extends 'urn:ietf:params:oauth:grant-type:jwt-bearer'
     ? TJwtBearerReturn
@@ -44,6 +46,7 @@ export type AuthenticateReturn<TGrantType extends GrantType> =
             ? TAuthorizationCodeReturn
             : never
 
+/** The options type for the `revoke` helper. */
 export type RevokeOptions = Pick<TBaseOptions, 'clientId' | 'domain'> & {
   /** Your application's client secret (required for confidential API credentials and non-confidential API credentials without a customer or a user in the JWT only). */
   clientSecret?: string
@@ -51,4 +54,5 @@ export type RevokeOptions = Pick<TBaseOptions, 'clientId' | 'domain'> & {
   token: string
 }
 
+/** The return type of the `revoke` helper. */
 export type RevokeReturn = Pick<TError, 'errors'>

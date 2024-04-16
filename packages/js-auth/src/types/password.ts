@@ -5,7 +5,9 @@ import type { TBaseOptions, TBaseReturn } from './base.js'
  * @see https://docs.commercelayer.io/core/authentication/password
  */
 export interface TPasswordOptions extends TBaseOptions {
+  /** The customer's email address. */
   username: string
+  /** The customer's password */
   password: string
 }
 
