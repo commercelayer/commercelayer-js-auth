@@ -1,7 +1,7 @@
 import { authenticate, revoke } from './index.js'
 
 const integrationClientId = process.env.VITE_TEST_INTEGRATION_CLIENT_ID
-const clientSecret = process.env.VITE_TEST_CLIENT_SECRET
+const clientSecret = process.env.VITE_TEST_INTEGRATION_CLIENT_SECRET
 const domain = process.env.VITE_TEST_DOMAIN
 
 describe('Revoke', () => {

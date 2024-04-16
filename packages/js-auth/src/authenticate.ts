@@ -9,9 +9,10 @@ import { mapKeys } from './utils/mapKeys.js'
 import { snakeCaseToCamelCase } from './utils/snakeCaseToCamelCase.js'
 
 interface TokenJson {
+  errors?: unknown
   expires: Date
   expires_in: number
-  [key: string]: string | number | Date
+  [key: string]: unknown
 }
 
 /**
@@ -61,7 +62,10 @@ export async function authenticate<TGrantType extends GrantType>(
   })
 
   const json: TokenJson = await response.json()
-  json.expires = new Date(Date.now() + json.expires_in * 1000)
+
+  if (json.errors == null) {
+    json.expires = new Date(Date.now() + json.expires_in * 1000)
+  }
 
   return mapKeys(
     json,
