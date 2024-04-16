@@ -50,7 +50,6 @@
     "jsonwebtoken": "^9.0.2",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5",
-    "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^1.5.0"
   },
   "engines": {
