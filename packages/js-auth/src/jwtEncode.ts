@@ -38,15 +38,21 @@ export async function createAssertion({ payload }: Assertion): Promise<string> {
   return await jwtEncode(payload, 'cl')
 }
 
+/** RequireAtLeastOne helps create a type where at least one of the properties of an interface (can be any property) is required to exist. */
+type RequireAtLeastOne<T> = {
+  [K in keyof T]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<keyof T, K>>>
+}[keyof T]
+
 interface Assertion {
   /** Assertion payload. */
   payload: {
-    'https://commercelayer.io/claims': {
+    /** At least one of `owner` or `custom_claim` is required. You cannot use an empty object. */
+    'https://commercelayer.io/claims': RequireAtLeastOne<{
       /** The customer or user you want to make the calls on behalf of. */
-      owner: Owner
+      owner?: Owner
       /** Any other information (key/value pairs) you want to enrich the token with. */
       custom_claim?: Record<string, unknown>
-    }
+    }>
   }
 }
 

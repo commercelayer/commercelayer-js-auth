@@ -9,32 +9,16 @@ const username = process.env.VITE_TEST_USERNAME
 const password = process.env.VITE_TEST_PASSWORD
 
 describe('Organization auth', () => {
-  it('Get a sales channel token', async () => {
-    const res = await authenticate('client_credentials', {
-      clientId,
-      domain
-    })
-
-    expect(res).toHaveProperty('accessToken')
-    expect(res).toHaveProperty('tokenType')
-    expect(res).toHaveProperty('expiresIn')
-    expect(res).toHaveProperty('scope')
-    expect(res).toHaveProperty('createdAt')
-    expect(res).toHaveProperty('expires')
-    expect(res.expires).toBeInstanceOf(Date)
-    expect(res.expires.getTime()).toBeGreaterThan(Date.now())
-  })
-
-  it('Get an error requesting a sales channel token', async () => {
-    const res = await authenticate('client_credentials', {
+  it('should throw an error when the clientId is not valid.', async () => {
+    const response = await authenticate('client_credentials', {
       clientId: 'wrong-client-id',
       domain,
       scope
     })
 
-    expect(res).toHaveProperty('errors')
-    expect(res.errors).toBeInstanceOf(Array)
-    expect(res.errors?.[0]).toMatchObject({
+    expect(response).toHaveProperty('errors')
+    expect(response.errors).toBeInstanceOf(Array)
+    expect(response.errors?.[0]).toMatchObject({
       code: 'UNAUTHORIZED',
       detail:
         'Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method.',
@@ -42,133 +26,352 @@ describe('Organization auth', () => {
       title: 'invalid_client'
     })
 
-    expect(res).not.toHaveProperty('accessToken')
-    expect(res).not.toHaveProperty('tokenType')
-    expect(res).not.toHaveProperty('expiresIn')
-    expect(res).not.toHaveProperty('scope')
-    expect(res).not.toHaveProperty('createdAt')
+    expect(response).not.toHaveProperty('accessToken')
+    expect(response).not.toHaveProperty('tokenType')
+    expect(response).not.toHaveProperty('expiresIn')
+    expect(response).not.toHaveProperty('scope')
+    expect(response).not.toHaveProperty('createdAt')
   })
 
-  it('Get a integration token', async () => {
-    const res = await authenticate('client_credentials', {
+  it('should return an access token with the application kind `sales_channel` (grantType: `client_credentials`).', async () => {
+    const response = await authenticate('client_credentials', {
+      clientId,
+      domain
+    })
+
+    expect(response).keys(
+      'accessToken',
+      'createdAt',
+      'expires',
+      'expiresIn',
+      'scope',
+      'tokenType'
+    )
+
+    expect(response.expires).toBeInstanceOf(Date)
+    expect(response.expires.getTime()).toBeGreaterThan(Date.now())
+
+    expect(jwtDecode(response.accessToken)).toMatchObject({
+      header: {
+        alg: 'RS512',
+        typ: 'JWT'
+      },
+      payload: {
+        application: {
+          kind: 'sales_channel',
+          public: true
+        },
+        organization: {
+          slug: 'the-blue-brand-3',
+          enterprise: true,
+          region: 'eu-west-1'
+        },
+        iss: 'https://commercelayer.io',
+        scope: 'market:all',
+        test: true
+      }
+    })
+
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      'organization.id'
+    )
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      'application.id'
+    )
+  })
+
+  it('should return an access token with the application kind `integration` (grantType: `client_credentials`).', async () => {
+    const response = await authenticate('client_credentials', {
       clientId: integrationClientId,
       clientSecret,
       domain
     })
 
-    expect(res).toHaveProperty('accessToken')
-    expect(res).toHaveProperty('tokenType')
-    expect(res).toHaveProperty('expiresIn')
-    expect(res).toHaveProperty('scope')
-    expect(res).toHaveProperty('createdAt')
-  })
+    expect(response).keys(
+      'accessToken',
+      'createdAt',
+      'expires',
+      'expiresIn',
+      'scope',
+      'tokenType'
+    )
 
-  it('Get a customer token', async () => {
-    const res = await authenticate('password', {
-      clientId,
-      domain,
-      username,
-      password,
-      scope
-    })
+    expect(response.expires).toBeInstanceOf(Date)
+    expect(response.expires.getTime()).toBeGreaterThan(Date.now())
 
-    expect(res).toHaveProperty('accessToken')
-    expect(res).toHaveProperty('tokenType')
-    expect(res).toHaveProperty('expiresIn')
-    expect(res).toHaveProperty('scope')
-    expect(res).toHaveProperty('createdAt')
-    expect(res).toHaveProperty('ownerId')
-    expect(res).toHaveProperty('ownerType')
-    expect(res).toHaveProperty('refreshToken')
-  })
-
-  it('Refresh a customer token', async () => {
-    const res = await authenticate('password', {
-      clientId,
-      domain,
-      username,
-      password,
-      scope
-    })
-
-    expect(res).toHaveProperty('accessToken')
-    expect(res).toHaveProperty('tokenType')
-    expect(res).toHaveProperty('expiresIn')
-    expect(res).toHaveProperty('scope')
-    expect(res).toHaveProperty('createdAt')
-    expect(res).toHaveProperty('ownerId')
-    expect(res).toHaveProperty('ownerType')
-    expect(res).toHaveProperty('refreshToken')
-
-    const res2 = await authenticate('refresh_token', {
-      clientId,
-      domain,
-      refreshToken: res.refreshToken,
-      scope
-    })
-
-    expect(res2).toHaveProperty('accessToken')
-    expect(res2).toHaveProperty('tokenType')
-    expect(res2).toHaveProperty('expiresIn')
-    expect(res2).toHaveProperty('scope')
-    expect(res2).toHaveProperty('createdAt')
-    expect(res2).toHaveProperty('ownerId')
-    expect(res2).toHaveProperty('ownerType')
-    expect(res2).toHaveProperty('refreshToken')
-  })
-
-  it('Set a custom header', async () => {
-    const res = await authenticate('password', {
-      clientId,
-      domain,
-      username,
-      password,
-      scope,
-      headers: {
-        'X-My-Header': 'My-Value'
+    expect(jwtDecode(response.accessToken)).toMatchObject({
+      header: {
+        alg: 'RS512',
+        typ: 'JWT'
+      },
+      payload: {
+        application: {
+          kind: 'integration',
+          public: false
+        },
+        organization: {
+          slug: 'the-blue-brand-3',
+          enterprise: true,
+          region: 'eu-west-1'
+        },
+        iss: 'https://commercelayer.io',
+        scope: 'market:all',
+        test: true
       }
     })
 
-    expect(res).toHaveProperty('accessToken')
-    expect(res).toHaveProperty('tokenType')
-    expect(res).toHaveProperty('expiresIn')
-    expect(res).toHaveProperty('scope')
-    expect(res).toHaveProperty('createdAt')
-    expect(res).toHaveProperty('ownerId')
-    expect(res).toHaveProperty('ownerType')
-    expect(res).toHaveProperty('refreshToken')
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      'organization.id'
+    )
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      'application.id'
+    )
+  })
+
+  it('should return an access token with the application kind `sales_channel` (grantType: `password`).', async () => {
+    const response = await authenticate('password', {
+      clientId,
+      domain,
+      username,
+      password,
+      scope
+    })
+
+    expect(response).keys(
+      'accessToken',
+      'createdAt',
+      'expires',
+      'expiresIn',
+      'scope',
+      'tokenType',
+      'ownerId',
+      'ownerType',
+      'refreshToken'
+    )
+
+    expect(response.expires).toBeInstanceOf(Date)
+    expect(response.expires.getTime()).toBeGreaterThan(Date.now())
+
+    expect(jwtDecode(response.accessToken)).toMatchObject({
+      header: {
+        alg: 'RS512',
+        typ: 'JWT'
+      },
+      payload: {
+        application: {
+          kind: 'sales_channel',
+          public: true
+        },
+        organization: {
+          slug: 'the-blue-brand-3',
+          enterprise: true,
+          region: 'eu-west-1'
+        },
+        owner: {
+          type: 'Customer',
+          id: process.env.VITE_TEST_CUSTOMER_ID
+        },
+        market: {
+          geocoder_id: null,
+          allows_external_prices: false
+        },
+        iss: 'https://commercelayer.io',
+        scope,
+        test: true
+      }
+    })
+
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      'organization.id'
+    )
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      'application.id'
+    )
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty('market.id')
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      'market.price_list_id'
+    )
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      'market.stock_location_ids'
+    )
+  })
+
+  it('should be able to refresh a customer token.', async () => {
+    const customerResponse = await authenticate('password', {
+      clientId,
+      domain,
+      username,
+      password,
+      scope
+    })
+
+    const refreshResponse = await authenticate('refresh_token', {
+      clientId,
+      domain,
+      refreshToken: customerResponse.refreshToken,
+      scope
+    })
+
+    expect(refreshResponse).keys(
+      'accessToken',
+      'createdAt',
+      'expires',
+      'expiresIn',
+      'scope',
+      'tokenType',
+      'ownerId',
+      'ownerType',
+      'refreshToken'
+    )
+
+    expect(refreshResponse.expires).toBeInstanceOf(Date)
+    expect(refreshResponse.expires.getTime()).toBeGreaterThan(Date.now())
+
+    expect(jwtDecode(refreshResponse.accessToken)).toMatchObject({
+      header: {
+        alg: 'RS512',
+        typ: 'JWT'
+      },
+      payload: {
+        application: {
+          kind: 'sales_channel',
+          public: true
+        },
+        organization: {
+          slug: 'the-blue-brand-3',
+          enterprise: true,
+          region: 'eu-west-1'
+        },
+        owner: {
+          type: 'Customer',
+          id: process.env.VITE_TEST_CUSTOMER_ID
+        },
+        market: {
+          geocoder_id: null,
+          allows_external_prices: false
+        },
+        iss: 'https://commercelayer.io',
+        scope,
+        test: true
+      }
+    })
+
+    expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
+      'organization.id'
+    )
+    expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
+      'application.id'
+    )
+    expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
+      'market.id'
+    )
+    expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
+      'market.price_list_id'
+    )
+    expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
+      'market.stock_location_ids'
+    )
   })
 })
 
+describe.skip('authorization_code', () => {})
+
 describe('Provisioning auth', () => {
-  it('Get a provisioning token', async () => {
-    const res = await authenticate('client_credentials', {
+  it('should return an access token with the application kind `user` (grantType: `client_credentials`)', async () => {
+    const response = await authenticate('client_credentials', {
       domain: process.env.VITE_TEST_PROVISIONING_DOMAIN,
       clientId: process.env.VITE_TEST_PROVISIONING_CLIENT_ID,
       clientSecret: process.env.VITE_TEST_PROVISIONING_CLIENT_SECRET
     })
 
-    expect(res).toHaveProperty('accessToken')
-    expect(res).toHaveProperty('tokenType')
-    expect(res).toHaveProperty('expiresIn')
-    expect(res).toHaveProperty('scope')
-    expect(res).toHaveProperty('createdAt')
-    expect(res).toHaveProperty('expires')
-    expect(res.expires).toBeInstanceOf(Date)
-    expect(res.expires.getTime()).toBeGreaterThan(Date.now())
+    expect(response).keys(
+      'accessToken',
+      'createdAt',
+      'expires',
+      'expiresIn',
+      'scope',
+      'tokenType'
+    )
+
+    expect(response.expires).toBeInstanceOf(Date)
+    expect(response.expires.getTime()).toBeGreaterThan(Date.now())
+
+    expect(jwtDecode(response.accessToken)).toMatchObject({
+      header: {
+        alg: 'RS512',
+        typ: 'JWT'
+      },
+      payload: {
+        iss: 'https://commercelayer.io',
+        application: {
+          kind: 'user',
+          public: false
+        },
+        scope: 'provisioning-api',
+        test: false
+      }
+    })
+
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty('user.id')
   })
 })
 
 describe('JWT Bearer', () => {
-  it('should throw an assertion when the assertion is empty.', async () => {
+  describe('with a `sales_channel` grant type', () => {
+    runJWTBearerTests(
+      process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID,
+      process.env.VITE_TEST_SALES_CHANNEL_CLIENT_SECRET,
+      {
+        application: {
+          kind: 'sales_channel',
+          public: true
+        }
+      }
+    )
+  })
+
+  describe('with an `integration` grant type', () => {
+    runJWTBearerTests(
+      process.env.VITE_TEST_INTEGRATION_CLIENT_ID,
+      process.env.VITE_TEST_INTEGRATION_CLIENT_SECRET,
+      {
+        application: {
+          kind: 'integration',
+          public: false
+        }
+      }
+    )
+  })
+
+  describe('with an `authorization_code` grant type', () => {
+    runJWTBearerTests(
+      process.env.VITE_TEST_AUTHORIZATION_CODE_CLIENT_ID,
+      process.env.VITE_TEST_AUTHORIZATION_CODE_CLIENT_SECRET,
+      {
+        application: {
+          kind: 'webapp',
+          public: false
+        }
+      }
+    )
+  })
+})
+
+function runJWTBearerTests(
+  clientId: string,
+  clientSecret: string,
+  overridePayload: Record<string, unknown> = {}
+): void {
+  it('should throw an assertion error when the assertion is empty.', async () => {
     const response = await authenticate(
       'urn:ietf:params:oauth:grant-type:jwt-bearer',
       {
-        clientId: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID,
-        clientSecret: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_SECRET,
+        clientId,
+        clientSecret,
         domain: process.env.VITE_TEST_DOMAIN,
         assertion: await createAssertion({
           payload: {
+            // @ts-expect-error I want to test this scenario
             'https://commercelayer.io/claims': {}
           }
         })
@@ -189,8 +392,8 @@ describe('JWT Bearer', () => {
     const response = await authenticate(
       'urn:ietf:params:oauth:grant-type:jwt-bearer',
       {
-        clientId: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID,
-        clientSecret: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_SECRET,
+        clientId,
+        clientSecret,
         domain: process.env.VITE_TEST_DOMAIN,
         assertion: await createAssertion({
           payload: {
@@ -220,10 +423,6 @@ describe('JWT Bearer', () => {
         typ: 'JWT'
       },
       payload: {
-        application: {
-          kind: 'sales_channel',
-          public: true
-        },
         custom_claim: {
           app: 'supabase'
         },
@@ -234,17 +433,82 @@ describe('JWT Bearer', () => {
           slug: 'the-blue-brand-3'
         },
         scope: 'market:all',
-        test: true
+        test: true,
+        ...overridePayload
       }
     })
+
+    expect(jwtDecode(response.accessToken).payload).not.toHaveProperty('owner')
+  })
+
+  it('should return an access token with a `User` as the owner.', async () => {
+    const response = await authenticate(
+      'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      {
+        clientId,
+        clientSecret,
+        domain: process.env.VITE_TEST_DOMAIN,
+        assertion: await createAssertion({
+          payload: {
+            'https://commercelayer.io/claims': {
+              owner: {
+                type: 'User',
+                id: process.env.VITE_TEST_USER_ID
+              }
+            }
+          }
+        })
+      }
+    )
+
+    expect(response).keys(
+      'accessToken',
+      'createdAt',
+      'expires',
+      'expiresIn',
+      'refreshToken',
+      'scope',
+      'tokenType',
+      'ownerType',
+      'ownerId'
+    )
+
+    expect(response).toHaveProperty('ownerType', 'user')
+    expect(response).toHaveProperty('ownerId', process.env.VITE_TEST_USER_ID)
+
+    expect(jwtDecode(response.accessToken)).toMatchObject({
+      header: {
+        alg: 'RS512',
+        typ: 'JWT'
+      },
+      payload: {
+        owner: {
+          type: 'User',
+          id: process.env.VITE_TEST_USER_ID
+        },
+        iss: 'https://commercelayer.io',
+        organization: {
+          enterprise: true,
+          region: 'eu-west-1',
+          slug: 'the-blue-brand-3'
+        },
+        scope: 'market:all',
+        test: true,
+        ...overridePayload
+      }
+    })
+
+    expect(jwtDecode(response.accessToken).payload).not.toHaveProperty(
+      'custom_claim'
+    )
   })
 
   it('should return an access token with a `Customer` as the owner.', async () => {
     const response = await authenticate(
       'urn:ietf:params:oauth:grant-type:jwt-bearer',
       {
-        clientId: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID,
-        clientSecret: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_SECRET,
+        clientId,
+        clientSecret,
         domain: process.env.VITE_TEST_DOMAIN,
         assertion: await createAssertion({
           payload: {
@@ -283,10 +547,6 @@ describe('JWT Bearer', () => {
         typ: 'JWT'
       },
       payload: {
-        application: {
-          kind: 'sales_channel',
-          public: true
-        },
         owner: {
           type: 'Customer',
           id: process.env.VITE_TEST_CUSTOMER_ID
@@ -298,28 +558,39 @@ describe('JWT Bearer', () => {
           slug: 'the-blue-brand-3'
         },
         scope: 'market:all',
-        test: true
+        test: true,
+        ...overridePayload
       }
     })
+
+    expect(jwtDecode(response.accessToken).payload).not.toHaveProperty(
+      'custom_claim'
+    )
   })
 
-  it('should return an access token with a `User` as the owner.', async () => {
+  it('should return an access token with a `Customer` as the owner and custom claims.', async () => {
+    const assertion = await createAssertion({
+      payload: {
+        'https://commercelayer.io/claims': {
+          owner: {
+            type: 'Customer',
+            id: process.env.VITE_TEST_CUSTOMER_ID
+          },
+          custom_claim: {
+            first_name: 'John',
+            last_name: 'Doe'
+          }
+        }
+      }
+    })
+
     const response = await authenticate(
       'urn:ietf:params:oauth:grant-type:jwt-bearer',
       {
-        clientId: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID,
-        clientSecret: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_SECRET,
+        clientId,
+        clientSecret,
         domain: process.env.VITE_TEST_DOMAIN,
-        assertion: await createAssertion({
-          payload: {
-            'https://commercelayer.io/claims': {
-              owner: {
-                type: 'User',
-                id: process.env.VITE_TEST_USER_ID
-              }
-            }
-          }
-        })
+        assertion
       }
     )
 
@@ -335,8 +606,11 @@ describe('JWT Bearer', () => {
       'ownerId'
     )
 
-    expect(response).toHaveProperty('ownerType', 'user')
-    expect(response).toHaveProperty('ownerId', process.env.VITE_TEST_USER_ID)
+    expect(response).toHaveProperty('ownerType', 'customer')
+    expect(response).toHaveProperty(
+      'ownerId',
+      process.env.VITE_TEST_CUSTOMER_ID
+    )
 
     expect(jwtDecode(response.accessToken)).toMatchObject({
       header: {
@@ -344,13 +618,13 @@ describe('JWT Bearer', () => {
         typ: 'JWT'
       },
       payload: {
-        application: {
-          kind: 'sales_channel',
-          public: true
-        },
         owner: {
-          type: 'User',
-          id: process.env.VITE_TEST_USER_ID
+          type: 'Customer',
+          id: process.env.VITE_TEST_CUSTOMER_ID
+        },
+        custom_claim: {
+          first_name: 'John',
+          last_name: 'Doe'
         },
         iss: 'https://commercelayer.io',
         organization: {
@@ -359,8 +633,9 @@ describe('JWT Bearer', () => {
           slug: 'the-blue-brand-3'
         },
         scope: 'market:all',
-        test: true
+        test: true,
+        ...overridePayload
       }
     })
   })
-})
+}
