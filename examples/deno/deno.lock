@@ -1,10 +1,19 @@
 {
   "version": "3",
-  "redirects": {
-    "https://esm.sh/@commercelayer/js-auth": "https://esm.sh/@commercelayer/js-auth@5.2.0"
+  "packages": {
+    "specifiers": {
+      "jsr:@commercelayer/js-auth": "jsr:@commercelayer/js-auth@6.1.0"
+    },
+    "jsr": {
+      "@commercelayer/js-auth@6.1.0": {
+        "integrity": "fbd5b8c2816f7a4ae984bae0ef04b0501d947aa69904712ac9e4a3fe62b48f68"
+      }
+    }
   },
-  "remote": {
-    "https://esm.sh/@commercelayer/js-auth@5.2.0": "8f609d55ba1a1ecc0eebdf01a84f88ffbd472aff2c6b547c5f6fd3a1f0b9f0d0",
-    "https://esm.sh/v135/@commercelayer/js-auth@5.2.0/denonext/js-auth.mjs": "35d87bc27c81a23b2a4d3949f5d536874b46236fb3c74fb09052feb114d212b0"
+  "remote": {},
+  "workspace": {
+    "dependencies": [
+      "jsr:@commercelayer/js-auth@^6.1.0"
+    ]
   }
 }
