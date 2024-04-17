@@ -1,0 +1,58 @@
+name: Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run tests against'
+        default: 'staging'
+        type: environment
+        required: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      - name: pnpm 🧰
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8.x
+
+      - name: Node 🧰
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'pnpm'
+
+      - name: Install 📦
+        run: pnpm install
+
+      - name: Run Audit 🔬
+        run: pnpm audit || exit 0
+
+      - name: Run Tests 🧪
+        run: pnpm test
+        env:
+          VITE_TEST_SALES_CHANNEL_CLIENT_ID: ${{ secrets.VITE_TEST_SALES_CHANNEL_CLIENT_ID }}
+          VITE_TEST_SALES_CHANNEL_CLIENT_SECRET: ${{ secrets.VITE_TEST_SALES_CHANNEL_CLIENT_SECRET }}
+          VITE_TEST_INTEGRATION_CLIENT_ID: ${{ secrets.VITE_TEST_INTEGRATION_CLIENT_ID }}
+          VITE_TEST_INTEGRATION_CLIENT_SECRET: ${{ secrets.VITE_TEST_INTEGRATION_CLIENT_SECRET }}
+          VITE_TEST_AUTHORIZATION_CODE_CLIENT_ID: ${{ secrets.VITE_TEST_AUTHORIZATION_CODE_CLIENT_ID }}
+          VITE_TEST_AUTHORIZATION_CODE_CLIENT_SECRET: ${{ secrets.VITE_TEST_AUTHORIZATION_CODE_CLIENT_SECRET }}
+          VITE_TEST_SLUG: ${{ vars.VITE_TEST_SLUG }}
+          VITE_TEST_USER_ID: ${{ secrets.VITE_TEST_USER_ID }}
+          VITE_TEST_CUSTOMER_ID: ${{ secrets.VITE_TEST_CUSTOMER_ID }}
+          VITE_TEST_DOMAIN: ${{ vars.VITE_TEST_DOMAIN }}
+          VITE_TEST_SCOPE: ${{ secrets.VITE_TEST_SCOPE }}
+          VITE_TEST_USERNAME: ${{ secrets.VITE_TEST_USERNAME }}
+          VITE_TEST_PASSWORD: ${{ secrets.VITE_TEST_PASSWORD }}
+          VITE_TEST_PROVISIONING_DOMAIN: ${{ vars.VITE_TEST_PROVISIONING_DOMAIN }}
+          VITE_TEST_PROVISIONING_CLIENT_ID: ${{ secrets.VITE_TEST_PROVISIONING_CLIENT_ID }}
+          VITE_TEST_PROVISIONING_CLIENT_SECRET: ${{ secrets.VITE_TEST_PROVISIONING_CLIENT_SECRET }}
