@@ -31,6 +31,9 @@ A JavaScript library designed to simplify [authentication](https://docs.commerce
 
 To get started with Commerce Layer JS Auth, you need to install it and add it to your project.
 
+[![NPM](https://img.shields.io/npm/v/%40commercelayer%2Fjs-auth?style=for-the-badge&labelColor=%23C90501&color=173B4A)](https://www.npmjs.com/package/@commercelayer/js-auth)
+[![JSR](https://img.shields.io/jsr/v/%40commercelayer/js-auth?style=for-the-badge&labelColor=E2CB23&color=173B4A)](https://jsr.io/@commercelayer/js-auth)
+
 ### Installation
 
 Commerce Layer JS Auth is available as an npm package.
