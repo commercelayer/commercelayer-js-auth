@@ -10,18 +10,21 @@
     "build": "pnpm --filter js-auth build",
     "prepare": "husky install",
     "test": "pnpm --filter js-auth test",
+    "test:production": "pnpm --filter js-auth test -- --mode production",
     "test:watch": "pnpm --filter js-auth test:watch",
     "make:version": "lerna version --no-private",
     "example:cjs": "pnpm --filter cjs start",
     "example:esm": "pnpm --filter esm start",
     "example:esm:serve": "pnpm --filter esm serve",
-    "version": "node update-jsr-version.js && git add ."
+    "version": "node update-jsr-version.js && git add .",
+    "dep:major": "pnpm dlx npm-check-updates --packageFile '**/package.json' -u",
+    "dep:minor": "pnpm dep:major -t minor"
   },
   "devDependencies": {
-    "@commercelayer/eslint-config-ts": "^1.3.0",
+    "@commercelayer/eslint-config-ts": "^1.4.5",
     "husky": "^9.0.11",
     "lerna": "^8.1.2",
     "replace-in-file": "^7.1.0",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.5"
   }
 }

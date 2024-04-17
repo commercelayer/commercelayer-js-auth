@@ -84,6 +84,11 @@ type JWTOrganizationBase = JWTBase & {
     enterprise: boolean
     region: string
   }
+  /** The owner (if any) authenticating to the APIs. */
+  owner?: {
+    id: string
+    type: 'Customer' | 'User'
+  }
   /**
    * Any other information (key/value pairs) you want to enrich the token with,
    * when using the [JWT Bearer flow](https://docs.commercelayer.io/core/authentication/jwt-bearer).
@@ -102,27 +107,20 @@ type JWTOrganizationBase = JWTBase & {
   }
 }
 
-type JWTWebApp = JWTOrganizationBase & {
+type JWTWebApp = SetRequired<JWTOrganizationBase, 'owner'> & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
     kind: 'webapp'
   }
-  /** The owner (if any) authenticating to the APIs. */
-  owner: {
-    id: string
-    type: 'User'
-  }
 }
+
+/** Create a type that makes the given keys required. The remaining keys are kept as is. */
+type SetRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
 type JWTSalesChannel = JWTOrganizationBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
     kind: 'sales_channel'
-  }
-  /** The owner (if any) authenticating to the APIs. */
-  owner?: {
-    id: string
-    type: 'Customer'
   }
 }
 
