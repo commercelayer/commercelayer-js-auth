@@ -13,9 +13,6 @@
     "test:production": "pnpm --filter js-auth test -- --mode production",
     "test:watch": "pnpm --filter js-auth test:watch",
     "make:version": "lerna version --no-private",
-    "example:cjs": "pnpm --filter cjs start",
-    "example:esm": "pnpm --filter esm start",
-    "example:esm:serve": "pnpm --filter esm serve",
     "version": "node update-jsr-version.js && git add .",
     "dep:major": "pnpm dlx npm-check-updates --packageFile '**/package.json' -u",
     "dep:minor": "pnpm dep:major -t minor"
@@ -26,5 +23,8 @@
     "lerna": "^8.1.2",
     "replace-in-file": "^7.1.0",
     "typescript": "^5.4.5"
+  },
+  "resolutions": {
+    "tar": "^6.2.1"
   }
 }
