@@ -54,7 +54,7 @@ interface JWTBase {
   iss: string
 }
 
-type JWTUser = JWTBase & {
+export type JWTUser = JWTBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
     kind: 'user'
@@ -65,7 +65,7 @@ type JWTUser = JWTBase & {
   }
 }
 
-type JWTDashboard = JWTBase & {
+export type JWTDashboard = JWTBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
     kind: 'dashboard'
@@ -107,7 +107,7 @@ type JWTOrganizationBase = JWTBase & {
   }
 }
 
-type JWTWebApp = SetRequired<JWTOrganizationBase, 'owner'> & {
+export type JWTWebApp = SetRequired<JWTOrganizationBase, 'owner'> & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
     kind: 'webapp'
@@ -117,14 +117,14 @@ type JWTWebApp = SetRequired<JWTOrganizationBase, 'owner'> & {
 /** Create a type that makes the given keys required. The remaining keys are kept as is. */
 type SetRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
-type JWTSalesChannel = JWTOrganizationBase & {
+export type JWTSalesChannel = JWTOrganizationBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
     kind: 'sales_channel'
   }
 }
 
-type JWTIntegration = JWTOrganizationBase & {
+export type JWTIntegration = JWTOrganizationBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
     kind: 'integration'
