@@ -7,7 +7,12 @@ export {
   jwtIsIntegration,
   jwtIsSalesChannel,
   jwtIsUser,
-  jwtIsWebApp
+  jwtIsWebApp,
+  type JWTDashboard,
+  type JWTIntegration,
+  type JWTSalesChannel,
+  type JWTUser,
+  type JWTWebApp
 } from './jwtDecode.js'
 
 export { createAssertion } from './jwtEncode.js'
