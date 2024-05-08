@@ -19,7 +19,7 @@ jobs:
       - name: pnpm 🧰
         uses: pnpm/action-setup@v3
         with:
-          version: 8.x
+          version: 9.x
 
       - name: Node 🧰
         uses: actions/setup-node@v4
@@ -28,10 +28,13 @@ jobs:
           cache: 'pnpm'
 
       - name: Install 📦
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build 🛠
         run: pnpm build
+
+      - name: Uncommitted changes 🔎
+        run: git status
 
       - name: Publish 🚀 PRODUCTION on JSR.io
         if: '!github.event.release.prerelease'
