@@ -54,6 +54,9 @@ interface JWTBase {
   iss: string
 }
 
+/**
+ * A JWT payload that represents a `user`.
+ */
 export type JWTUser = JWTBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
@@ -65,6 +68,9 @@ export type JWTUser = JWTBase & {
   }
 }
 
+/**
+ * A JWT payload that represents a `dashboard`.
+ */
 export type JWTDashboard = JWTBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
@@ -107,6 +113,9 @@ type JWTOrganizationBase = JWTBase & {
   }
 }
 
+/**
+ * A JWT payload that represents a `webapp`.
+ */
 export type JWTWebApp = SetRequired<JWTOrganizationBase, 'owner'> & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
@@ -117,6 +126,9 @@ export type JWTWebApp = SetRequired<JWTOrganizationBase, 'owner'> & {
 /** Create a type that makes the given keys required. The remaining keys are kept as is. */
 type SetRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 
+/**
+ * A JWT payload that represents a `sales_channel`.
+ */
 export type JWTSalesChannel = JWTOrganizationBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
@@ -124,6 +136,9 @@ export type JWTSalesChannel = JWTOrganizationBase & {
   }
 }
 
+/**
+ * A JWT payload that represents an `integration`.
+ */
 export type JWTIntegration = JWTOrganizationBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {

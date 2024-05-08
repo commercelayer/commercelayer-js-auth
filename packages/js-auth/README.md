@@ -54,7 +54,7 @@ pnpm add @commercelayer/js-auth
 To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/) authorization flow by using a valid application as the client.
 
 | Grant type             | Sales channel | Integration | Webapp |
-| ---------------------- | ------------- | ----------- | ------ |
+| ---------------------- | :-----------: | :---------: | :----: |
 | **Client credentials** | ✅            | ✅          |        |
 | **Password**           | ✅            |             |        |
 | **Refresh token**      | ✅            |             | ✅     |
