@@ -87,7 +87,8 @@ Sales channel applications use the [client credentials](https://docs.commercelay
 import { authenticate } from '@commercelayer/js-auth'
 
 const auth = await authenticate('client_credentials', {
-  clientId: 'your-client-id'
+  clientId: 'your-client-id',
+  scope: 'market:code:europe'
 })
 
 console.log('My access token: ', auth.accessToken)
@@ -109,6 +110,7 @@ import { authenticate } from '@commercelayer/js-auth'
 
 const auth = await authenticate('password', {
   clientId: 'your-client-id',
+  scope: 'market:code:europe',
   username: 'john@example.com',
   password: 'secret'
 })
@@ -125,6 +127,7 @@ import { authenticate } from '@commercelayer/js-auth'
 
 const newToken = await authenticate('refresh_token', {
   clientId: 'your-client-id',
+  scope: 'market:code:europe',
   refreshToken: 'your-refresh-token'
 })
 ```
