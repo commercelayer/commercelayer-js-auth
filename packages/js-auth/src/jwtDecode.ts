@@ -106,7 +106,6 @@ type JWTOrganizationBase = JWTBase & {
    */
   market?: {
     id: string[]
-    price_list_id: string
     stock_location_ids: string[]
     geocoder_id: string | null
     allows_external_prices: boolean

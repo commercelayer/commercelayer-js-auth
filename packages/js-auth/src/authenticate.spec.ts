@@ -189,9 +189,6 @@ describe('Organization auth', () => {
     )
     expect(jwtDecode(response.accessToken).payload).toHaveProperty('market.id')
     expect(jwtDecode(response.accessToken).payload).toHaveProperty(
-      'market.price_list_id'
-    )
-    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
       'market.stock_location_ids'
     )
   })
@@ -264,9 +261,6 @@ describe('Organization auth', () => {
     )
     expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
       'market.id'
-    )
-    expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
-      'market.price_list_id'
     )
     expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
       'market.stock_location_ids'
