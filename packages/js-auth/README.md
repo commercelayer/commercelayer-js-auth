@@ -1,6 +1,8 @@
 # Commerce Layer JS Auth
 
-A JavaScript library designed to simplify [authentication](https://docs.commercelayer.io/developers/authentication) when interacting with the Commerce Layer API.
+A lightweight JavaScript library designed to simplify [authentication](https://docs.commercelayer.io/developers/authentication) when interacting with the Commerce Layer API.
+
+It works everywhere. On your browser, server, or at the edge.
 
 ## What is Commerce Layer?
 
@@ -34,6 +36,8 @@ To get started with Commerce Layer JS Auth, you need to install it and add it to
 
 [![NPM](https://img.shields.io/npm/v/%40commercelayer%2Fjs-auth?style=for-the-badge&labelColor=%23C90501&color=173B4A)](https://www.npmjs.com/package/@commercelayer/js-auth)
 [![JSR](https://img.shields.io/jsr/v/%40commercelayer/js-auth?style=for-the-badge&labelColor=E2CB23&color=173B4A)](https://jsr.io/@commercelayer/js-auth)
+![Lightway](https://img.shields.io/bundlephobia/minzip/%40commercelayer/js-auth?style=for-the-badge
+)
 
 ### Installation
 
