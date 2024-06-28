@@ -1,6 +1,6 @@
 // @ts-check
 
-const { authenticate } = require('@commercelayer/js-auth')
+const { authenticate, jwtVerify, jwtIsSalesChannel } = require('@commercelayer/js-auth')
 
 async function run() {
   const auth = await authenticate('client_credentials', {
@@ -9,6 +9,13 @@ async function run() {
   })
 
   console.log(auth)
+
+  const decodedJWT = await jwtVerify(auth.accessToken)
+
+  if (jwtIsSalesChannel(decodedJWT.payload)) {
+    console.log('organization slug is', decodedJWT.payload.organization.slug)
+  }
+
 }
 
 run()
