@@ -3,7 +3,7 @@ import { decodeBase64URLSafe } from './utils/base64.js'
 
 /**
  * Verify a Commerce Layer access token.
- * When the verification succeeds, it resolves to the decode access token, it rejects otherwise.
+ * When the verification succeeds, it resolves to the decoded access token, it rejects otherwise.
  */
 export async function jwtVerify(
   accessToken: string
