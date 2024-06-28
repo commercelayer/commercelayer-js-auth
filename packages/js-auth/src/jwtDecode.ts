@@ -1,7 +1,10 @@
 import { decodeBase64URLSafe } from './utils/base64.js'
 
 /**
- * Decode a Commerce Layer access token.
+ * Decode a Commerce Layer access token without verifying if the signature is valid.
+ *
+ * _You should not use this for untrusted messages, since this helper method does not verify whether the signature is valid.
+ * If you need to verify the access token before decoding, you can use `jwtVerify` instead._
  */
 export function jwtDecode(accessToken: string): CommerceLayerJWT {
   const [encodedHeader, encodedPayload, signature] = `${accessToken}`.split('.')
