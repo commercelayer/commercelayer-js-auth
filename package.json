@@ -21,7 +21,7 @@
     "@commercelayer/eslint-config-ts": "^1.4.5",
     "husky": "^9.0.11",
     "lerna": "^8.1.5",
-    "replace-in-file": "^7.2.0",
+    "replace-in-file": "^8.0.1",
     "typescript": "^5.5.2"
   },
   "resolutions": {
