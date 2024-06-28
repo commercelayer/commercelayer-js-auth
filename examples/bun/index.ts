@@ -1,4 +1,4 @@
-import { authenticate, AuthenticateOptions, GrantType, jwtDecode, jwtIsSalesChannel, jwtVerify } from '@commercelayer/js-auth'
+import { authenticate, AuthenticateOptions, GrantType, jwtVerify } from '@commercelayer/js-auth'
 
 const grantType: GrantType = 'client_credentials'
 
