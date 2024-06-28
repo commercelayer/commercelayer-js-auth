@@ -18,6 +18,10 @@ describe('createAssertion', () => {
       }
     })
 
+    expect(jwt.verify(assertion, 'cl')).toMatchObject({
+      'https://commercelayer.io/claims': {}
+    })
+
     expect(assertion).toStrictEqual(jsonwebtokenAssertion)
   })
 

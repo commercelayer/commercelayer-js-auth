@@ -15,6 +15,8 @@ export {
   type JWTWebApp
 } from './jwtDecode.js'
 
+export { jwtVerify } from './jwtVerify.js'
+
 export { createAssertion } from './jwtEncode.js'
 
 export type {

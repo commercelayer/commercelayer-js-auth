@@ -4,15 +4,20 @@ import { decodeBase64URLSafe } from './utils/base64.js'
  * Decode a Commerce Layer access token.
  */
 export function jwtDecode(accessToken: string): CommerceLayerJWT {
-  const [header, payload] = accessToken.split('.')
+  const [encodedHeader, encodedPayload, signature] = `${accessToken}`.split('.')
+
+  if (encodedHeader == null || encodedPayload == null || signature == null) {
+    throw new Error('Invalid JWT format')
+  }
 
   return {
-    header: JSON.parse(header != null ? decodeBase64URLSafe(header) : 'null'),
-    payload: JSON.parse(payload != null ? decodeBase64URLSafe(payload) : 'null')
+    header: JSON.parse(decodeBase64URLSafe(encodedHeader)),
+    payload: JSON.parse(decodeBase64URLSafe(encodedPayload)),
+    signature
   }
 }
 
-interface CommerceLayerJWT {
+export interface CommerceLayerJWT {
   /** The header typically consists of two parts: the type of the token, which is JWT, and the signing algorithm being used, such as HMAC SHA256 or RSA. */
   header: {
     /** Signing algorithm being used (e.g. `HMAC`, `SHA256`, `RSA`, `RS512`). */
@@ -20,10 +25,12 @@ interface CommerceLayerJWT {
     /** Type of the token (usually `JWT`). */
     typ?: string
     /** Key ID */
-    kid?: string
+    kid: string
   }
 
   payload: Payload
+
+  signature: string
 }
 
 type Payload =
