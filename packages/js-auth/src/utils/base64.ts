@@ -10,9 +10,9 @@
  * @returns An ASCII string containing the Base64 URL safe representation of `stringToEncode`.
  */
 export function encodeBase64URLSafe(stringToEncode: string): string {
-  if (typeof window !== 'undefined') {
+  if (typeof globalThis.btoa !== 'undefined') {
     return (
-      window
+      globalThis
         .btoa(stringToEncode)
         // Remove padding equal characters
         .replaceAll('=', '')
@@ -37,8 +37,8 @@ export function encodeBase64URLSafe(stringToEncode: string): string {
  * @returns An ASCII string containing decoded data from `encodedData`.
  */
 export function decodeBase64URLSafe(encodedData: string): string {
-  if (typeof window !== 'undefined') {
-    return window.atob(
+  if (typeof globalThis.atob !== 'undefined') {
+    return globalThis.atob(
       encodedData
         // Replace characters according to base64url specifications
         .replaceAll('-', '+')

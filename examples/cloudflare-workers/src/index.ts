@@ -8,7 +8,7 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
-import { authenticate } from '@commercelayer/js-auth'
+import { authenticate, jwtVerify } from '@commercelayer/js-auth'
 
 export interface Env {
   // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
@@ -34,6 +34,12 @@ export default {
       scope: 'market:id:KoaJYhMVVj'
     })
 
-    return new Response(`Hello World!\n\nThis is your token: ${auth.accessToken}`);
+    const decodedJWT = await jwtVerify(auth.accessToken)
+
+    if ('organization' in decodedJWT.payload) {
+      return new Response(`Hello World!\n\nThe organization slug is: ${decodedJWT.payload.organization.slug}`);
+    }
+
+    return new Response('Cannot find the organization', { status: 404 })
   },
 };
