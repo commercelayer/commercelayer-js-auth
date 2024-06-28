@@ -1,6 +1,16 @@
 import { jwtDecode } from './jwtDecode.js'
 
 describe('jwtDecode', () => {
+  it('should throw when the access token is not valid.', () => {
+    const accessToken = 'hello-world'
+    expect(() => jwtDecode(accessToken)).toThrowError('Invalid JWT format')
+  })
+
+  it('should throw when the access token is malformed.', () => {
+    const accessToken = 'header.payload.signature'
+    expect(() => jwtDecode(accessToken)).toThrow()
+  })
+
   it('should be able to parse a "dashboard" access token.', () => {
     const accessToken =
       'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYTRjYzYyOGQxZmNlM2ZiOTNhM2VlNTU4MjZlNDFjZmFmMThkYzJkZmYzYjA3MjIyNzQwMzgwZTkxOTlkNWQifQ.eyJ1c2VyIjp7ImlkIjoiZ2Jsb3dTeVZlcSJ9LCJhcHBsaWNhdGlvbiI6eyJpZCI6Im5HVnFhaWxWeU4iLCJraW5kIjoiZGFzaGJvYXJkIiwicHVibGljIjpmYWxzZX0sInNjb3BlIjoicHJvdmlzaW9uaW5nLWFwaSBtZXRyaWNzLWFwaSIsImV4cCI6MTcxMDk3NjY5NSwidGVzdCI6ZmFsc2UsInJhbmQiOjAuNzY1MjgwMDc2MDY1MjMwNywiaWF0IjoxNzEwOTY5NDk1LCJpc3MiOiJodHRwczovL2NvbW1lcmNlbGF5ZXIuaW8ifQ.YYk1PRFa8zcAlus8uaDFcJF7FRBtXYz-h--OYyuxJ0pc_qG0jdZ7lNgKxZC0Xnb4f9QmO3nHC4b4leGm6aAw8Yw4atZZaEDEkPrlG-ZegtdM4_X2Wbeul_Swkxo91PCIkYRMue0tl-zwl3dH_bS48IGOgOCbNWIcuHFvILaN_oXOHaeGfbVY5zXFfMK8P77TWZEoK0BYvmXIv2o_x_uYQZVcev7sSy1aX2zkikMFu54PIDl-II94ETT2g51QgNglDVh64qIFRvb24uPZo3woEBtd4ogupMRY5c3BvbxtfKHeASjT2NMxSkg-J55V7L4Wv5Q3Oh5p7ePz-95n7lG7uQ'
