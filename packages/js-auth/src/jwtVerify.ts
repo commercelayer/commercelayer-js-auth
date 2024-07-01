@@ -6,11 +6,12 @@ import { decodeBase64URLSafe } from './utils/base64.js'
  * When the verification succeeds, it resolves to the decoded access token, it rejects otherwise.
  */
 export async function jwtVerify(
-  accessToken: string
+  accessToken: string,
+  options: JwtVerifyOptions = {}
 ): Promise<CommerceLayerJWT> {
   const decodedJWT = jwtDecode(accessToken)
 
-  const jsonWebKey = await getJsonWebKey(decodedJWT.header.kid)
+  const jsonWebKey = await getJsonWebKey(decodedJWT.header.kid, options)
 
   if (jsonWebKey == null) {
     throw new Error('Invalid token "kid"')
@@ -55,16 +56,24 @@ export async function jwtVerify(
 
 type CommerceLayerJsonWebKey = JsonWebKey & { kid: string }
 
+interface JwtVerifyOptions {
+  /**
+   * The Commerce Layer's domain.
+   */
+  domain?: string
+}
+
 /**
  * Get the `JsonWebKey` given a key identifier.
  * @param kid Key identifier.
  * @returns
  */
 async function getJsonWebKey(
-  kid: string
+  kid: string,
+  { domain = 'commercelayer.io' }: JwtVerifyOptions
 ): Promise<CommerceLayerJsonWebKey | undefined> {
   const response = await fetch(
-    'https://auth.commercelayer.io/.well-known/jwks.json'
+    `https://auth.${domain}/.well-known/jwks.json`
   ).then<{ keys: CommerceLayerJsonWebKey[] }>(async (res) => await res.json())
 
   return response.keys.find((key) => key.kid === kid)
