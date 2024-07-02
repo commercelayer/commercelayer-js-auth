@@ -1,9 +1,12 @@
+import { TokenError } from './errors/TokenError.js'
 import { jwtDecode } from './jwtDecode.js'
 
 describe('jwtDecode', () => {
   it('should throw when the access token is not valid.', () => {
     const accessToken = 'hello-world'
-    expect(() => jwtDecode(accessToken)).toThrowError('Invalid JWT format')
+
+    expect(() => jwtDecode(accessToken)).toThrow(TokenError)
+    expect(() => jwtDecode(accessToken)).toThrow('Invalid token format')
   })
 
   it('should throw when the access token is malformed.', () => {

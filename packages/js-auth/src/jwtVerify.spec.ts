@@ -1,15 +1,25 @@
 import jwt from 'jsonwebtoken'
+import { TokenExpiredError } from './errors/TokenExpiredError.js'
 import { jwtDecode } from './jwtDecode.js'
 import { jwtVerify } from './jwtVerify.js'
 import { encodeBase64URLSafe } from './utils/base64.js'
+import { TokenError } from './errors/TokenError.js'
 
 describe('jwtVerify', () => {
+  it('should throw when token expired.', async () => {
+    void expect(async () => await jwtVerify(accessToken)).rejects.toThrow(
+      TokenExpiredError
+    )
+  })
+
   it('should be able to verify a JWT.', async () => {
     const jsonwebtokenDecoded = jwt.decode(accessToken, {
       complete: true
     })
 
-    const verification = await jwtVerify(accessToken)
+    const verification = await jwtVerify(accessToken, {
+      ignoreExpiration: true
+    })
 
     expect(verification).toStrictEqual(jsonwebtokenDecoded)
   })
@@ -26,7 +36,11 @@ describe('jwtVerify', () => {
         signature
       ].join('.')
 
-      expect(await jwtVerify(newAccessToken)).toStrictEqual(decodedJWT)
+      expect(
+        await jwtVerify(newAccessToken, {
+          ignoreExpiration: true
+        })
+      ).toStrictEqual(decodedJWT)
     })
 
     it('should reject when the payload has been changed', async () => {
@@ -44,8 +58,18 @@ describe('jwtVerify', () => {
       ].join('.')
 
       void expect(
-        async () => await jwtVerify(newAccessToken)
-      ).rejects.toThrowError('Invalid signature')
+        async () =>
+          await jwtVerify(newAccessToken, {
+            ignoreExpiration: true
+          })
+      ).rejects.toThrow(TokenError)
+
+      void expect(
+        async () =>
+          await jwtVerify(newAccessToken, {
+            ignoreExpiration: true
+          })
+      ).rejects.toThrow('Invalid signature')
     })
   })
 })

@@ -1,3 +1,5 @@
+import { TokenError } from './errors/TokenError.js'
+import { TokenExpiredError } from './errors/TokenExpiredError.js'
 import { jwtDecode, type CommerceLayerJWT } from './jwtDecode.js'
 import { decodeBase64URLSafe } from './utils/base64.js'
 
@@ -7,14 +9,21 @@ import { decodeBase64URLSafe } from './utils/base64.js'
  */
 export async function jwtVerify(
   accessToken: string,
-  options: JwtVerifyOptions = {}
+  { ignoreExpiration = false, domain }: JwtVerifyOptions = {}
 ): Promise<CommerceLayerJWT> {
   const decodedJWT = jwtDecode(accessToken)
 
-  const jsonWebKey = await getJsonWebKey(decodedJWT.header.kid, options)
+  const jsonWebKey = await getJsonWebKey(decodedJWT.header.kid, {
+    domain,
+    ignoreExpiration
+  })
 
   if (jsonWebKey == null) {
-    throw new Error('Invalid token "kid"')
+    throw new TokenError('Invalid token "kid"')
+  }
+
+  if (!ignoreExpiration && Date.now() >= decodedJWT.payload.exp * 1000) {
+    throw new TokenExpiredError()
   }
 
   const algorithm: RsaHashedImportParams = {
@@ -48,7 +57,7 @@ export async function jwtVerify(
   )
 
   if (!isValid) {
-    throw new Error('Invalid signature')
+    throw new TokenError('Invalid signature')
   }
 
   return decodedJWT
@@ -61,6 +70,11 @@ interface JwtVerifyOptions {
    * The Commerce Layer's domain.
    */
   domain?: string
+  /**
+   * Do not validate the token expiration when set to `true`.
+   * @default false
+   */
+  ignoreExpiration?: boolean
 }
 
 /**
