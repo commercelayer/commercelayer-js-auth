@@ -13,7 +13,7 @@
     "test:production": "pnpm --filter js-auth test -- --mode production",
     "test:watch": "pnpm --filter js-auth test:watch",
     "make:version": "lerna version --no-private",
-    "version": "node update-jsr-version.js && git add .",
+    "version": "node update-jsr-version.mjs && git add .",
     "dep:major": "pnpm dlx npm-check-updates --packageFile '**/package.json' -u",
     "dep:minor": "pnpm dep:major -t minor"
   },
@@ -21,7 +21,7 @@
     "@commercelayer/eslint-config-ts": "^1.4.5",
     "husky": "^9.0.11",
     "lerna": "^8.1.5",
-    "replace-in-file": "^8.0.1",
+    "replace-in-file": "^8.0.2",
     "typescript": "^5.5.2"
   },
   "resolutions": {
