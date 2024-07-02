@@ -1,18 +1,27 @@
+import { TokenError } from './errors/TokenError.js'
 import { decodeBase64URLSafe } from './utils/base64.js'
 
 /**
- * Decode a Commerce Layer access token.
+ * Decode a Commerce Layer access token without verifying if the signature is valid.
+ *
+ * _You should not use this for untrusted messages, since this helper method does not verify whether the signature is valid.
+ * If you need to verify the access token before decoding, you can use `jwtVerify` instead._
  */
 export function jwtDecode(accessToken: string): CommerceLayerJWT {
-  const [header, payload] = accessToken.split('.')
+  const [encodedHeader, encodedPayload, signature] = `${accessToken}`.split('.')
+
+  if (encodedHeader == null || encodedPayload == null || signature == null) {
+    throw new TokenError('Invalid token format')
+  }
 
   return {
-    header: JSON.parse(header != null ? decodeBase64URLSafe(header) : 'null'),
-    payload: JSON.parse(payload != null ? decodeBase64URLSafe(payload) : 'null')
+    header: JSON.parse(decodeBase64URLSafe(encodedHeader)),
+    payload: JSON.parse(decodeBase64URLSafe(encodedPayload)),
+    signature
   }
 }
 
-interface CommerceLayerJWT {
+export interface CommerceLayerJWT {
   /** The header typically consists of two parts: the type of the token, which is JWT, and the signing algorithm being used, such as HMAC SHA256 or RSA. */
   header: {
     /** Signing algorithm being used (e.g. `HMAC`, `SHA256`, `RSA`, `RS512`). */
@@ -20,10 +29,12 @@ interface CommerceLayerJWT {
     /** Type of the token (usually `JWT`). */
     typ?: string
     /** Key ID */
-    kid?: string
+    kid: string
   }
 
   payload: Payload
+
+  signature: string
 }
 
 type Payload =

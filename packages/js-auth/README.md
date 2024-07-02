@@ -1,6 +1,8 @@
 # Commerce Layer JS Auth
 
-A JavaScript library designed to simplify [authentication](https://docs.commercelayer.io/developers/authentication) when interacting with the Commerce Layer API.
+A lightweight JavaScript library designed to simplify [authentication](https://docs.commercelayer.io/developers/authentication) when interacting with the Commerce Layer API.
+
+It works everywhere. On your browser, server, or at the edge.
 
 ## What is Commerce Layer?
 
@@ -21,6 +23,7 @@ A JavaScript library designed to simplify [authentication](https://docs.commerce
   - [Revoking a token](#revoking-a-token)
 - [Utilities](#utilities)
   - [Decode an access token](#decode-an-access-token)
+  - [Verify an access token](#verify-an-access-token)
 - [Contributors guide](#contributors-guide)
 - [Need help?](#need-help)
 - [License](#license)
@@ -33,6 +36,8 @@ To get started with Commerce Layer JS Auth, you need to install it and add it to
 
 [![NPM](https://img.shields.io/npm/v/%40commercelayer%2Fjs-auth?style=for-the-badge&labelColor=%23C90501&color=173B4A)](https://www.npmjs.com/package/@commercelayer/js-auth)
 [![JSR](https://img.shields.io/jsr/v/%40commercelayer/js-auth?style=for-the-badge&labelColor=E2CB23&color=173B4A)](https://jsr.io/@commercelayer/js-auth)
+![Lightway](https://img.shields.io/bundlephobia/minzip/%40commercelayer/js-auth?style=for-the-badge
+)
 
 ### Installation
 
@@ -278,7 +283,10 @@ await revoke({
 
 ### Decode an access token
 
-We offer a helper method to decode an access token. The return is fully typed:
+We offer an helper method to decode an access token. The return is fully typed.
+
+> [!IMPORTANT]
+> You should not use this for untrusted messages, since this helper method does not verify whether the signature is valid. If you need to verify the access token before decoding, you can use [`jwtVerify`](#verify-an-access-token) instead.
 
 ```ts
 import { authenticate, jwtDecode, jwtIsSalesChannel } from '@commercelayer/js-auth'
@@ -289,6 +297,27 @@ const auth = await authenticate('client_credentials', {
 })
 
 const decodedJWT = jwtDecode(auth.accessToken)
+
+if (jwtIsSalesChannel(decodedJWT.payload)) {
+  console.log('organization slug is', decodedJWT.payload.organization.slug)
+}
+```
+
+### Verify an access token
+
+We offer an helper method to verify an access token. The return is fully typed:
+
+```ts
+import { authenticate, jwtVerify, jwtIsSalesChannel } from '@commercelayer/js-auth'
+
+const auth = await authenticate('client_credentials', {
+  clientId: 'your-client-id',
+  scope: 'market:code:europe'
+})
+
+const decodedJWT = await jwtVerify(auth.accessToken, {
+  ignoreExpiration: true
+})
 
 if (jwtIsSalesChannel(decodedJWT.payload)) {
   console.log('organization slug is', decodedJWT.payload.organization.slug)

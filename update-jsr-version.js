@@ -5,7 +5,7 @@
  * This script runs on "version lifecycle" - https://github.com/lerna/lerna/blob/main/commands/version/README.md#lifecycle-scripts
  */
 
-const { sync } = require('replace-in-file')
+const { replaceInFileSync } = require('replace-in-file')
 const { version } = require('./lerna.json')
 
 const options = {
@@ -16,7 +16,7 @@ const options = {
 }
 
 try {
-  const results = sync(options)
+  const results = replaceInFileSync(options)
   const filteredResults = results.filter((r) => r.hasChanged).map((r) => r.file)
 
   if (filteredResults.length > 0) {

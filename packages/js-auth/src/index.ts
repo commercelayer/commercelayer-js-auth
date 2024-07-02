@@ -15,6 +15,8 @@ export {
   type JWTWebApp
 } from './jwtDecode.js'
 
+export { jwtVerify } from './jwtVerify.js'
+
 export { createAssertion } from './jwtEncode.js'
 
 export type {
@@ -24,3 +26,6 @@ export type {
   RevokeOptions,
   RevokeReturn
 } from './types/index.js'
+
+export { TokenError } from './errors/TokenError.js'
+export { TokenExpiredError } from './errors/TokenExpiredError.js'
