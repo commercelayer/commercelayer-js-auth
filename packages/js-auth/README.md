@@ -315,7 +315,7 @@ const auth = await authenticate('client_credentials', {
   scope: 'market:code:europe'
 })
 
-const decodedJWT = jwtVerify(auth.accessToken)
+const decodedJWT = await jwtVerify(auth.accessToken)
 
 if (jwtIsSalesChannel(decodedJWT.payload)) {
   console.log('organization slug is', decodedJWT.payload.organization.slug)
