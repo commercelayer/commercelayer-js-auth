@@ -1,3 +1,6 @@
+/**
+ * The token expired.
+ */
 export class TokenExpiredError extends Error {
   constructor() {
     super('Token expired')
