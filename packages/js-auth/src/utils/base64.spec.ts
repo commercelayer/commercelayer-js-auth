@@ -9,21 +9,19 @@ const stringifiedObject = JSON.stringify({
 })
 
 describe('Using `Buffer`', () => {
-  runTests()
-})
-
-describe('Using `btoa` and `atob`', () => {
   beforeAll(() => {
-    vi.stubGlobal('window', {
-      atob: globalThis.atob,
-      btoa: globalThis.btoa
-    })
+    vi.stubGlobal('atob', undefined)
+    vi.stubGlobal('btoa', undefined)
   })
 
   afterAll(() => {
     vi.unstubAllGlobals()
   })
 
+  runTests()
+})
+
+describe('Using `btoa` and `atob`', () => {
   runTests()
 })
 
