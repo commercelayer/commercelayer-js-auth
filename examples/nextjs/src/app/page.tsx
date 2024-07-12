@@ -1,7 +1,22 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Image from "next/image"
+import styles from "./page.module.css"
+import { authenticate, jwtVerify } from '@commercelayer/js-auth'
 
-export default function Home() {
+export default async function Home() {
+
+  const auth = await authenticate('client_credentials', {
+    clientId: 'BISG8bb3GWpC8_D7Nt1SuWWdieS5bJq831A50LgB_Ig',
+    scope: 'market:id:KoaJYhMVVj'
+  })
+
+  const decodedJWT = await jwtVerify(auth.accessToken)
+
+  let slug: string
+
+  if (!('organization' in decodedJWT.payload)) {
+    throw new Error('A "sales_channel" token is required.')
+  }
+
   return (
     <main className={styles.main}>
       <div className={styles.description}>
@@ -29,14 +44,8 @@ export default function Home() {
       </div>
 
       <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+        <div>organization slug</div>
+        <div><big><b>{decodedJWT.payload.organization.slug}</b></big></div>
       </div>
 
       <div className={styles.grid}>
