@@ -86,9 +86,17 @@ async function getJsonWebKey(
   kid: string,
   { domain = 'commercelayer.io' }: JwtVerifyOptions
 ): Promise<CommerceLayerJsonWebKey | undefined> {
-  const response = await fetch(
-    `https://auth.${domain}/.well-known/jwks.json`
-  ).then<{ keys: CommerceLayerJsonWebKey[] }>(async (res) => await res.json())
+  const jwksUrl = `https://auth.${domain}/.well-known/jwks.json`
+
+  const response = await fetch(jwksUrl).then<{
+    keys: CommerceLayerJsonWebKey[] | undefined
+  }>(async (res) => await res.json())
+
+  if (response.keys == null) {
+    throw new TokenError(
+      `Invalid jwks response from "${jwksUrl}": ${JSON.stringify(response)}`
+    )
+  }
 
   return response.keys.find((key) => key.kid === kid)
 }
