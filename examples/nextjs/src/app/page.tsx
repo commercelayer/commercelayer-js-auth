@@ -11,8 +11,6 @@ export default async function Home() {
 
   const decodedJWT = await jwtVerify(auth.accessToken)
 
-  let slug: string
-
   if (!('organization' in decodedJWT.payload)) {
     throw new Error('A "sales_channel" token is required.')
   }

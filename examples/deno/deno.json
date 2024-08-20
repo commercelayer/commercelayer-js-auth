@@ -1,8 +1,5 @@
 {
   "tasks": {
     "start": "deno run --allow-net index.ts"
-  },
-  "imports": {
-    "@commercelayer/js-auth": "jsr:@commercelayer/js-auth@^6.1.0"
   }
 }

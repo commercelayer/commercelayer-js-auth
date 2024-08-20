@@ -2,8 +2,8 @@
   "name": "root",
   "private": true,
   "author": {
-    "name": "Alessandro Casazza",
-    "email": "alessandro@commercelayer.io"
+    "name": "Commerce Layer",
+    "email": "support@commercelayer.io"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -19,10 +19,10 @@
   },
   "devDependencies": {
     "@commercelayer/eslint-config-ts": "^1.4.5",
-    "husky": "^9.0.11",
-    "lerna": "^8.1.5",
-    "replace-in-file": "^8.0.2",
-    "typescript": "^5.5.2"
+    "husky": "^9.1.4",
+    "lerna": "^8.1.8",
+    "replace-in-file": "^8.1.0",
+    "typescript": "^5.5.4"
   },
   "resolutions": {
     "tar": "^6.2.1"

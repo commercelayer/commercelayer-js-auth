@@ -6,15 +6,15 @@
     "url": "https://github.com/commercelayer/commercelayer-js-auth.git"
   },
   "author": {
-    "name": "Alessandro Casazza",
-    "email": "alessandro@commercelayer.io"
+    "name": "Commerce Layer",
+    "email": "support@commercelayer.io"
   },
   "type": "module",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     }
   },
   "main": "./dist/index.js",
@@ -46,11 +46,11 @@
   "license": "MIT",
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.6",
-    "@types/node": "^20.14.9",
+    "@types/node": "^20",
     "jsonwebtoken": "^9.0.2",
-    "tsup": "^8.1.0",
-    "typescript": "^5.5.2",
-    "vitest": "^1.6.0"
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.4",
+    "vitest": "^2.0.5"
   },
   "engines": {
     "node": ">=18.0.0"
