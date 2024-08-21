@@ -14,8 +14,7 @@ export async function jwtVerify(
   const decodedJWT = jwtDecode(accessToken)
 
   const jsonWebKey = await getJsonWebKey(decodedJWT.header.kid, {
-    domain,
-    ignoreExpiration
+    domain
   })
 
   if (jsonWebKey == null) {
@@ -77,6 +76,9 @@ interface JwtVerifyOptions {
   ignoreExpiration?: boolean
 }
 
+/** JWKS in-memory cache. */
+const JWKSCache: Record<string, CommerceLayerJsonWebKey | undefined> = {}
+
 /**
  * Get the `JsonWebKey` given a key identifier.
  * @param kid Key identifier.
@@ -84,8 +86,26 @@ interface JwtVerifyOptions {
  */
 async function getJsonWebKey(
   kid: string,
-  { domain = 'commercelayer.io' }: JwtVerifyOptions
+  options: JwtVerifyOptions
 ): Promise<CommerceLayerJsonWebKey | undefined> {
+  if (JWKSCache[kid] != null) {
+    return JWKSCache[kid]
+  }
+
+  const keys = await getJsonWebKeys(options)
+
+  JWKSCache[kid] = keys.find((key) => key.kid === kid)
+
+  return JWKSCache[kid]
+}
+
+/**
+ * Retrieve RSA public keys from our JWKS (JSON Web Key Set) endpoint.
+ * @returns
+ */
+async function getJsonWebKeys({
+  domain = 'commercelayer.io'
+}: JwtVerifyOptions): Promise<CommerceLayerJsonWebKey[]> {
   const jwksUrl = `https://auth.${domain}/.well-known/jwks.json`
 
   const response = await fetch(jwksUrl).then<{
@@ -98,5 +118,5 @@ async function getJsonWebKey(
     )
   }
 
-  return response.keys.find((key) => key.kid === kid)
+  return response.keys
 }
