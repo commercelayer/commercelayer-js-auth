@@ -9,15 +9,17 @@ import { decodeBase64URLSafe } from './utils/base64.js'
  */
 export async function jwtVerify(
   accessToken: string,
-  { ignoreExpiration = false, domain }: JwtVerifyOptions = {}
+  { ignoreExpiration = false, domain, jwk }: JwtVerifyOptions = {}
 ): Promise<CommerceLayerJWT> {
   const decodedJWT = jwtDecode(accessToken)
 
-  const jsonWebKey = await getJsonWebKey(decodedJWT.header.kid, {
-    domain
-  })
+  const jsonWebKey =
+    jwk ??
+    (await getJsonWebKey(decodedJWT.header.kid, {
+      domain
+    }))
 
-  if (jsonWebKey == null) {
+  if (jsonWebKey == null || jsonWebKey.kid !== decodedJWT.header.kid) {
     throw new TokenError('Invalid token "kid"')
   }
 
@@ -74,6 +76,15 @@ interface JwtVerifyOptions {
    * @default false
    */
   ignoreExpiration?: boolean
+
+  /**
+   * Json Web Key used to verify the signature.
+   *
+   * The `kid` must match the `kid` from decoded accessToken.
+   *
+   * By default, we pick the jwk from https://auth.commercelayer.io/.well-known/jwks.json using the `kid` from the accessToken.
+   */
+  jwk?: CommerceLayerJsonWebKey
 }
 
 /** JWKS in-memory cache. */
