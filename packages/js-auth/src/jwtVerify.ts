@@ -9,13 +9,14 @@ import { decodeBase64URLSafe } from './utils/base64.js'
  */
 export async function jwtVerify(
   accessToken: string,
-  { ignoreExpiration = false, domain }: JwtVerifyOptions = {}
+  { ignoreExpiration = false, domain, fetchFunction }: JwtVerifyOptions = {}
 ): Promise<CommerceLayerJWT> {
   const decodedJWT = jwtDecode(accessToken)
 
   const jsonWebKey = await getJsonWebKey(decodedJWT.header.kid, {
     domain,
-    ignoreExpiration
+    ignoreExpiration,
+    fetchFunction
   })
 
   if (jsonWebKey == null) {
@@ -75,6 +76,11 @@ interface JwtVerifyOptions {
    * @default false
    */
   ignoreExpiration?: boolean
+  /**
+   * The fetch implementation to use, in order to cache, for example.
+   * @default fetch
+   */
+  fetchFunction?: typeof fetch;
 }
 
 /**
@@ -84,9 +90,9 @@ interface JwtVerifyOptions {
  */
 async function getJsonWebKey(
   kid: string,
-  { domain = 'commercelayer.io' }: JwtVerifyOptions
+  { domain = 'commercelayer.io', fetchFunction = fetch }: JwtVerifyOptions
 ): Promise<CommerceLayerJsonWebKey | undefined> {
-  const response = await fetch(
+  const response = await fetchFunction(
     `https://auth.${domain}/.well-known/jwks.json`
   ).then<{ keys: CommerceLayerJsonWebKey[] }>(async (res) => await res.json())
 
