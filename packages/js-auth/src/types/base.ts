@@ -36,7 +36,12 @@ export interface TBaseOptions {
      * Header values should be strings, or `undefined` if the header is not set.
      */
     [key: string]: string | undefined
-  }
+  },
+  /**
+   * An optional implementation of fetch, to overwrite the default fetch implementation.
+   * Defaults to the standard implementation of fetch in Node.
+   */
+  fetchFunction?: typeof fetch;
 }
 
 export type TBaseReturn = {

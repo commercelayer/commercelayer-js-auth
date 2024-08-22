@@ -40,6 +40,7 @@ export async function authenticate<TGrantType extends GrantType>(
   {
     domain = 'commercelayer.io',
     headers,
+    fetchFunction = fetch,
     ...options
   }: AuthenticateOptions<TGrantType>
 ): Promise<AuthenticateReturn<TGrantType>> {
@@ -51,7 +52,7 @@ export async function authenticate<TGrantType extends GrantType>(
     camelCaseToSnakeCase
   )
 
-  const response = await fetch(`https://auth.${domain}/oauth/token`, {
+  const response = await fetchFunction(`https://auth.${domain}/oauth/token`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
