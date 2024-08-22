@@ -1,3 +1,4 @@
+import { InvalidTokenError } from './errors/InvalidTokenError.js'
 import { TokenError } from './errors/TokenError.js'
 import { TokenExpiredError } from './errors/TokenExpiredError.js'
 import { jwtDecode, type CommerceLayerJWT } from './jwtDecode.js'
@@ -20,7 +21,7 @@ export async function jwtVerify(
     }))
 
   if (jsonWebKey == null || jsonWebKey.kid !== decodedJWT.header.kid) {
-    throw new TokenError('Invalid token "kid"')
+    throw new InvalidTokenError('Invalid token "kid"')
   }
 
   if (!ignoreExpiration && Date.now() >= decodedJWT.payload.exp * 1000) {
@@ -58,7 +59,7 @@ export async function jwtVerify(
   )
 
   if (!isValid) {
-    throw new TokenError('Invalid signature')
+    throw new InvalidTokenError('Invalid signature')
   }
 
   return decodedJWT

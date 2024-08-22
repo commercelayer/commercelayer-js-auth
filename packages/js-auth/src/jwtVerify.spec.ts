@@ -1,11 +1,12 @@
 import jwt from 'jsonwebtoken'
+import { vi } from 'vitest'
+import createFetchMock from 'vitest-fetch-mock'
+import { InvalidTokenError } from './errors/InvalidTokenError.js'
+import { TokenError } from './errors/TokenError.js'
 import { TokenExpiredError } from './errors/TokenExpiredError.js'
-import { jwtDecode } from './jwtDecode.js'
+import { jwtDecode, type CommerceLayerJWT } from './jwtDecode.js'
 import { jwtVerify } from './jwtVerify.js'
 import { encodeBase64URLSafe } from './utils/base64.js'
-import { TokenError } from './errors/TokenError.js'
-import createFetchMock from 'vitest-fetch-mock'
-import { vi } from 'vitest'
 const fetchMocker = createFetchMock(vi)
 
 afterEach(() => {
@@ -93,6 +94,26 @@ describe('jwtVerify', () => {
     expect(verification).toStrictEqual(jsonwebtokenDecoded)
   })
 
+  it('should throw an "InvalidTokenError" exception when the "kid" is not valid.', async () => {
+    const doVerify = async (): Promise<CommerceLayerJWT> =>
+      await jwtVerify(accessTokenWithFakeKid2, {
+        ignoreExpiration: true,
+        jwk: {
+          kty: 'RSA',
+          n: 'rhMhwqeLIU1HTubDdY2-_gIzo57tKyF6oKnV7FgAN5RpLKqRoHt3W6h0hHFZtfqjAFnM901P9v3zdAcZVbBA_TfNuXYEoTJsJRhW4_L0fcXGt2yLyuH3xO1keCJrz4sbfe-md45snzVDGUPeYnEWipy7ySfbJsU5S_KfypsIvkRtctgqw5Excs-qjoDCSkkbiQZzkyJEJQ4PSi0fyx6ZIAmYJ1zwucUdpaYstXwyRik6u48vS07ctEHTbZL4p4LYbxoGzapHd_zlqw6KJ_wjpEANMjTAr0SCfQ3hOm19so-6G3N3s51ZabPvn_cAjnhkFnvXAhX38JuiUiGJuwU6ZFW_793qnSLclfCY0eeUekrYt7Btl1zuPvVkOM_WL4HVlrLR1Q4P0_nuBUZEdMJjhsdX8r508GPZI2OT_AQvjpOCNo0Ug0KvL1Tm2-l6YGc2Fs7b0uP_o3qQ-IVQ50C0ZAZA5gEOtLhWFEj9SUIm9-P8KDpffYBvSSMtxLwdkRBsc05xac9x53B-TF_Jwitgpm01R-W5AQC-qd6cXCwEQRKrFNWutjfVwbU67Z1kX1M1tM2197xhmXgScOOnGJob3P9FfFYPjjfU2OPaLl8_yxvF4cxXn_XKx271Ln6LtIDI409k6kA0L-n4sosyj4kV8tfrydyHWdmj4po9ghVfyZs',
+          e: 'AQAB',
+          ext: true,
+          kid: '1234',
+          alg: 'RS512',
+          use: 'sig'
+        }
+      })
+
+    void expect(doVerify).rejects.toThrow(InvalidTokenError)
+    void expect(doVerify).rejects.toThrow(TokenError)
+    void expect(doVerify).rejects.toThrow('Invalid token "kid"')
+  })
+
   describe('when the access token is modified', () => {
     it('should success when the payload did not change', async () => {
       const [header = '', , signature = ''] = accessToken.split('.')
@@ -126,19 +147,14 @@ describe('jwtVerify', () => {
         signature
       ].join('.')
 
-      void expect(
-        async () =>
-          await jwtVerify(newAccessToken, {
-            ignoreExpiration: true
-          })
-      ).rejects.toThrow(TokenError)
+      const doVerify = async (): Promise<CommerceLayerJWT> =>
+        await jwtVerify(newAccessToken, {
+          ignoreExpiration: true
+        })
 
-      void expect(
-        async () =>
-          await jwtVerify(newAccessToken, {
-            ignoreExpiration: true
-          })
-      ).rejects.toThrow('Invalid signature')
+      void expect(doVerify).rejects.toThrow(InvalidTokenError)
+      void expect(doVerify).rejects.toThrow(TokenError)
+      void expect(doVerify).rejects.toThrow('Invalid signature')
     })
   })
 })

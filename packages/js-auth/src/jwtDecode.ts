@@ -1,4 +1,4 @@
-import { TokenError } from './errors/TokenError.js'
+import { InvalidTokenError } from './errors/InvalidTokenError.js'
 import { decodeBase64URLSafe } from './utils/base64.js'
 
 /**
@@ -11,7 +11,7 @@ export function jwtDecode(accessToken: string): CommerceLayerJWT {
   const [encodedHeader, encodedPayload, signature] = `${accessToken}`.split('.')
 
   if (encodedHeader == null || encodedPayload == null || signature == null) {
-    throw new TokenError('Invalid token format')
+    throw new InvalidTokenError('Invalid token format')
   }
 
   return {
