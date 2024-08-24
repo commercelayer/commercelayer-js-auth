@@ -17,5 +17,6 @@ declare namespace NodeJS {
     VITE_TEST_PROVISIONING_DOMAIN: string
     VITE_TEST_PROVISIONING_CLIENT_ID: string
     VITE_TEST_PROVISIONING_CLIENT_SECRET: string
+    VITE_TEST_TOKEN_ISS: string
   }
 }
