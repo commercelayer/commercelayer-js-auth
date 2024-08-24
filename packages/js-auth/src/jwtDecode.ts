@@ -61,7 +61,7 @@ interface JWTBase {
   rand: number
   /** Issued at (seconds since Unix epoch). */
   iat: number
-  /** Who created and signed this token (e.g. `"https://commercelayer.io"`). */
+  /** Who created and signed this token (e.g. `"https://auth.commercelayer.io"`). */
   iss: string
 }
 

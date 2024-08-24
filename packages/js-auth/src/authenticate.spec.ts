@@ -7,6 +7,7 @@ const domain = process.env.VITE_TEST_DOMAIN
 const scope = process.env.VITE_TEST_SCOPE
 const username = process.env.VITE_TEST_USERNAME
 const password = process.env.VITE_TEST_PASSWORD
+const tokenIss = process.env.VITE_TEST_TOKEN_ISS
 
 describe('Organization auth', () => {
   it('should throw an error when the clientId is not valid.', async () => {
@@ -66,7 +67,7 @@ describe('Organization auth', () => {
           enterprise: true,
           region: 'eu-west-1'
         },
-        iss: 'https://commercelayer.io',
+        iss: tokenIss,
         scope: 'market:all',
         test: true
       }
@@ -114,7 +115,7 @@ describe('Organization auth', () => {
           enterprise: true,
           region: 'eu-west-1'
         },
-        iss: 'https://commercelayer.io',
+        iss: tokenIss,
         scope: 'market:all',
         test: true
       }
@@ -175,7 +176,7 @@ describe('Organization auth', () => {
           geocoder_id: null,
           allows_external_prices: false
         },
-        iss: 'https://commercelayer.io',
+        iss: tokenIss,
         scope,
         test: true
       }
@@ -247,7 +248,7 @@ describe('Organization auth', () => {
           geocoder_id: null,
           allows_external_prices: false
         },
-        iss: 'https://commercelayer.io',
+        iss: tokenIss,
         scope,
         test: true
       }
@@ -296,7 +297,7 @@ describe('Provisioning auth', () => {
         typ: 'JWT'
       },
       payload: {
-        iss: 'https://commercelayer.io',
+        iss: tokenIss,
         application: {
           kind: 'user',
           public: false
@@ -422,7 +423,7 @@ function runJWTBearerTests(
         custom_claim: {
           app: 'supabase'
         },
-        iss: 'https://commercelayer.io',
+        iss: tokenIss,
         organization: {
           enterprise: true,
           region: 'eu-west-1',
@@ -482,7 +483,7 @@ function runJWTBearerTests(
           type: 'User',
           id: process.env.VITE_TEST_USER_ID
         },
-        iss: 'https://commercelayer.io',
+        iss: tokenIss,
         organization: {
           enterprise: true,
           region: 'eu-west-1',
@@ -547,7 +548,7 @@ function runJWTBearerTests(
           type: 'Customer',
           id: process.env.VITE_TEST_CUSTOMER_ID
         },
-        iss: 'https://commercelayer.io',
+        iss: tokenIss,
         organization: {
           enterprise: true,
           region: 'eu-west-1',
@@ -622,7 +623,7 @@ function runJWTBearerTests(
           first_name: 'John',
           last_name: 'Doe'
         },
-        iss: 'https://commercelayer.io',
+        iss: tokenIss,
         organization: {
           enterprise: true,
           region: 'eu-west-1',
