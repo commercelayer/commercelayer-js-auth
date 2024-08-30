@@ -60,7 +60,8 @@ describe('Organization auth', () => {
       payload: {
         application: {
           kind: 'sales_channel',
-          public: true
+          public: true,
+          client_id: clientId
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
@@ -108,7 +109,8 @@ describe('Organization auth', () => {
       payload: {
         application: {
           kind: 'integration',
-          public: false
+          public: false,
+          client_id: integrationClientId
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
@@ -161,7 +163,8 @@ describe('Organization auth', () => {
       payload: {
         application: {
           kind: 'sales_channel',
-          public: true
+          public: true,
+          client_id: clientId
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
@@ -233,7 +236,8 @@ describe('Organization auth', () => {
       payload: {
         application: {
           kind: 'sales_channel',
-          public: true
+          public: true,
+          client_id: clientId
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
@@ -300,7 +304,8 @@ describe('Provisioning auth', () => {
         iss: tokenIss,
         application: {
           kind: 'user',
-          public: false
+          public: false,
+          client_id: process.env.VITE_TEST_PROVISIONING_CLIENT_ID
         },
         test: false
       }
@@ -321,7 +326,8 @@ describe('JWT Bearer', () => {
       {
         application: {
           kind: 'sales_channel',
-          public: true
+          public: true,
+          client_id: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID
         }
       }
     )
@@ -334,7 +340,8 @@ describe('JWT Bearer', () => {
       {
         application: {
           kind: 'integration',
-          public: false
+          public: false,
+          client_id: process.env.VITE_TEST_INTEGRATION_CLIENT_ID
         }
       }
     )
@@ -347,7 +354,8 @@ describe('JWT Bearer', () => {
       {
         application: {
           kind: 'webapp',
-          public: false
+          public: false,
+          client_id: process.env.VITE_TEST_AUTHORIZATION_CODE_CLIENT_ID
         }
       }
     )

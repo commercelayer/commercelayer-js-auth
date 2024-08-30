@@ -49,6 +49,7 @@ interface JWTBase {
   application: {
     id: string
     public: boolean
+    client_id: string
   }
 
   /** Scope used to restrict access to a specific active market and/or stock location. */
