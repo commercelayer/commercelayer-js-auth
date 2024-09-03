@@ -2,3 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 pnpm test
+
+pnpm --filter '*' jsr:publish --dry-run --allow-dirty
