@@ -138,3 +138,7 @@ dist
 
 # Storybook
 storybook-static
+
+# Test keys
+packages/js-auth/src/private.key
+packages/js-auth/src/public.key

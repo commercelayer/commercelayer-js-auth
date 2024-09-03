@@ -27,5 +27,6 @@ export type {
   RevokeReturn
 } from './types/index.js'
 
+export { InvalidTokenError } from './errors/InvalidTokenError.js'
 export { TokenError } from './errors/TokenError.js'
 export { TokenExpiredError } from './errors/TokenExpiredError.js'
