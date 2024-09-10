@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { WithMiddleware } from './types'
-import { authenticate, jwtVerify } from '@commercelayer/js-auth'
+import { authenticate, getCoreApiBaseEndpoint, jwtVerify } from '@commercelayer/js-auth'
 
 export const withCommerceLayer: WithMiddleware = (next = () => NextResponse.next()) => {
   return async (request, event) => {
@@ -22,7 +22,8 @@ export const withCommerceLayer: WithMiddleware = (next = () => NextResponse.next
 
       return NextResponse.json({
         from: 'middleware',
-        orgSlug: decodedJWT.payload.organization.slug
+        orgSlug: decodedJWT.payload.organization.slug,
+        baseEndpoint: getCoreApiBaseEndpoint(auth.accessToken)
       })
     }
 

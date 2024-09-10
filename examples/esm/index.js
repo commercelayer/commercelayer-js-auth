@@ -1,6 +1,6 @@
 // @ts-check
 
-import { authenticate, jwtVerify } from '@commercelayer/js-auth'
+import { authenticate, getCoreApiBaseEndpoint, jwtVerify } from '@commercelayer/js-auth'
 
 const auth = await authenticate('client_credentials', {
   clientId: 'BISG8bb3GWpC8_D7Nt1SuWWdieS5bJq831A50LgB_Ig',
@@ -13,4 +13,5 @@ const decodedJWT = await jwtVerify(auth.accessToken)
 
 if ('organization' in decodedJWT.payload) {
   console.log('organization slug is', decodedJWT.payload.organization.slug)
+  console.log('base endpoint is', getCoreApiBaseEndpoint(auth.accessToken))
 }

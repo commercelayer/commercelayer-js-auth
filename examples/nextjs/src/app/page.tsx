@@ -1,6 +1,6 @@
 import Image from "next/image"
 import styles from "./page.module.css"
-import { authenticate, jwtVerify } from '@commercelayer/js-auth'
+import { authenticate, getCoreApiBaseEndpoint, jwtVerify } from '@commercelayer/js-auth'
 
 export default async function Home() {
 
@@ -42,8 +42,8 @@ export default async function Home() {
       </div>
 
       <div className={styles.center}>
-        <div>organization slug</div>
-        <div><big><b>{decodedJWT.payload.organization.slug}</b></big></div>
+        <div>organization slug: <big><b>{decodedJWT.payload.organization.slug}</b></big></div>
+        <div>base endpoint: <big><b>{getCoreApiBaseEndpoint(auth.accessToken)}</b></big></div>
       </div>
 
       <div className={styles.grid}>

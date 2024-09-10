@@ -1,4 +1,4 @@
-import { authenticate, AuthenticateOptions, GrantType, jwtVerify } from '@commercelayer/js-auth'
+import { authenticate, AuthenticateOptions, getCoreApiBaseEndpoint, GrantType, jwtVerify } from '@commercelayer/js-auth'
 
 const grantType: GrantType = 'client_credentials'
 
@@ -15,4 +15,5 @@ const decodedJWT = await jwtVerify(auth.accessToken)
 
 if ('organization' in decodedJWT.payload) {
   console.log('organization slug is', decodedJWT.payload.organization.slug)
+  console.log('base endpoint is', getCoreApiBaseEndpoint(auth.accessToken))
 }
