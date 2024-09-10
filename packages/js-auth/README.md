@@ -24,6 +24,7 @@ It works everywhere. On your browser, server, or at the edge.
 - [Utilities](#utilities)
   - [Decode an access token](#decode-an-access-token)
   - [Verify an access token](#verify-an-access-token)
+  - [Get Core API base endpoint](#get-core-api-base-endpoint)
 - [Contributors guide](#contributors-guide)
 - [Need help?](#need-help)
 - [License](#license)
@@ -77,6 +78,8 @@ Based on the authorization flow and application you want to use, you can get you
 - [Integration application with client credentials flow](#integration-client-credentials)
 - [Webapp application with authorization code flow](#webapp-authorization-code)
 - [Provisioning application](#provisioning)
+- [JWT bearer](#jwt-bearer)
+- [Revoking a token](#revoking-a-token)
 
 ### Sales channel (client credentials)
 
@@ -323,6 +326,18 @@ if (jwtIsSalesChannel(decodedJWT.payload)) {
   console.log('organization slug is', decodedJWT.payload.organization.slug)
 }
 ```
+
+### Get Core API base endpoint
+
+Derive the [Core API base endpoint](https://docs.commercelayer.io/core/api-specification#base-endpoint) given a valid access token.
+
+```ts
+import { getCoreApiBaseEndpoint } from '@commercelayer/js-auth'
+
+getCoreApiBaseEndpoint('a-valid-access-token') //= "https://yourdomain.commercelayer.io"
+```
+
+The method requires a valid access token with an `organization` in the payload. When the organization is not set (e.g., provisioning token), it throws an `InvalidTokenError` exception.
 
 ---
 

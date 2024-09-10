@@ -1,4 +1,4 @@
-import { authenticate, jwtVerify } from "@commercelayer/js-auth"
+import { authenticate, getCoreApiBaseEndpoint, jwtVerify } from "@commercelayer/js-auth"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function GET(_request: NextRequest) {
@@ -17,6 +17,7 @@ export async function GET(_request: NextRequest) {
 
   return NextResponse.json({
     from: 'api',
-    orgSlug: decodedJWT.payload.organization.slug
+    orgSlug: decodedJWT.payload.organization.slug,
+    baseEndpoint: getCoreApiBaseEndpoint(auth.accessToken)
   })
 }
