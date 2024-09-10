@@ -1,28 +1,28 @@
 import { InvalidTokenError } from './errors/InvalidTokenError.js'
 import { TokenError } from './errors/TokenError.js'
-import { getCoreApiEndpoint } from './getCoreApiEndpoint.js'
+import { getCoreApiBaseEndpoint } from './getCoreApiBaseEndpoint.js'
 
-describe('getCoreApiEndpoint', () => {
+describe('getCoreApiBaseEndpoint', () => {
   it('should throw when the access token does not have an "organization".', () => {
     const accessToken =
       'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYTRjYzYyOGQxZmNlM2ZiOTNhM2VlNTU4MjZlNDFjZmFmMThkYzJkZmYzYjA3MjIyNzQwMzgwZTkxOTlkNWQifQ.eyJ1c2VyIjp7ImlkIjoiZ2Jsb3dTeVZlcSJ9LCJhcHBsaWNhdGlvbiI6eyJpZCI6Im5HVnFhaWxWeU4iLCJraW5kIjoiZGFzaGJvYXJkIiwicHVibGljIjpmYWxzZX0sInNjb3BlIjoicHJvdmlzaW9uaW5nLWFwaSBtZXRyaWNzLWFwaSIsImV4cCI6MTcxMDk3NjY5NSwidGVzdCI6ZmFsc2UsInJhbmQiOjAuNzY1MjgwMDc2MDY1MjMwNywiaWF0IjoxNzEwOTY5NDk1LCJpc3MiOiJodHRwczovL2NvbW1lcmNlbGF5ZXIuaW8ifQ.YYk1PRFa8zcAlus8uaDFcJF7FRBtXYz-h--OYyuxJ0pc_qG0jdZ7lNgKxZC0Xnb4f9QmO3nHC4b4leGm6aAw8Yw4atZZaEDEkPrlG-ZegtdM4_X2Wbeul_Swkxo91PCIkYRMue0tl-zwl3dH_bS48IGOgOCbNWIcuHFvILaN_oXOHaeGfbVY5zXFfMK8P77TWZEoK0BYvmXIv2o_x_uYQZVcev7sSy1aX2zkikMFu54PIDl-II94ETT2g51QgNglDVh64qIFRvb24uPZo3woEBtd4ogupMRY5c3BvbxtfKHeASjT2NMxSkg-J55V7L4Wv5Q3Oh5p7ePz-95n7lG7uQ'
 
-    expect(() => getCoreApiEndpoint(accessToken)).toThrow(InvalidTokenError)
-    expect(() => getCoreApiEndpoint(accessToken)).toThrow(TokenError)
-    expect(() => getCoreApiEndpoint(accessToken)).toThrow(
+    expect(() => getCoreApiBaseEndpoint(accessToken)).toThrow(InvalidTokenError)
+    expect(() => getCoreApiBaseEndpoint(accessToken)).toThrow(TokenError)
+    expect(() => getCoreApiBaseEndpoint(accessToken)).toThrow(
       'Invalid token format'
     )
   })
 
   it('should return the core api endpoint when access token contains an "organization".', () => {
     expect(
-      getCoreApiEndpoint(
+      getCoreApiBaseEndpoint(
         'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYTRjYzYyOGQxZmNlM2ZiOTNhM2VlNTU4MjZlNDFjZmFmMThkYzJkZmYzYjA3MjIyNzQwMzgwZTkxOTlkNWQifQ.eyJvcmdhbml6YXRpb24iOnsiaWQiOiJlbldveEZNT25wIiwic2x1ZyI6InRoZS1ibHVlLWJyYW5kLTMiLCJlbnRlcnByaXNlIjpmYWxzZSwicmVnaW9uIjoiZXUtd2VzdC0xIn0sImFwcGxpY2F0aW9uIjp7ImlkIjoibkdWcWFpRVlOQSIsImNsaWVudF9pZCI6IjF1bEs3ZXdkUUZyak90LVlxZ0RQeXBRRzFYSmVtUGdaUDFvd3NpSG9tRDQiLCJraW5kIjoic2FsZXNfY2hhbm5lbCIsInB1YmxpYyI6dHJ1ZX0sInNjb3BlIjoibWFya2V0OmFsbCIsImV4cCI6MTcyNTM5OTc3OCwidGVzdCI6dHJ1ZSwicmFuZCI6MC4yMTIzMDUzMTE1NDg3Njk5NywiaWF0IjoxNzI1MzkyNTc4LCJpc3MiOiJodHRwczovL2F1dGguY29tbWVyY2VsYXllci5jbyJ9.aOjfJXPDQ-jY__XlZuaAhpboDCGPuaszSMjgBlGJ7ubjWmmHGIvgOewNusTKRcrvhgWsUPeGeBii9SdkxP0tHMejXb0qS8RZ7lAxhvfHlekytdhizLrTUoqAwGckgX9FJTzRh0rA57cFXLSuXXUvB5aUtFZ3CfxZ_YIRWUNSvbAsknYmH1WAy54QjpvM9jFD3iXv3ak9Q9DnxC80N98lgWfgjEgoW67jQSLHQT0r-cgbT8dbVUDOkUp4PnUQkjLWHcoejRFMlORTlQTSGjW8pYsYJyKhUa8FJ9UWcRGp55xIJLmdqbVcdYo0R2ESz32ek-Uu3OTO-JAbABSC-oN5Dzo_BHxS7ct_TcZV9Qxr-fGdZXD0C5PljMqmAQMeSRoZjdSLSLLKq5dyUx714NT9urE_BVLTkZ-jU-15iyS3aWy0qgmMKu3NOBmF_j-P7ohNNjDsdMz2ofZ8r2E_0QBgpC1LwdWt4r0S4eabiTskM4r-wrQSbctZae0veIrKQ4C3k1Wr1wR9b6CvZXr-IqaYg1VilMiffmVhbYl60iWg3IK5REKJFJ2hNm18A78OiBO4A5KiL6lk3N_26C9dJa9HolUbpopiIVgZxXUXRw6EohnU0e5IBnQES-3q9T_37lNgAKlbHpqDKKEWjdwqb3GRMdxzMj0rxELyBRBbx-W8_9s'
       )
     ).toEqual('https://the-blue-brand-3.commercelayer.co')
 
     expect(
-      getCoreApiEndpoint(
+      getCoreApiBaseEndpoint(
         'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYTRjYzYyOGQxZmNlM2ZiOTNhM2VlNTU4MjZlNDFjZmFmMThkYzJkZmYzYjA3MjIyNzQwMzgwZTkxOTlkNWQifQ.eyJvcmdhbml6YXRpb24iOnsiaWQiOiJlbldveEZNT25wIiwic2x1ZyI6InRoZS1ibHVlLWJyYW5kLTMiLCJlbnRlcnByaXNlIjpmYWxzZSwicmVnaW9uIjoiZXUtd2VzdC0xIn0sImFwcGxpY2F0aW9uIjp7ImlkIjoibkdWcWFpRVlOQSIsImNsaWVudF9pZCI6IjF1bEs3ZXdkUUZyak90LVlxZ0RQeXBRRzFYSmVtUGdaUDFvd3NpSG9tRDQiLCJraW5kIjoic2FsZXNfY2hhbm5lbCIsInB1YmxpYyI6dHJ1ZX0sInNjb3BlIjoibWFya2V0OmFsbCIsImV4cCI6MTcyNTM5OTc3OCwidGVzdCI6dHJ1ZSwicmFuZCI6MC4yMTIzMDUzMTE1NDg3Njk5NywiaWF0IjoxNzI1MzkyNTc4LCJpc3MiOiJodHRwczovL2F1dGguc3RnMS5jb21tZXJjZWxheWVyLmNvIn0.oQRimLI0JHMnNtm_j-VwtqIjR-IafvukM8XB5RlxOmhfKvEAyCRbVDKQqk09n9p5cVBiOFbbiXxg8hSHXVqx-FfD14tDO7OgYzB9V7uWVrkOrof2kUTdy15IubpSDGk_X9qlwq1Rv5CgofCPRCvTlEI4Es2LcS6WLj-Q2pjqe6aP3tP6_Ne_bHz0oue5vXgs_noNLYPsYs4IIcwvPMU6R0EXnBJ5BdEplBiGhRyoQ_LUtUNKFQnoLeGk5_rKK6soP72w-Xi-tlR7rNw--fDbrTYH5XrkoD-QGiyMUk2Y-Vi6xpKNQ1wHky7WnuhOtJAy_-C90Zq6wfncQ5pBXT4rQ1HyNzzNgj9EpkkZTgNqy5fp8e62JKxpQRTz8es_4uVGLq_rn8CZZ7HX-C9-87AgebckDIWO9SCTtn8EOTMsu-wqzf3EQjFE35e78sNrVMqHMToW7QnCnellq4tdHp3oIiOHgIDjEQCQQytipH8cYIHqGxG-oUUatG77elFOvNH-9K38l1W0pfdgyfl27cnYbEDFWAf3yicrfiVlX77_PkTuE2dC910rNQ3Eg4XY7BxWMgoVSeBD2Bf1OjvyFCoxZEBfuC_7U7i5VR88pPGSF2dU9DGVwe-KhPasjv_p2O0lboL48ic7Icdvhy7c-MvGUTV5O8bxNjN0MJ39MYrwaUQ'
       )
     ).toEqual('https://the-blue-brand-3.stg1.commercelayer.co')
@@ -32,7 +32,7 @@ describe('getCoreApiEndpoint', () => {
     const accessToken =
       'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYTRjYzYyOGQxZmNlM2ZiOTNhM2VlNTU4MjZlNDFjZmFmMThkYzJkZmYzYjA3MjIyNzQwMzgwZTkxOTlkNWQifQ.eyJvcmdhbml6YXRpb24iOnsiaWQiOiJlbldveEZNT25wIiwic2x1ZyI6InRoZS1ibHVlLWJyYW5kLTMiLCJlbnRlcnByaXNlIjpmYWxzZSwicmVnaW9uIjoiZXUtd2VzdC0xIn0sImFwcGxpY2F0aW9uIjp7ImlkIjoibkdWcWFpRVlOQSIsImtpbmQiOiJzYWxlc19jaGFubmVsIiwicHVibGljIjp0cnVlfSwic2NvcGUiOiJtYXJrZXQ6YWxsIiwiZXhwIjoxNzEwOTU3NjMwLCJ0ZXN0Ijp0cnVlLCJyYW5kIjowLjM0Nzg4MjA0NDE1NDI0Njk1LCJpYXQiOjE3MTA5NDMyMzAsImlzcyI6Imh0dHBzOi8vY29tbWVyY2VsYXllci5pbyJ9.XhcMqwVwAh5wP2rbNyODBuPpTicwJjvK09KPmhe3nM1Lg0Hp0bIEQIOS81ohLyLE9ecaRH_7CsfLkAqYmRtdOTAKu9m4xvWw-Z_hBQpY67FTaikInMVltNffLvNDe5qmleNi5jnXtJl_yEGhtlDydpFBx1x8u3ofgtZSPFWm3Tl4KQoxFxT8CnnxPd2LTW_PfvnqS3QEGgvVnEXSTnJ41EU4dB8c9cZmmJY6e9SeH9fHVd469N_ipP4bymIL7kLPpkBBDuxxZ0787dOblGI31geAW-hHGbCpnj4_i5WJAVVsj_ImBtqt9Bihc-O-iHIMJlVOzWWXTAnmWGsHiwL5Ag'
 
-    expect(getCoreApiEndpoint(accessToken)).toEqual(
+    expect(getCoreApiBaseEndpoint(accessToken)).toEqual(
       'https://the-blue-brand-3.commercelayer.io'
     )
   })
