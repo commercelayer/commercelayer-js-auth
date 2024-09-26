@@ -10,15 +10,11 @@ import { decodeBase64URLSafe } from './utils/base64.js'
  */
 export async function jwtVerify(
   accessToken: string,
-  { ignoreExpiration = false, domain, jwk }: JwtVerifyOptions = {}
+  { ignoreExpiration = false, jwk }: JwtVerifyOptions = {}
 ): Promise<CommerceLayerJWT> {
   const decodedJWT = jwtDecode(accessToken)
 
-  const jsonWebKey =
-    jwk ??
-    (await getJsonWebKey(decodedJWT.header.kid, {
-      domain
-    }))
+  const jsonWebKey = jwk ?? (await getJsonWebKey(decodedJWT))
 
   if (jsonWebKey == null || jsonWebKey.kid !== decodedJWT.header.kid) {
     throw new InvalidTokenError('Invalid token "kid"')
@@ -69,10 +65,6 @@ type CommerceLayerJsonWebKey = JsonWebKey & { kid: string }
 
 interface JwtVerifyOptions {
   /**
-   * The Commerce Layer's domain.
-   */
-  domain?: string
-  /**
    * Do not validate the token expiration when set to `true`.
    * @default false
    */
@@ -97,14 +89,15 @@ const JWKSCache: Record<string, CommerceLayerJsonWebKey | undefined> = {}
  * @returns
  */
 async function getJsonWebKey(
-  kid: string,
-  options: JwtVerifyOptions
+  jwt: CommerceLayerJWT
 ): Promise<CommerceLayerJsonWebKey | undefined> {
+  const { kid } = jwt.header
+
   if (JWKSCache[kid] != null) {
     return JWKSCache[kid]
   }
 
-  const keys = await getJsonWebKeys(options)
+  const keys = await getJsonWebKeys(jwt)
 
   JWKSCache[kid] = keys.find((key) => key.kid === kid)
 
@@ -115,10 +108,10 @@ async function getJsonWebKey(
  * Retrieve RSA public keys from our JWKS (JSON Web Key Set) endpoint.
  * @returns
  */
-async function getJsonWebKeys({
-  domain = 'commercelayer.io'
-}: JwtVerifyOptions): Promise<CommerceLayerJsonWebKey[]> {
-  const jwksUrl = `https://auth.${domain}/.well-known/jwks.json`
+async function getJsonWebKeys(
+  jwt: CommerceLayerJWT
+): Promise<CommerceLayerJsonWebKey[]> {
+  const jwksUrl = `${jwt.payload.iss}/.well-known/jwks.json`
 
   const response = await fetch(jwksUrl).then<{
     keys: CommerceLayerJsonWebKey[] | undefined
