@@ -47,7 +47,7 @@ export type AuthenticateReturn<TGrantType extends GrantType> =
             : never
 
 /** The options type for the `revoke` helper. */
-export type RevokeOptions = Pick<TBaseOptions, 'clientId' | 'domain'> & {
+export type RevokeOptions = Pick<TBaseOptions, 'clientId'> & {
   /** Your application's client secret (required for confidential API credentials and non-confidential API credentials without a customer or a user in the JWT only). */
   clientSecret?: string
   /** A valid access or refresh token. */

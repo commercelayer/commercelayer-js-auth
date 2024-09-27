@@ -8,7 +8,7 @@
   "scripts": {
     "preinstall": "npx only-allow pnpm",
     "build": "pnpm --filter js-auth build",
-    "prepare": "husky install",
+    "prepare": "husky",
     "test": "pnpm --filter js-auth test",
     "test:production": "pnpm --filter js-auth test -- --mode production",
     "test:watch": "pnpm --filter js-auth test:watch",
