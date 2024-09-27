@@ -22,8 +22,6 @@ export async function revoke(options: RevokeOptions): Promise<RevokeReturn> {
   const body = mapKeys(options, camelCaseToSnakeCase)
   const decodedJWT = jwtDecode(options.token)
 
-  console.log(decodedJWT.payload.iss)
-
   const response = await fetch(`${decodedJWT.payload.iss}/oauth/revoke`, {
     method: 'POST',
     headers: {
