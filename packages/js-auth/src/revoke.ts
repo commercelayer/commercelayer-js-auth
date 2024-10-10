@@ -22,7 +22,7 @@ export async function revoke(options: RevokeOptions): Promise<RevokeReturn> {
   const body = mapKeys(options, camelCaseToSnakeCase)
   const decodedJWT = jwtDecode(options.token)
 
-  const response = await fetch(`${decodedJWT.payload.iss}/oauth/revoke`, {
+  const response = await fetch(`${decodedJWT.payload.iss ?? 'https://auth.commercelayer.io'}/oauth/revoke`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
