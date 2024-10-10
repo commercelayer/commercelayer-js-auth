@@ -21,8 +21,11 @@ import { mapKeys } from './utils/mapKeys.js'
 export async function revoke(options: RevokeOptions): Promise<RevokeReturn> {
   const body = mapKeys(options, camelCaseToSnakeCase)
   const decodedJWT = jwtDecode(options.token)
+  const iss = decodedJWT?.payload?.iss?.startsWith('https://auth')
+    ? decodedJWT.payload.iss
+    : 'https://auth.commercelayer.io'
 
-  const response = await fetch(`${decodedJWT.payload.iss}/oauth/revoke`, {
+  const response = await fetch(`${iss}/oauth/revoke`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
