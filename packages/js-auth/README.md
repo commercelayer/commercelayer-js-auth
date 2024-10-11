@@ -69,6 +69,8 @@ To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/)
 
 Check our [documentation](https://docs.commercelayer.io/developers/authentication) for further information on each single authorization flow.
 
+![](./auth.drawio.svg)
+
 ## Use cases
 
 Based on the authorization flow and application you want to use, you can get your access token in a few simple steps. These are the most common use cases:
