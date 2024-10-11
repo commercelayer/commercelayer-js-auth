@@ -45,12 +45,12 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.6",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/node": "^20",
     "jsonwebtoken": "^9.0.2",
-    "tsup": "^8.2.4",
-    "typescript": "^5.6.2",
-    "vitest": "^2.0.5",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.2",
     "vitest-fetch-mock": "^0.3.0"
   },
   "engines": {
