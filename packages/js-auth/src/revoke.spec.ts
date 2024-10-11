@@ -1,4 +1,12 @@
 import { authenticate, revoke } from './index.js'
+import createFetchMock from 'vitest-fetch-mock'
+
+const fetchMocker = createFetchMock(vi)
+
+afterEach(() => {
+  // changes default behavior of fetchMock to use the real 'fetch' implementation and not mock responses
+  fetchMocker.dontMock()
+})
 
 describe('Revoke', () => {
   it('should respond with error when something goes wrong', async () => {
@@ -123,5 +131,39 @@ describe('Revoke', () => {
         }
       ]
     })
+  })
+
+  it('should run a request to auth.commercelayer.io when the iss is not defined', async () => {
+    fetchMocker.enableMocks()
+    fetchMocker.doMockOnce(() => ({
+      body: '{}'
+    }))
+
+    // @ts-expect-error I want to test this scenario
+    await revoke({
+      token:
+        'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYTRjYzYyOGQxZmNlM2ZiOTNhM2VlNTU4MjZlNDFjZmFmMThkYzJkZmYzYjA3MjIyNzQwMzgwZTkxOTlkNWQifQ.eyJ1c2VyIjp7ImlkIjoiZ2Jsb3dTeVZlcSJ9LCJhcHBsaWNhdGlvbiI6eyJpZCI6Im5HVnFhaWxWeU4iLCJraW5kIjoiZGFzaGJvYXJkIiwicHVibGljIjpmYWxzZX0sInNjb3BlIjoicHJvdmlzaW9uaW5nLWFwaSBtZXRyaWNzLWFwaSIsImV4cCI6MTcxMDk3NjY5NSwidGVzdCI6ZmFsc2UsInJhbmQiOjAuNzY1MjgwMDc2MDY1MjMwN30.KtNlNjDCegKHCB2CNhi2RnYiIMohHVE12Br73uu42AbMMObiQmuWK_bOYvFF24Dt-i9y8CGGG7nua4ENBu0wx2otRqrET-jig8ftoUyeVVjZ7oc1KtB3VQftY7ORxI30PZkbQFB7JjSZlftnlqQfsAXNe7KTwxZGyHPVgKVcumHNnnKZLey2iYmp9ETNCnmP_0fpFR80paVRJT0tFtHDXxewd0Oov9Y5pHCFAP14tZGlYf5N6_kY_vA5wJv3TTgVIvW9bQ8uyduENbGSgQRo_lTg4Y2yjZrgERHyCEo8sD3_qNMAfq4Xyalin5_52YnDW3sY6CGKhlEhfMAsVIYskzU8xstZbz7f7CNg05P6AoSNGhZsEjBtguyOl25kIKieZ5hI39-tBqEZDjnKsgbmUC7l_60nsflUINnhunyMbjzAET5GorhWtbXyCf0ImRFUwGRr2KOQLwFQY73_tLY-xqYIagoQgu__qEpIRrJUFMuOTeLpZrgGoVw5KHJlp0X55zQEfl072c3LFMivWQDEteMS6gDFy8odEWJ544VDyjP-w8DSxZwJhEpJRxVS4k6OXGoZljo9Dfqdw745zEsQID9ICa3Fy9IPEFear0R7kzaf_lCvJOkN29RhihOKZIil9TI-vGlnL2ceuUI3kuR3NpqYJfayNcbJE3uZkIZVhiM'
+    })
+
+    const [input] = fetchMocker.mock.lastCall ?? []
+
+    expect(input).toStrictEqual('https://auth.commercelayer.io/oauth/revoke')
+  })
+
+  it('should run a request to auth.commercelayer.io when the iss has a wrong format', async () => {
+    fetchMocker.enableMocks()
+    fetchMocker.doMockOnce(() => ({
+      body: '{}'
+    }))
+
+    // @ts-expect-error I want to test this scenario
+    await revoke({
+      token:
+        'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYTRjYzYyOGQxZmNlM2ZiOTNhM2VlNTU4MjZlNDFjZmFmMThkYzJkZmYzYjA3MjIyNzQwMzgwZTkxOTlkNWQifQ.eyJ1c2VyIjp7ImlkIjoiZ2Jsb3dTeVZlcSJ9LCJhcHBsaWNhdGlvbiI6eyJpZCI6Im5HVnFhaWxWeU4iLCJraW5kIjoiZGFzaGJvYXJkIiwicHVibGljIjpmYWxzZX0sInNjb3BlIjoicHJvdmlzaW9uaW5nLWFwaSBtZXRyaWNzLWFwaSIsImV4cCI6MTcxMDk3NjY5NSwidGVzdCI6ZmFsc2UsInJhbmQiOjAuNzY1MjgwMDc2MDY1MjMwNywiaWF0IjoxNzEwOTY5NDk1LCJpc3MiOiJodHRwczovL2NvbW1lcmNlbGF5ZXIuaW8ifQ.g3ValmM_Eaju-mG1l5WaD9FFRFxdAb-rGSyV_NpNe5nonYdvOfKxnLJsJvhMIBNQ8u8oggUXAZIc1vaj-67IegageLRDJKT_NuqfkYQa6FUs633sKeaLUVmElpLOpzxFuNLql8LiHrTqhBTGQiYCgWBH3AQFXoUTo02UZsx_WWM1B-DsFikL6ZptYBv4nddHnTWKajfeiCshlcrUxY0f3FP9MUfprUXuJ6cg4ONaOKSpxXUuzLsVNuwLONlU_EWviaK3RheoszTlGH2Fhn7mLeUT-Yfft1EwZiZG_h71j_nToqP_25nfibVEJUoAuaCSXdNQG4Nh6hkj65V9r-OrlvuXaFG7WDWHItgyhdk3DpR13f9q3mnzqTiMUoeMr3NwXcpe3XFmbg_laqPxaJH9T030WYrRz3AOPX7-OKBzlb7gdmF00pirzCz6SZdVrRsiTJvS2VDi6FybFFyOcBlNnDJe1aRk7HarG3D04E12jUJRuwuSGkbFjUuCIWCKy4ljNg1qosxDxnsbykL3Cza0lltSD-_v7KG-8lT10uJbBUNJtTWT4Nlq6Xmy_7ut52NzpC902Xd8pmM8NbkNzOAVwv-M9nQtyLx3U60jnkr5BTvGORK1gICuw-RY0aQDLnrYuILoEVroxehwUoVznV022obTK9djUfqxHakjSJPY0yM'
+    })
+
+    const [input] = fetchMocker.mock.lastCall ?? []
+
+    expect(input).toStrictEqual('https://auth.commercelayer.io/oauth/revoke')
   })
 })
