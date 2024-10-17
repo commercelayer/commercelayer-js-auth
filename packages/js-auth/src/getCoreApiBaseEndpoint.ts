@@ -19,7 +19,7 @@ export function getCoreApiBaseEndpoint(accessToken: string): string {
     throw new InvalidTokenError('Invalid token format')
   }
 
-  return decodedJWT.payload.iss.startsWith('https://auth.')
+  return decodedJWT?.payload?.iss?.startsWith('https://auth.')
     ? decodedJWT.payload.iss.replace(
         'auth',
         decodedJWT.payload.organization.slug
