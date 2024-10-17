@@ -36,4 +36,13 @@ describe('getCoreApiBaseEndpoint', () => {
       'https://the-blue-brand-3.commercelayer.io'
     )
   })
+
+  it('should fallback to "commercelayer.io" when "iss" is not defined.', () => {
+    const accessToken =
+      'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYTRjYzYyOGQxZmNlM2ZiOTNhM2VlNTU4MjZlNDFjZmFmMThkYzJkZmYzYjA3MjIyNzQwMzgwZTkxOTlkNWQifQ.eyJvcmdhbml6YXRpb24iOnsiaWQiOiJlbldveEZNT25wIiwic2x1ZyI6InRoZS1ibHVlLWJyYW5kLTMiLCJlbnRlcnByaXNlIjpmYWxzZX0sImFwcGxpY2F0aW9uIjp7ImlkIjoibkdWcWFpRVlOQSIsImtpbmQiOiJzYWxlc19jaGFubmVsIiwicHVibGljIjp0cnVlfSwiZXhwIjoxNzEwOTU3NjMwLCJ0ZXN0Ijp0cnVlLCJyYW5kIjowLjM0Nzg4MjA0NDE1NDI0Njk1fQ.nJCZtMmvS9r_mCiY3uNrKzrABuavrhGaW9RgRdhnL5LBNt3AyEhlc8CURhwUJBbYgauiKT7O9lil0qGEFgBCowuEHm8mjOvwd-_yHvhoGP6HSSnSLkjeVg5tQ3Klev5IzS4_oKYqq7tuLMhXJdXz4UIwQzvUvfyTpZ86xxDQeybCyLTKvXLVPleWoChrMX3H9jfHs8xOey4GL-3Auugl6OWrT8wUtju7o8JA97d1RgCNDrB-aRdkNanctdszb4cPIItapuqnJUPHcz4ISr1fnp_xwOfZYNQMZSrRM4lyj1_-ZxkL4AnTMUywVhCgi1252FcoijQs-r9So4I33kS0XEcxzA1y96RNB7AvZLs0PnSvBgYvL_sxP8RZsdBiI8Win-onjPxU1ZWAuC3pLjmZVZ7OmCbP4KVy9FSqrXlus8wYIh2DM6AAs0vewV9OL8peMJkX48YeIlqxU2QQ3sSeACNNyh00AArv-bQvn7HIo1_HAggvEqB0qaoJSRg5yEnWK9uZfFeQgSwlzRpagxYC8ybSV4lHMCYSv1xvuWYLtrMfq3hcVvSHLgl_kPyhAYBCL_CiJCMJnR1wM3QCSezZeJURrpjP9riNDjU4BSCof6tXUMWN359yYeae5a3j5sggdAVZx1N98Oq0-dOKIbKgcKDyt9n1qyYUdDZGt6Pkbkc'
+
+    expect(getCoreApiBaseEndpoint(accessToken)).toEqual(
+      'https://the-blue-brand-3.commercelayer.io'
+    )
+  })
 })
