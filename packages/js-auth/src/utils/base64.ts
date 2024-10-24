@@ -9,10 +9,19 @@
  * @param stringToEncode The binary string to encode.
  * @returns An ASCII string containing the Base64 URL safe representation of `stringToEncode`.
  */
-export function encodeBase64URLSafe(stringToEncode: string): string {
+export function encodeBase64URLSafe(
+  stringToEncode: string,
+  encoding: 'utf-8' | 'binary'
+): string {
   if (typeof btoa !== 'undefined') {
+    // Convert the string to a UTF-8 byte sequence before encoding
+    const utf8String =
+      encoding === 'utf-8'
+        ? unescape(encodeURIComponent(stringToEncode))
+        : stringToEncode
+
     return (
-      btoa(stringToEncode)
+      btoa(utf8String)
         // Remove padding equal characters
         .replaceAll('=', '')
         // Replace characters according to base64url specifications
@@ -21,7 +30,7 @@ export function encodeBase64URLSafe(stringToEncode: string): string {
     )
   }
 
-  return Buffer.from(stringToEncode, 'binary').toString('base64url')
+  return Buffer.from(stringToEncode, encoding).toString('base64url')
 }
 
 /**
@@ -35,15 +44,20 @@ export function encodeBase64URLSafe(stringToEncode: string): string {
  * @param encodedData A binary string (i.e., a string in which each character in the string is treated as a byte of binary data) containing Base64 URL safe -encoded data.
  * @returns An ASCII string containing decoded data from `encodedData`.
  */
-export function decodeBase64URLSafe(encodedData: string): string {
+export function decodeBase64URLSafe(
+  encodedData: string,
+  encoding: 'utf-8' | 'binary'
+): string {
   if (typeof atob !== 'undefined') {
-    return atob(
+    const decoded = atob(
       encodedData
         // Replace characters according to base64url specifications
         .replaceAll('-', '+')
         .replaceAll('_', '/')
     )
+
+    return encoding === 'utf-8' ? decodeURIComponent(escape(decoded)) : decoded
   }
 
-  return Buffer.from(encodedData, 'base64url').toString('binary')
+  return Buffer.from(encodedData, 'base64url').toString(encoding)
 }

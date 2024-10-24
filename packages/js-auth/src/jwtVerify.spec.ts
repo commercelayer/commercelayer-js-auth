@@ -45,6 +45,18 @@ describe('jwtVerify', () => {
     expect(verification).toStrictEqual(jsonwebtokenDecoded)
   })
 
+  it('should be able to verify a JWT with custom claims and special chars.', async () => {
+    const jsonwebtokenDecoded = jwt.decode(accessTokenCustomClaims, {
+      complete: true
+    })
+
+    const verification = await jwtVerify(accessTokenCustomClaims, {
+      ignoreExpiration: true
+    })
+
+    expect(verification).toStrictEqual(jsonwebtokenDecoded)
+  })
+
   it('should cache in-memory the response from "jwks.json".', async () => {
     // adds the 'fetchMock' global variable and rewires 'fetch' global to call 'fetchMock' instead of the real implementation
     fetchMocker.enableMocks()
@@ -134,7 +146,7 @@ describe('jwtVerify', () => {
 
       const newAccessToken = [
         header,
-        encodeBase64URLSafe(JSON.stringify(newPayload)),
+        encodeBase64URLSafe(JSON.stringify(newPayload), 'utf-8'),
         signature
       ].join('.')
 
@@ -155,7 +167,7 @@ describe('jwtVerify', () => {
 
       const newAccessToken = [
         header,
-        encodeBase64URLSafe(JSON.stringify(newPayload)),
+        encodeBase64URLSafe(JSON.stringify(newPayload), 'utf-8'),
         signature
       ].join('.')
 
@@ -176,6 +188,9 @@ const accessTokenIo =
 
 const accessTokenCo =
   'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYTRjYzYyOGQxZmNlM2ZiOTNhM2VlNTU4MjZlNDFjZmFmMThkYzJkZmYzYjA3MjIyNzQwMzgwZTkxOTlkNWQifQ.eyJvcmdhbml6YXRpb24iOnsiaWQiOiJXWGxFT0ZiT25yIiwic2x1ZyI6ImRyb3AtaW4tanMtc3RnIiwiZW50ZXJwcmlzZSI6dHJ1ZSwicmVnaW9uIjoiZXUtd2VzdC0xIn0sImFwcGxpY2F0aW9uIjp7ImlkIjoiZ3BaYkRpZEtZcCIsImNsaWVudF9pZCI6ImdRTVNJTkx5TW0yVHJabzBVR0VFZHViQzd1U2dtOS1RVEc0ZVRWVVRWMW8iLCJraW5kIjoic2FsZXNfY2hhbm5lbCIsInB1YmxpYyI6dHJ1ZX0sIm1hcmtldCI6eyJpZCI6WyJxZ0xkQmhkbWdBIl0sInN0b2NrX2xvY2F0aW9uX2lkcyI6WyJKblZQZ3VEVmthIiwiQm5hSlF1dndHdyJdLCJnZW9jb2Rlcl9pZCI6bnVsbCwiYWxsb3dzX2V4dGVybmFsX3ByaWNlcyI6ZmFsc2V9LCJzY29wZSI6Im1hcmtldDppZDpxZ0xkQmhkbWdBIiwiZXhwIjoxNzI3MzkzMDM3LCJ0ZXN0Ijp0cnVlLCJyYW5kIjowLjY3MTMxNzc5Mjc4MTc0MjYsImlhdCI6MTcyNzM3ODYzNywiaXNzIjoiaHR0cHM6Ly9hdXRoLmNvbW1lcmNlbGF5ZXIuY28ifQ.kOf-6mwLCjn_dlFxc5SeaTE-4mFSq1JaVW7GCX_afUWSb5FZtb1OAjogqLqOBcm0nLb5XWdl8ZZyTvcgLlQenb8Cg-XX4r1Znd63nkBuHE3cRdbaMqlsGdbzixGzL3-puGCO1RmGBO2GcYoFQQMgSGMeLVLiadu4-NmSelMwQuLMGWmVVUFDZ99tn_6nWGInfBP_slKMwTrF7N3hXJHQIh3ZnwfTxGDC-rA_NZlHdWNMWFvLbfhwv_MrPkv0-sD0sTpndolK95ZKXm7L90dgL2HIrzpdS_gaWbCoqJTKLUPODHRYW6MWLoKwvo1pWT7biZncKF_4REGQiMVW7MivA4B-R5C_GRCEmDChdl9420f5cGXW1tZOge4r7mzYWyy5tIyiSjxg3MTpmCSvMadrtXgZ5d0ZRrQttPlr6B1Fi_6Um8WmImg64UQOYI4GgO3hJ23washNMW3O2M6pQMMcM1OaH3S7p2qtmlmqbYjXqeBrthDHpdjTPdsQzIc33fyg9GPSOIbCUGYzEFRnlXEpJer9E1Rm1FAlX8t5dWTUJcw_73broWzjd6VKwAnVWMNb6WjMc2xkfQu-8bJhM5hScY_Iy1Ui-HRBcoSfmrqXlhgM258ZamU6huiWzqQXUZOqWtupjQUz_K358mpSL_WuMHOfj-pZ70W7cnMxJCa3rbY'
+
+const accessTokenCustomClaims =
+  'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYTRjYzYyOGQxZmNlM2ZiOTNhM2VlNTU4MjZlNDFjZmFmMThkYzJkZmYzYjA3MjIyNzQwMzgwZTkxOTlkNWQifQ.eyJvcmdhbml6YXRpb24iOnsiaWQiOiJXWGxFT0ZiT25yIiwic2x1ZyI6ImRyb3AtaW4tanMtc3RnIiwiZW50ZXJwcmlzZSI6dHJ1ZSwicmVnaW9uIjoiZXUtd2VzdC0xIn0sImFwcGxpY2F0aW9uIjp7ImlkIjoiYU5hS21pZW9rTSIsImNsaWVudF9pZCI6IkVELVNYa3gybzJpTUUyM3lXc1dHY1M4VzFyWURrVVRBOW5UYW1TdkFBdEkiLCJraW5kIjoiaW50ZWdyYXRpb24iLCJwdWJsaWMiOmZhbHNlfSwiY3VzdG9tX2NsYWltIjp7ImN1c3RvbWVyIjp7ImZpcnN0X25hbWUiOiJKw7ZyZyIsImxhc3RfbmFtZSI6IkRvZSJ9fSwic2NvcGUiOiJtYXJrZXQ6YWxsIiwiZXhwIjoxNzI5Nzg5Mjk5LCJ0ZXN0Ijp0cnVlLCJyYW5kIjowLjgxMzE0MjI2ODMxNDY2NzcsImlhdCI6MTcyOTc4MjA5OSwiaXNzIjoiaHR0cHM6Ly9hdXRoLmNvbW1lcmNlbGF5ZXIuY28ifQ.Al5NKzAlka2V42c1nx8AQu7xX5DAx-elQvAiEsI5cXEBB3ZoBX4YEolizATj9e3eTuoQ6rolgPmNdR2_WF8-BnDvhiIDpUpdJ7O3DryNPauH0974d6UGBP9lXoIcHkosUtEu88yyPWhRAoIOPcoxgHVbKJCnREBqRSexPLuARImphYPex7VQwDKsoN1KE-fz40pPgFawr-OLx5nd0xQlkh1HW5wV-7WOtFKPX24ofzSy7pna8yiEsWSQ67_2NJ0XZ5_fhRYxUiy6ZSEWwPV8kXJHAYCbWSyX1gcwKrVnfO7-QuTjImZ7LzSTwYoQv1U68h6DPoy0kjd1q7K6htklcW7gjdDjowE8EP0_ZNpzQ1oErP8A70z4bnLV7SqU6zaTzEeJ4r1dj90luoY4l7Zo-12gDOtOZAd32SWDdJk_PvnZyt44050Zkx6a2qXO7EaSq2w-LcOSihDTI-NRQPLdbS4nRvRbM0UEOTGVWZlQ3iUFduImDaek3Vbi-BdRs37Gm-48pBb9_mfSzF4KQVPZM10FIKkX6R27OSw7oJ-_UkTKFfdUE2ifsJMhG7Q_ZqZnKcqICKID5TBL2GBbTQj62i6Nreq2pRtglkNHMoVEaJ4-t_i7J3og4a5Vg2zIujE2MhwSyhQP01YoEt7i61-UhorBA-ngXZTmpT_GkxtJZrk'
 
 /**
  * Generate private key: openssl genrsa -out ./packages/js-auth/src/private.key 4096
