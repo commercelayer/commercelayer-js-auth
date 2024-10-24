@@ -62,13 +62,14 @@ async function jwtEncode(
 ): Promise<string> {
   const header = { alg: 'HS512', typ: 'JWT' }
 
-  const encodedHeader = encodeBase64URLSafe(JSON.stringify(header))
+  const encodedHeader = encodeBase64URLSafe(JSON.stringify(header), 'binary')
 
   const encodedPayload = encodeBase64URLSafe(
     JSON.stringify({
       ...payload,
       iat: Math.floor(new Date().getTime() / 1000)
-    })
+    }),
+    'utf-8'
   )
 
   const unsignedToken = `${encodedHeader}.${encodedPayload}`
@@ -96,5 +97,8 @@ async function createSignature(data: string, secret: string): Promise<string> {
     enc.encode(data)
   )
 
-  return encodeBase64URLSafe(String.fromCharCode(...new Uint8Array(signature)))
+  return encodeBase64URLSafe(
+    String.fromCharCode(...new Uint8Array(signature)),
+    'binary'
+  )
 }

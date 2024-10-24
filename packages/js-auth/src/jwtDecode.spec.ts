@@ -277,4 +277,44 @@ describe('jwtDecode', () => {
         'RhXDw7UajFr9Bxl18Q8Es82MlbXw1YcJCRe0g1-mPpDaxcBDtvHyu8GQYLpRYm-4xQ5fbg57Pzqxue0jOxv2Kcsl7XhOUHwEs9jTyS5_tfeJTQ_Ab4zKi27EFfb9NmA78xXEa1wyznVDoYvUy-PzemPPchEDezx1qrJkd0zMqnr5CJntSmfPCP22g0ljLscNUtUlbACT7xpIVXAe37XZ6_DBHOuAToleupFoyUKbNH3fRTc3FIrzexWt1m8RQALQ-QGDPljjFpnWjo3aiJQMZAu9FoZgdJn-qlbW0iYRFl91TAu8VAJ8bJJo8o3jbNdlggs9kNYFy3h15Zx3rnOUyA'
     })
   })
+
+  it('should be able to parse an access token with custom claims and special chars.', () => {
+    const accessToken =
+      'eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6ImFiYTRjYzYyOGQxZmNlM2ZiOTNhM2VlNTU4MjZlNDFjZmFmMThkYzJkZmYzYjA3MjIyNzQwMzgwZTkxOTlkNWQifQ.eyJvcmdhbml6YXRpb24iOnsiaWQiOiJlbldveEZNT25wIiwic2x1ZyI6InRoZS1ibHVlLWJyYW5kLTMiLCJlbnRlcnByaXNlIjpmYWxzZSwicmVnaW9uIjoiZXUtd2VzdC0xIn0sImFwcGxpY2F0aW9uIjp7ImlkIjoiR1J2RGlySmxERyIsImtpbmQiOiJ3ZWJhcHAiLCJwdWJsaWMiOmZhbHNlfSwiY3VzdG9tX2NsYWltIjp7ImN1c3RvbWVyIjp7ImZpcnN0X25hbWUiOiJKw7ZyZyIsImxhc3RfbmFtZSI6IkRvZSJ9fSwic2NvcGUiOiJtYXJrZXQ6YWxsIiwiZXhwIjoxNzI5Nzc5MTQ0LCJ0ZXN0Ijp0cnVlLCJyYW5kIjowLjY5NzY2MjgwNDM2NTg2OTUsImlhdCI6MTcyOTc3MTk0NCwiaXNzIjoiaHR0cHM6Ly9hdXRoLmNvbW1lcmNlbGF5ZXIuY28ifQ.jtOrSfSZMITiiYLqmu5p5oiY3pZnQSGNvDeN7nMQ7vpTByMvy-XQvY9YVCVxCwqDy3I_57c3HiEhgEz47crmv-4g4TpcfFjFqg4i2TQGHf0VNJJ5LOsh_cTUYNf13Q7Vy5jmrJ-sC8MJ0tEcs-f2ACizCJ_uRCqvybB-WwmeIf9A-ExiKN24Ku1Tw9aE0zjuTL3rmwNuR_6H1Umx6XzAQIRjNGL0vOTPTQ52-MrTwV3MYqFxlaWw0HZfr-0RgnUBhXN1LnW4sFYVmLLeYPJ1khYs3blcbKOJo5BQ8Fbnyj7E33Mx2B-3Z63y6uA8vTf45GzucZvIiHBXPeYLtUnglHv9KkhZYksb6xj4WMddZzKGC0r8LVl3ac8ZdWf00epLCBnIDkY8T94NgYF9xCWESB477x8rVLUs8WoKrnvrMzc7OZF2xk22q6Ajc24q9FOhnvymS674N_e1yI5QjNxxZHA5R-W79P-pXbm_nmCRqhKnewZupUKKehbm3SyLYmUndDilJNPkD7qxYZhlDr4rpd5VUpFONAU7qZznGgAak92RY-lJHh-RycyRRf8y-M2Q2jeQfXOrsTXAbK35-c2zvCDXBG7fYTc_fzGZFFMEvMpcfFw4PWfEFZTwxLRWWUHw2WYjg5da94c09z0oUWd2Lmp6P6Yw5vAqeHQn9A5x_y0'
+
+    expect(jwtDecode(accessToken)).toStrictEqual({
+      header: {
+        alg: 'RS512',
+        typ: 'JWT',
+        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d'
+      },
+      payload: {
+        organization: {
+          id: 'enWoxFMOnp',
+          slug: 'the-blue-brand-3',
+          enterprise: false,
+          region: 'eu-west-1'
+        },
+        application: {
+          id: 'GRvDirJlDG',
+          kind: 'webapp',
+          public: false
+        },
+        custom_claim: {
+          customer: {
+            first_name: 'Jörg',
+            last_name: 'Doe'
+          }
+        },
+        scope: 'market:all',
+        exp: 1729779144,
+        test: true,
+        rand: 0.6976628043658695,
+        iat: 1729771944,
+        iss: 'https://auth.commercelayer.co'
+      },
+      signature:
+        'jtOrSfSZMITiiYLqmu5p5oiY3pZnQSGNvDeN7nMQ7vpTByMvy-XQvY9YVCVxCwqDy3I_57c3HiEhgEz47crmv-4g4TpcfFjFqg4i2TQGHf0VNJJ5LOsh_cTUYNf13Q7Vy5jmrJ-sC8MJ0tEcs-f2ACizCJ_uRCqvybB-WwmeIf9A-ExiKN24Ku1Tw9aE0zjuTL3rmwNuR_6H1Umx6XzAQIRjNGL0vOTPTQ52-MrTwV3MYqFxlaWw0HZfr-0RgnUBhXN1LnW4sFYVmLLeYPJ1khYs3blcbKOJo5BQ8Fbnyj7E33Mx2B-3Z63y6uA8vTf45GzucZvIiHBXPeYLtUnglHv9KkhZYksb6xj4WMddZzKGC0r8LVl3ac8ZdWf00epLCBnIDkY8T94NgYF9xCWESB477x8rVLUs8WoKrnvrMzc7OZF2xk22q6Ajc24q9FOhnvymS674N_e1yI5QjNxxZHA5R-W79P-pXbm_nmCRqhKnewZupUKKehbm3SyLYmUndDilJNPkD7qxYZhlDr4rpd5VUpFONAU7qZznGgAak92RY-lJHh-RycyRRf8y-M2Q2jeQfXOrsTXAbK35-c2zvCDXBG7fYTc_fzGZFFMEvMpcfFw4PWfEFZTwxLRWWUHw2WYjg5da94c09z0oUWd2Lmp6P6Yw5vAqeHQn9A5x_y0'
+    })
+  })
 })

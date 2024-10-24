@@ -38,7 +38,7 @@ export async function jwtVerify(
   )
 
   const rawSignature = new Uint8Array(
-    Array.from(decodeBase64URLSafe(decodedJWT.signature), (c) =>
+    Array.from(decodeBase64URLSafe(decodedJWT.signature, 'binary'), (c) =>
       c.charCodeAt(0)
     )
   )
