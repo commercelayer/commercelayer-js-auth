@@ -1,5 +1,5 @@
 {
   "name": "@commercelayer/js-auth",
-  "version": "6.6.2",
+  "version": "6.6.3",
   "exports": "./src/index.ts"
 }
