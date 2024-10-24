@@ -83,4 +83,26 @@ describe('createAssertion', () => {
 
     expect(assertion).toStrictEqual(jsonwebtokenAssertion)
   })
+
+  it('should be able to create a JWT assertion with an `owner` and a `custom_claim` with special chars.', async () => {
+    const payload = {
+      'https://commercelayer.io/claims': {
+        owner: {
+          type: 'User',
+          id: '1234'
+        },
+        custom_claim: {
+          name: 'Jörg'
+        }
+      }
+    } as const
+
+    const jsonwebtokenAssertion = jwt.sign(payload, 'cl', {
+      algorithm: 'HS512'
+    })
+
+    const assertion = await createAssertion({ payload })
+
+    expect(assertion).toStrictEqual(jsonwebtokenAssertion)
+  })
 })

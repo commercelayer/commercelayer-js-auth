@@ -8,6 +8,13 @@ const stringifiedObject = JSON.stringify({
   }
 })
 
+const stringifiedObjectWithSpecialChar = JSON.stringify({
+  customer: {
+    first_name: 'Jörg',
+    last_name: 'Doe'
+  }
+})
+
 describe('Using `Buffer`', () => {
   beforeAll(() => {
     vi.stubGlobal('atob', undefined)
@@ -33,6 +40,10 @@ function runTests(): void {
 
       expect(encodeBase64URLSafe(stringifiedObject)).toEqual(
         'eyJjdXN0b21lciI6eyJmaXJzdF9uYW1lIjoiSm9obiIsImxhc3RfbmFtZSI6IkRvZSJ9fQ'
+      )
+
+      expect(encodeBase64URLSafe(stringifiedObjectWithSpecialChar)).toEqual(
+        'eyJjdXN0b21lciI6eyJmaXJzdF9uYW1lIjoiSsO2cmciLCJsYXN0X25hbWUiOiJEb2UifX0'
       )
 
       expect(
@@ -61,6 +72,12 @@ function runTests(): void {
       ).toEqual(
         '0\x82\x0760\x82\x06\x1E \x03\x02\x01\x02\x02\x10\tW¸\x13HxölÈÐ×\x12¨Ìµú0'
       )
+
+      expect(
+        decodeBase64URLSafe(
+          'eyJjdXN0b21lciI6eyJmaXJzdF9uYW1lIjoiSsO2cmciLCJsYXN0X25hbWUiOiJEb2UifX0'
+        )
+      ).toEqual(stringifiedObjectWithSpecialChar)
 
       expect(decodeBase64URLSafe('c3ViamVjdHM/X2Q9MQ==')).toEqual(
         'subjects?_d=1'
