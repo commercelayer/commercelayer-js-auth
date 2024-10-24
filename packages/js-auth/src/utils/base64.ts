@@ -14,11 +14,15 @@ export function encodeBase64URLSafe(
   encoding: 'utf-8' | 'binary'
 ): string {
   if (typeof btoa !== 'undefined') {
-    // Convert the string to a UTF-8 byte sequence before encoding
-    const utf8String =
-      encoding === 'utf-8'
-        ? unescape(encodeURIComponent(stringToEncode))
-        : stringToEncode
+    let utf8String = stringToEncode
+
+    if (encoding === 'utf-8') {
+      // Encode the string as UTF-8
+      const utf8Bytes = new TextEncoder().encode(stringToEncode)
+
+      // Convert the UTF-8 bytes to a Base64 string
+      utf8String = String.fromCharCode(...utf8Bytes)
+    }
 
     return (
       btoa(utf8String)
@@ -54,9 +58,21 @@ export function decodeBase64URLSafe(
         // Replace characters according to base64url specifications
         .replaceAll('-', '+')
         .replaceAll('_', '/')
+        // Add padding if necessary
+        .padEnd(encodedData.length + ((4 - (encodedData.length % 4)) % 4), '=')
     )
 
-    return encoding === 'utf-8' ? decodeURIComponent(escape(decoded)) : decoded
+    if (encoding === 'utf-8') {
+      // Decode the Base64 string into bytes
+      const byteArray = new Uint8Array(
+        [...decoded].map((char) => char.charCodeAt(0))
+      )
+
+      // Convert the bytes back to a UTF-8 string
+      return new TextDecoder().decode(byteArray)
+    }
+
+    return decoded
   }
 
   return Buffer.from(encodedData, 'base64url').toString(encoding)
