@@ -3,6 +3,7 @@ import { TokenError } from './errors/TokenError.js'
 import { TokenExpiredError } from './errors/TokenExpiredError.js'
 import { jwtDecode, type CommerceLayerJWT } from './jwtDecode.js'
 import { decodeBase64URLSafe } from './utils/base64.js'
+import { extractIssuer } from './utils/extractIssuer.js'
 
 /**
  * Verify a Commerce Layer access token.
@@ -111,7 +112,7 @@ async function getJsonWebKey(
 async function getJsonWebKeys(
   jwt: CommerceLayerJWT
 ): Promise<CommerceLayerJsonWebKey[]> {
-  const jwksUrl = `${jwt.payload.iss}/.well-known/jwks.json`
+  const jwksUrl = `${extractIssuer(jwt)}/.well-known/jwks.json`
 
   const response = await fetch(jwksUrl).then<{
     keys: CommerceLayerJsonWebKey[] | undefined
