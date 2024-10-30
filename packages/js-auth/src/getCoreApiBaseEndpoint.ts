@@ -1,5 +1,6 @@
 import { InvalidTokenError } from './errors/InvalidTokenError.js'
 import { jwtDecode } from './jwtDecode.js'
+import { extractIssuer } from './utils/extractIssuer.js'
 
 /**
  * Derive the [Core API base endpoint](https://docs.commercelayer.io/core/api-specification#base-endpoint) given a valid access token.
@@ -19,10 +20,8 @@ export function getCoreApiBaseEndpoint(accessToken: string): string {
     throw new InvalidTokenError('Invalid token format')
   }
 
-  return decodedJWT?.payload?.iss?.startsWith('https://auth.')
-    ? decodedJWT.payload.iss.replace(
-        'auth',
-        decodedJWT.payload.organization.slug
-      )
-    : `https://${decodedJWT.payload.organization.slug}.commercelayer.io`
+  return extractIssuer(decodedJWT).replace(
+    'auth',
+    decodedJWT.payload.organization.slug
+  )
 }
