@@ -58,6 +58,7 @@ jobs:
           VITE_TEST_CUSTOMER_ID: ${{ secrets.VITE_TEST_CUSTOMER_ID }}
           VITE_TEST_DOMAIN: ${{ vars.VITE_TEST_DOMAIN }}
           VITE_TEST_SCOPE: ${{ secrets.VITE_TEST_SCOPE }}
+          VITE_TEST_STORE_SCOPE: ${{ secrets.VITE_TEST_STORE_SCOPE }}
           VITE_TEST_USERNAME: ${{ secrets.VITE_TEST_USERNAME }}
           VITE_TEST_PASSWORD: ${{ secrets.VITE_TEST_PASSWORD }}
           VITE_TEST_PROVISIONING_DOMAIN: ${{ vars.VITE_TEST_PROVISIONING_DOMAIN }}

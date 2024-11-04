@@ -12,6 +12,7 @@ declare namespace NodeJS {
     VITE_TEST_CUSTOMER_ID: string
     VITE_TEST_DOMAIN: string
     VITE_TEST_SCOPE: string
+    VITE_TEST_STORE_SCOPE: string
     VITE_TEST_USERNAME: string
     VITE_TEST_PASSWORD: string
     VITE_TEST_PROVISIONING_DOMAIN: string
