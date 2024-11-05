@@ -28,6 +28,7 @@ export type {
 } from './types/index.js'
 
 export { getCoreApiBaseEndpoint } from './getCoreApiBaseEndpoint.js'
+export { getProvisioningApiBaseEndpoint } from './getProvisioningApiBaseEndpoint.js'
 
 export { InvalidTokenError } from './errors/InvalidTokenError.js'
 export { TokenError } from './errors/TokenError.js'

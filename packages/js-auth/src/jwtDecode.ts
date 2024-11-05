@@ -38,10 +38,10 @@ export interface CommerceLayerJWT {
 }
 
 type Payload =
-  | JWTUser
   | JWTDashboard
-  | JWTIntegration
+  | JWTUser
   | JWTSalesChannel
+  | JWTIntegration
   | JWTWebApp
 
 interface JWTBase {
