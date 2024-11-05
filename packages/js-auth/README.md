@@ -70,6 +70,60 @@ To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/)
 
 Check our [documentation](https://docs.commercelayer.io/developers/authentication) for further information on each single authorization flow.
 
+```mermaid
+flowchart TB
+  %% Default style for nodes
+  classDef node stroke-width:2px;
+
+  %% Main nodes
+  auth(<b>Auth API</b><br/><br/>https://<b>auth</b>.commercelayer.io)
+
+  dashboard("dashboard")
+  user("user")
+  sales_channel("sales_channel")
+  integration("integration")
+  webapp("webapp")
+
+  provisioningAPI(<b>Provisioning API</b><br/><br/>https://<b>provisioning</b>.commercelayer.io)
+  coreAPI(<b>Core API</b><br/><br/>https://&lt;<b>slug</b>&gt;.commercelayer.io)
+  metricsAPI(<b>Metrics API</b><br/><br/>https://&lt;<b>slug</b>&gt;.commercelayer.io/metrics)
+  comingSoon(<b>Metrics API</b><br/><br/>https://<b>metrics</b>.commercelayer.io)
+
+  %% Node styles
+  style dashboard fill:#FFE6CC,stroke:#D79B00,color:#000
+  style user fill:#F8CECC,stroke:#B85450,color:#000
+  style sales_channel fill:#D5E8D4,stroke:#82B366,color:#000
+  style integration fill:#DAE8FC,stroke:#6C8EBF,color:#000
+  style webapp fill:#E1D5E7,stroke:#9673A6,color:#000
+
+  %% Connections
+  auth --> dashboard
+  auth --> user
+  auth --> sales_channel
+  auth --> integration
+  auth --> webapp
+
+  dashboard --> provisioningAPI
+  user --> provisioningAPI
+  user -- coming soon --> comingSoon
+  sales_channel --> coreAPI
+  integration --> coreAPI
+  integration --> metricsAPI
+  webapp --> coreAPI
+  webapp --> metricsAPI
+
+  %% Arrow Styles
+  linkStyle default stroke-width:2px;
+  linkStyle 5 stroke:#D79B00
+  linkStyle 6 stroke:#B85450
+  linkStyle 7 stroke:#B85450,stroke-dasharray: 5 5;
+  linkStyle 8 stroke:#82B366
+  linkStyle 9 stroke:#6C8EBF
+  linkStyle 10 stroke:#6C8EBF
+  linkStyle 11 stroke:#9673A6
+  linkStyle 12 stroke:#9673A6
+```
+
 ## Use cases
 
 Based on the authorization flow and application you want to use, you can get your access token in a few simple steps. These are the most common use cases:
