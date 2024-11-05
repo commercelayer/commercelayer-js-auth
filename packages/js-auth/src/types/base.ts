@@ -4,7 +4,14 @@ export interface TBaseOptions {
    */
   clientId: string
   /**
-   * The access token scope (market, stock location).
+   * [The access token scope](https://docs.commercelayer.io/core/authentication#authorization-scopes) (market, store, and/or stock location).
+   *
+   * The access token scope is a string that can be composed in two ways:
+   * * by **ID** — `{{resource_name}}:id:{{resource_id}}`\
+   *   Where `{{resource_name}}` can be one of market, store, or stock_location, and `{{resource_id}}` is the id of the resource (e.g. `market:id:xYZkjABcde`, `store:id:bGvCXzYgNB`, `stock_location:id:WLgbSXqyoZ`).\
+   *
+   * * by **code** — `{{resource_name}}:code:{{resource_code}}`
+   * Where `{{resource_name}}` can be one of market, store, or stock_location, and `{{resource_code}}` is the code of the resource (e.g. `market:code:europe`, `store:code:outlet_ny`, `stock_location:code:eu_warehouse`).
    */
   scope?: string
   /**
@@ -57,7 +64,7 @@ export type TBaseReturn = {
    */
   expires: Date
   /**
-   * The access token scope (market, stock location).
+   * [The access token scope](https://docs.commercelayer.io/core/authentication#authorization-scopes) (market, store, and/or stock location).
    */
   scope: string
   /**

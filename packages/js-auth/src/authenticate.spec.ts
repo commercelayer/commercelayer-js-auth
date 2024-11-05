@@ -5,6 +5,7 @@ const integrationClientId = process.env.VITE_TEST_INTEGRATION_CLIENT_ID
 const clientSecret = process.env.VITE_TEST_INTEGRATION_CLIENT_SECRET
 const domain = process.env.VITE_TEST_DOMAIN
 const scope = process.env.VITE_TEST_SCOPE
+const storeScope = process.env.VITE_TEST_STORE_SCOPE
 const username = process.env.VITE_TEST_USERNAME
 const password = process.env.VITE_TEST_PASSWORD
 const tokenIss = process.env.VITE_TEST_TOKEN_ISS
@@ -37,7 +38,8 @@ describe('Organization auth', () => {
   it('should return an access token with the application kind `sales_channel` (grantType: `client_credentials`).', async () => {
     const response = await authenticate('client_credentials', {
       clientId,
-      domain
+      domain,
+      scope
     })
 
     expect(response).keys(
@@ -69,7 +71,56 @@ describe('Organization auth', () => {
           region: 'eu-west-1'
         },
         iss: tokenIss,
-        scope: 'market:all',
+        scope,
+        test: true
+      }
+    })
+
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      'organization.id'
+    )
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      'application.id'
+    )
+  })
+
+  it('should return an access token with the application kind `sales_channel` (grantType: `client_credentials`) and a `store` in the scope.', async () => {
+    const response = await authenticate('client_credentials', {
+      clientId,
+      domain,
+      scope: storeScope
+    })
+
+    expect(response).keys(
+      'accessToken',
+      'createdAt',
+      'expires',
+      'expiresIn',
+      'scope',
+      'tokenType'
+    )
+
+    expect(response.expires).toBeInstanceOf(Date)
+    expect(response.expires.getTime()).toBeGreaterThan(Date.now())
+
+    expect(jwtDecode(response.accessToken)).toMatchObject({
+      header: {
+        alg: 'RS512',
+        typ: 'JWT'
+      },
+      payload: {
+        application: {
+          kind: 'sales_channel',
+          public: true,
+          client_id: clientId
+        },
+        organization: {
+          slug: process.env.VITE_TEST_SLUG,
+          enterprise: true,
+          region: 'eu-west-1'
+        },
+        iss: tokenIss,
+        scope: storeScope,
         test: true
       }
     })
