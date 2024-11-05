@@ -25,6 +25,7 @@ It works everywhere. On your browser, server, or at the edge.
   - [Decode an access token](#decode-an-access-token)
   - [Verify an access token](#verify-an-access-token)
   - [Get Core API base endpoint](#get-core-api-base-endpoint)
+  - [Get Provisioning API base endpoint](#get-provisioning-api-base-endpoint)
 - [Contributors guide](#contributors-guide)
 - [Need help?](#need-help)
 - [License](#license)
@@ -338,6 +339,18 @@ getCoreApiBaseEndpoint('a-valid-access-token') //= "https://yourdomain.commercel
 ```
 
 The method requires a valid access token with an `organization` in the payload. When the organization is not set (e.g., provisioning token), it throws an `InvalidTokenError` exception.
+
+### Get Provisioning API base endpoint
+
+It returns the [Provisioning API base endpoint](https://docs.commercelayer.io/provisioning/getting-started/api-specification#base-endpoint) given a valid access token.
+
+```ts
+import { getProvisioningApiBaseEndpoint } from '@commercelayer/js-auth'
+
+getProvisioningApiBaseEndpoint('a-valid-access-token') //= "https://provisioning.commercelayer.io"
+```
+
+The method requires a valid access token (the token can be used with Provisioning API). When the token is not valid (e.g., core api token), it throws an `InvalidTokenError` exception.
 
 ---
 

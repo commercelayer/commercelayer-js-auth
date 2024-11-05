@@ -3,21 +3,21 @@ import { jwtDecode } from './jwtDecode.js'
 import { extractIssuer } from './utils/extractIssuer.js'
 
 /**
- * Derives the [Core API base endpoint](https://docs.commercelayer.io/core/api-specification#base-endpoint) given a valid access token.
+ * Returns the [Provisioning API base endpoint](https://docs.commercelayer.io/provisioning/getting-started/api-specification#base-endpoint) given a valid access token.
  *
  * @example
  * ```ts
- * getCoreApiBaseEndpoint('eyJhbGciOiJS...') //= "https://yourdomain.commercelayer.io"
+ * getProvisioningApiBaseEndpoint('eyJhbGciOiJS...') //= "https://provisioning.commercelayer.io"
  * ```
  *
- * The method requires a valid access token with an `organization` in the payload.
+ * The method requires a valid access token for Provisioning API.
  *
  * @param accessToken - The access token to decode.
  * @param options - An options object to configure behavior.
- * @returns The core API base endpoint as a string, or `null` if the token is invalid and `shouldThrow` is `false`.
+ * @returns The provisioning API base endpoint as a string, or `null` if the token is invalid and `shouldThrow` is `false`.
  * @throws InvalidTokenError - If the token is invalid and `shouldThrow` is true.
  */
-export function getCoreApiBaseEndpoint(
+export function getProvisioningApiBaseEndpoint(
   accessToken: string,
   options?: {
     /**
@@ -29,21 +29,21 @@ export function getCoreApiBaseEndpoint(
 ): string
 
 /**
- * Derives the [Core API base endpoint](https://docs.commercelayer.io/core/api-specification#base-endpoint) given a valid access token.
+ * Returns the [Provisioning API base endpoint](https://docs.commercelayer.io/provisioning/getting-started/api-specification#base-endpoint) given a valid access token.
  *
  * @example
  * ```ts
- * getCoreApiBaseEndpoint('eyJhbGciOiJS...') //= "https://yourdomain.commercelayer.io"
+ * getProvisioningApiBaseEndpoint('eyJhbGciOiJS...') //= "https://provisioning.commercelayer.io"
  * ```
  *
- * The method requires a valid access token with an `organization` in the payload.
+ * The method requires a valid access token for Provisioning API.
  *
  * @param accessToken - The access token to decode.
  * @param options - An options object to configure behavior.
- * @returns The core API base endpoint as a string, or `null` if the token is invalid and `shouldThrow` is `false`.
+ * @returns The provisioning API base endpoint as a string, or `null` if the token is invalid and `shouldThrow` is `false`.
  * @throws InvalidTokenError - If the token is invalid and `shouldThrow` is true.
  */
-export function getCoreApiBaseEndpoint(
+export function getProvisioningApiBaseEndpoint(
   accessToken: string,
   options: {
     /**
@@ -54,7 +54,7 @@ export function getCoreApiBaseEndpoint(
   }
 ): string | null
 
-export function getCoreApiBaseEndpoint(
+export function getProvisioningApiBaseEndpoint(
   accessToken: string,
   options: {
     shouldThrow?: boolean
@@ -63,7 +63,7 @@ export function getCoreApiBaseEndpoint(
   const { shouldThrow = true } = options
   const decodedJWT = jwtDecode(accessToken)
 
-  if (!('organization' in decodedJWT.payload)) {
+  if (!decodedJWT?.payload?.scope?.includes('provisioning-api')) {
     if (shouldThrow) {
       throw new InvalidTokenError('Invalid token format')
     }
@@ -71,8 +71,5 @@ export function getCoreApiBaseEndpoint(
     return null
   }
 
-  return extractIssuer(decodedJWT).replace(
-    'auth',
-    decodedJWT.payload.organization.slug
-  )
+  return extractIssuer(decodedJWT).replace('auth', 'provisioning')
 }
