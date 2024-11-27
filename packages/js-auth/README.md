@@ -38,8 +38,9 @@ To get started with Commerce Layer JS Auth, you need to install it and add it to
 
 [![NPM](https://img.shields.io/npm/v/%40commercelayer%2Fjs-auth?style=for-the-badge&labelColor=%23C90501&color=173B4A)](https://www.npmjs.com/package/@commercelayer/js-auth)
 [![JSR](https://img.shields.io/jsr/v/%40commercelayer/js-auth?style=for-the-badge&labelColor=E2CB23&color=173B4A)](https://jsr.io/@commercelayer/js-auth)
-![Lightway](https://img.shields.io/bundlephobia/minzip/%40commercelayer/js-auth?style=for-the-badge
-)
+![Lightway](https://img.shields.io/bundlephobia/minzip/%40commercelayer/js-auth?style=for-the-badge)
+&nbsp;&nbsp;&nbsp;
+[![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=ffffff)](https://discord.gg/commercelayer)
 
 ### Installation
 
@@ -424,11 +425,9 @@ git clone https://github.com/<your username>/commercelayer-js-auth.git && cd com
 
 ## Need help?
 
-1. Request an invite to join [Commerce Layer's Slack community](https://slack.commercelayer.app/).
-
-2. Create an [issue](https://github.com/commercelayer/commercelayer-js-auth/issues) in this repository.
-
-3. Ping us [on Twitter](https://twitter.com/commercelayer).
+- Join [Commerce Layer's Discord community](https://discord.gg/commercelayer).
+- Ping us on [Bluesky](https://bsky.app/profile/commercelayer.io), [X (formerly Twitter)](https://x.com/commercelayer), or [LinkedIn](https://www.linkedin.com/company/commerce-layer).
+- Is there a bug? Create an [issue](https://github.com/commercelayer/commercelayer-js-auth/issues) on this repository.
 
 ## License
 
