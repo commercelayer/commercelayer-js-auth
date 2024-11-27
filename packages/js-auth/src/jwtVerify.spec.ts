@@ -16,7 +16,7 @@ afterEach(() => {
 
 describe('jwtVerify', () => {
   it('should throw when token expired.', async () => {
-    void expect(async () => await jwtVerify(accessTokenIo)).rejects.toThrow(
+    await expect(async () => await jwtVerify(accessTokenIo)).rejects.toThrow(
       TokenExpiredError
     )
   })
@@ -133,9 +133,9 @@ describe('jwtVerify', () => {
         }
       })
 
-    void expect(doVerify).rejects.toThrow(InvalidTokenError)
-    void expect(doVerify).rejects.toThrow(TokenError)
-    void expect(doVerify).rejects.toThrow('Invalid token "kid"')
+    await expect(doVerify).rejects.toThrow(InvalidTokenError)
+    await expect(doVerify).rejects.toThrow(TokenError)
+    await expect(doVerify).rejects.toThrow('Invalid token "kid"')
   })
 
   describe('when the access token is modified', () => {
@@ -176,9 +176,9 @@ describe('jwtVerify', () => {
           ignoreExpiration: true
         })
 
-      void expect(doVerify).rejects.toThrow(InvalidTokenError)
-      void expect(doVerify).rejects.toThrow(TokenError)
-      void expect(doVerify).rejects.toThrow('Invalid signature')
+      await expect(doVerify).rejects.toThrow(InvalidTokenError)
+      await expect(doVerify).rejects.toThrow(TokenError)
+      await expect(doVerify).rejects.toThrow('Invalid signature')
     })
   })
 })
