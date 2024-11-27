@@ -40,4 +40,4 @@ jobs:
 
       - name: Publish 🚀 pkg.pr.new
         run: |
-          npx pkg-pr-new publish './packages/js-auth' --no-template
+          npx pkg-pr-new publish './packages/js-auth'
