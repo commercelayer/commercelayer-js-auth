@@ -88,7 +88,7 @@ flowchart TB
   provisioningAPI(<b>Provisioning API</b><br/><br/>https://<b>provisioning</b>.commercelayer.io)
   coreAPI(<b>Core API</b><br/><br/>https://&lt;<b>slug</b>&gt;.commercelayer.io)
   metricsAPI(<b>Metrics API</b><br/><br/>https://&lt;<b>slug</b>&gt;.commercelayer.io/metrics)
-  comingSoon(<b>Metrics API</b><br/><br/>https://<b>metrics</b>.commercelayer.io)
+  comingSoon(<b>Metrics API</b> &lpar;coming soon&rpar;<br/><br/>https://<b>metrics</b>.commercelayer.io)
 
   %% Node styles
   style dashboard fill:#FFE6CC,stroke:#D79B00,color:#000
@@ -96,6 +96,7 @@ flowchart TB
   style sales_channel fill:#D5E8D4,stroke:#82B366,color:#000
   style integration fill:#DAE8FC,stroke:#6C8EBF,color:#000
   style webapp fill:#E1D5E7,stroke:#9673A6,color:#000
+  style comingSoon opacity:.3
 
   %% Connections
   auth --> dashboard
@@ -106,7 +107,7 @@ flowchart TB
 
   dashboard --> provisioningAPI
   user --> provisioningAPI
-  user -- coming soon --> comingSoon
+  user --> comingSoon
   sales_channel --> coreAPI
   integration --> coreAPI
   integration --> metricsAPI
@@ -117,7 +118,7 @@ flowchart TB
   linkStyle default stroke-width:2px;
   linkStyle 5 stroke:#D79B00
   linkStyle 6 stroke:#B85450
-  linkStyle 7 stroke:#B85450,stroke-dasharray: 5 5;
+  linkStyle 7 stroke:#B85450,stroke-dasharray: 5 5,opacity:.3
   linkStyle 8 stroke:#82B366
   linkStyle 9 stroke:#6C8EBF
   linkStyle 10 stroke:#6C8EBF
