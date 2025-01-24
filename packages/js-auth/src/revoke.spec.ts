@@ -1,5 +1,5 @@
-import { authenticate, revoke } from './index.js'
 import createFetchMock from 'vitest-fetch-mock'
+import { authenticate, revoke } from './index.js'
 
 const fetchMocker = createFetchMock(vi)
 

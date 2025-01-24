@@ -13,7 +13,8 @@ export type CamelCaseToSnakeCase<
 export function camelCaseToSnakeCase<S extends string>(
   str: S
 ): CamelCaseToSnakeCase<S> {
-  return str.replace(/[A-Z]/g, function (letter) {
-    return '_' + letter.toLowerCase()
-  }) as CamelCaseToSnakeCase<S>
+  return str.replace(
+    /[A-Z]/g,
+    (letter) => `_${letter.toLowerCase()}`
+  ) as CamelCaseToSnakeCase<S>
 }

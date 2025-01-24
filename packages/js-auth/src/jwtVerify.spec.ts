@@ -4,7 +4,7 @@ import createFetchMock from 'vitest-fetch-mock'
 import { InvalidTokenError } from './errors/InvalidTokenError.js'
 import { TokenError } from './errors/TokenError.js'
 import { TokenExpiredError } from './errors/TokenExpiredError.js'
-import { jwtDecode, type CommerceLayerJWT } from './jwtDecode.js'
+import { type CommerceLayerJWT, jwtDecode } from './jwtDecode.js'
 import { jwtVerify } from './jwtVerify.js'
 import { encodeBase64URLSafe } from './utils/base64.js'
 const fetchMocker = createFetchMock(vi)

@@ -1,7 +1,7 @@
 import type {
-  GrantType,
   AuthenticateOptions,
-  AuthenticateReturn
+  AuthenticateReturn,
+  GrantType
 } from './types/index.js'
 
 import { camelCaseToSnakeCase } from './utils/camelCaseToSnakeCase.js'
