@@ -1,9 +1,9 @@
-import { InvalidTokenError } from './errors/InvalidTokenError.js'
-import { TokenError } from './errors/TokenError.js'
-import { TokenExpiredError } from './errors/TokenExpiredError.js'
-import { type CommerceLayerJWT, jwtDecode } from './jwtDecode.js'
-import { decodeBase64URLSafe } from './utils/base64.js'
-import { extractIssuer } from './utils/extractIssuer.js'
+import { InvalidTokenError } from "./errors/InvalidTokenError.js"
+import { TokenError } from "./errors/TokenError.js"
+import { TokenExpiredError } from "./errors/TokenExpiredError.js"
+import { type CommerceLayerJWT, jwtDecode } from "./jwtDecode.js"
+import { decodeBase64URLSafe } from "./utils/base64.js"
+import { extractIssuer } from "./utils/extractIssuer.js"
 
 /**
  * Verify a Commerce Layer access token.
@@ -26,26 +26,26 @@ export async function jwtVerify(
   }
 
   const algorithm: RsaHashedImportParams = {
-    name: 'RSASSA-PKCS1-v1_5',
-    hash: 'SHA-512',
+    name: "RSASSA-PKCS1-v1_5",
+    hash: "SHA-512",
   }
 
   const publicKey = await crypto.subtle.importKey(
-    'jwk',
+    "jwk",
     jsonWebKey,
     algorithm,
     true,
-    ['verify'],
+    ["verify"],
   )
 
   const rawSignature = new Uint8Array(
-    Array.from(decodeBase64URLSafe(decodedJWT.signature, 'binary'), (c) =>
+    Array.from(decodeBase64URLSafe(decodedJWT.signature, "binary"), (c) =>
       c.charCodeAt(0),
     ),
   )
 
   const rawData = new TextEncoder().encode(
-    accessToken.split('.').slice(0, 2).join('.'),
+    accessToken.split(".").slice(0, 2).join("."),
   )
 
   const isValid = await crypto.subtle.verify(
@@ -56,7 +56,7 @@ export async function jwtVerify(
   )
 
   if (!isValid) {
-    throw new InvalidTokenError('Invalid signature')
+    throw new InvalidTokenError("Invalid signature")
   }
 
   return decodedJWT

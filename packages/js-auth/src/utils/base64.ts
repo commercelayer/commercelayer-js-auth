@@ -11,12 +11,12 @@
  */
 export function encodeBase64URLSafe(
   stringToEncode: string,
-  encoding: 'utf-8' | 'binary',
+  encoding: "utf-8" | "binary",
 ): string {
-  if (typeof btoa !== 'undefined') {
+  if (typeof btoa !== "undefined") {
     let utf8String = stringToEncode
 
-    if (encoding === 'utf-8') {
+    if (encoding === "utf-8") {
       // Encode the string as UTF-8
       const utf8Bytes = new TextEncoder().encode(stringToEncode)
 
@@ -27,14 +27,14 @@ export function encodeBase64URLSafe(
     return (
       btoa(utf8String)
         // Remove padding equal characters
-        .replaceAll('=', '')
+        .replaceAll("=", "")
         // Replace characters according to base64url specifications
-        .replaceAll('+', '-')
-        .replaceAll('/', '_')
+        .replaceAll("+", "-")
+        .replaceAll("/", "_")
     )
   }
 
-  return Buffer.from(stringToEncode, encoding).toString('base64url')
+  return Buffer.from(stringToEncode, encoding).toString("base64url")
 }
 
 /**
@@ -50,19 +50,19 @@ export function encodeBase64URLSafe(
  */
 export function decodeBase64URLSafe(
   encodedData: string,
-  encoding: 'utf-8' | 'binary',
+  encoding: "utf-8" | "binary",
 ): string {
-  if (typeof atob !== 'undefined') {
+  if (typeof atob !== "undefined") {
     const decoded = atob(
       encodedData
         // Replace characters according to base64url specifications
-        .replaceAll('-', '+')
-        .replaceAll('_', '/')
+        .replaceAll("-", "+")
+        .replaceAll("_", "/")
         // Add padding if necessary
-        .padEnd(encodedData.length + ((4 - (encodedData.length % 4)) % 4), '='),
+        .padEnd(encodedData.length + ((4 - (encodedData.length % 4)) % 4), "="),
     )
 
-    if (encoding === 'utf-8') {
+    if (encoding === "utf-8") {
       // Decode the Base64 string into bytes
       const byteArray = new Uint8Array(
         [...decoded].map((char) => char.charCodeAt(0)),
@@ -75,5 +75,5 @@ export function decodeBase64URLSafe(
     return decoded
   }
 
-  return Buffer.from(encodedData, 'base64url').toString(encoding)
+  return Buffer.from(encodedData, "base64url").toString(encoding)
 }

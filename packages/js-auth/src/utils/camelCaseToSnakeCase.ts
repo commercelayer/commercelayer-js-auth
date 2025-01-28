@@ -1,12 +1,12 @@
 export type CamelCaseToSnakeCase<
   T extends string,
-  P extends string = '',
+  P extends string = "",
 > = string extends T
   ? string
   : T extends `${infer C}${infer R}`
     ? CamelCaseToSnakeCase<
         R,
-        `${P}${C extends Lowercase<C> ? '' : '_'}${Lowercase<C>}`
+        `${P}${C extends Lowercase<C> ? "" : "_"}${Lowercase<C>}`
       >
     : P
 

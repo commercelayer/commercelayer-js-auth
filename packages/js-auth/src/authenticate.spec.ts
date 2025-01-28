@@ -1,4 +1,4 @@
-import { authenticate, createAssertion, jwtDecode } from './index.js'
+import { authenticate, createAssertion, jwtDecode } from "./index.js"
 
 const clientId = process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID
 const integrationClientId = process.env.VITE_TEST_INTEGRATION_CLIENT_ID
@@ -10,45 +10,45 @@ const username = process.env.VITE_TEST_USERNAME
 const password = process.env.VITE_TEST_PASSWORD
 const tokenIss = process.env.VITE_TEST_TOKEN_ISS
 
-describe('Organization auth', () => {
-  it('should throw an error when the clientId is not valid.', async () => {
-    const response = await authenticate('client_credentials', {
-      clientId: 'wrong-client-id',
+describe("Organization auth", () => {
+  it("should throw an error when the clientId is not valid.", async () => {
+    const response = await authenticate("client_credentials", {
+      clientId: "wrong-client-id",
       domain,
       scope,
     })
 
-    expect(response).toHaveProperty('errors')
+    expect(response).toHaveProperty("errors")
     expect(response.errors).toBeInstanceOf(Array)
     expect(response.errors?.[0]).toMatchObject({
-      code: 'UNAUTHORIZED',
+      code: "UNAUTHORIZED",
       detail:
-        'Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method.',
+        "Client authentication failed due to unknown client, no client authentication included, or unsupported authentication method.",
       status: 401,
-      title: 'invalid_client',
+      title: "invalid_client",
     })
 
-    expect(response).not.toHaveProperty('accessToken')
-    expect(response).not.toHaveProperty('tokenType')
-    expect(response).not.toHaveProperty('expiresIn')
-    expect(response).not.toHaveProperty('scope')
-    expect(response).not.toHaveProperty('createdAt')
+    expect(response).not.toHaveProperty("accessToken")
+    expect(response).not.toHaveProperty("tokenType")
+    expect(response).not.toHaveProperty("expiresIn")
+    expect(response).not.toHaveProperty("scope")
+    expect(response).not.toHaveProperty("createdAt")
   })
 
-  it('should return an access token with the application kind `sales_channel` (grantType: `client_credentials`).', async () => {
-    const response = await authenticate('client_credentials', {
+  it("should return an access token with the application kind `sales_channel` (grantType: `client_credentials`).", async () => {
+    const response = await authenticate("client_credentials", {
       clientId,
       domain,
       scope,
     })
 
     expect(response).keys(
-      'accessToken',
-      'createdAt',
-      'expires',
-      'expiresIn',
-      'scope',
-      'tokenType',
+      "accessToken",
+      "createdAt",
+      "expires",
+      "expiresIn",
+      "scope",
+      "tokenType",
     )
 
     expect(response.expires).toBeInstanceOf(Date)
@@ -56,19 +56,19 @@ describe('Organization auth', () => {
 
     expect(jwtDecode(response.accessToken)).toMatchObject({
       header: {
-        alg: 'RS512',
-        typ: 'JWT',
+        alg: "RS512",
+        typ: "JWT",
       },
       payload: {
         application: {
-          kind: 'sales_channel',
+          kind: "sales_channel",
           public: true,
           client_id: clientId,
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
           enterprise: true,
-          region: 'eu-west-1',
+          region: "eu-west-1",
         },
         iss: tokenIss,
         scope,
@@ -77,27 +77,27 @@ describe('Organization auth', () => {
     })
 
     expect(jwtDecode(response.accessToken).payload).toHaveProperty(
-      'organization.id',
+      "organization.id",
     )
     expect(jwtDecode(response.accessToken).payload).toHaveProperty(
-      'application.id',
+      "application.id",
     )
   })
 
-  it('should return an access token with the application kind `sales_channel` (grantType: `client_credentials`) and a `store` in the scope.', async () => {
-    const response = await authenticate('client_credentials', {
+  it("should return an access token with the application kind `sales_channel` (grantType: `client_credentials`) and a `store` in the scope.", async () => {
+    const response = await authenticate("client_credentials", {
       clientId,
       domain,
       scope: storeScope,
     })
 
     expect(response).keys(
-      'accessToken',
-      'createdAt',
-      'expires',
-      'expiresIn',
-      'scope',
-      'tokenType',
+      "accessToken",
+      "createdAt",
+      "expires",
+      "expiresIn",
+      "scope",
+      "tokenType",
     )
 
     expect(response.expires).toBeInstanceOf(Date)
@@ -105,19 +105,19 @@ describe('Organization auth', () => {
 
     expect(jwtDecode(response.accessToken)).toMatchObject({
       header: {
-        alg: 'RS512',
-        typ: 'JWT',
+        alg: "RS512",
+        typ: "JWT",
       },
       payload: {
         application: {
-          kind: 'sales_channel',
+          kind: "sales_channel",
           public: true,
           client_id: clientId,
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
           enterprise: true,
-          region: 'eu-west-1',
+          region: "eu-west-1",
         },
         iss: tokenIss,
         scope: storeScope,
@@ -126,27 +126,27 @@ describe('Organization auth', () => {
     })
 
     expect(jwtDecode(response.accessToken).payload).toHaveProperty(
-      'organization.id',
+      "organization.id",
     )
     expect(jwtDecode(response.accessToken).payload).toHaveProperty(
-      'application.id',
+      "application.id",
     )
   })
 
-  it('should return an access token with the application kind `integration` (grantType: `client_credentials`).', async () => {
-    const response = await authenticate('client_credentials', {
+  it("should return an access token with the application kind `integration` (grantType: `client_credentials`).", async () => {
+    const response = await authenticate("client_credentials", {
       clientId: integrationClientId,
       clientSecret,
       domain,
     })
 
     expect(response).keys(
-      'accessToken',
-      'createdAt',
-      'expires',
-      'expiresIn',
-      'scope',
-      'tokenType',
+      "accessToken",
+      "createdAt",
+      "expires",
+      "expiresIn",
+      "scope",
+      "tokenType",
     )
 
     expect(response.expires).toBeInstanceOf(Date)
@@ -154,36 +154,36 @@ describe('Organization auth', () => {
 
     expect(jwtDecode(response.accessToken)).toMatchObject({
       header: {
-        alg: 'RS512',
-        typ: 'JWT',
+        alg: "RS512",
+        typ: "JWT",
       },
       payload: {
         application: {
-          kind: 'integration',
+          kind: "integration",
           public: false,
           client_id: integrationClientId,
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
           enterprise: true,
-          region: 'eu-west-1',
+          region: "eu-west-1",
         },
         iss: tokenIss,
-        scope: 'market:all',
+        scope: "market:all",
         test: true,
       },
     })
 
     expect(jwtDecode(response.accessToken).payload).toHaveProperty(
-      'organization.id',
+      "organization.id",
     )
     expect(jwtDecode(response.accessToken).payload).toHaveProperty(
-      'application.id',
+      "application.id",
     )
   })
 
-  it('should return an access token with the application kind `sales_channel` (grantType: `password`).', async () => {
-    const response = await authenticate('password', {
+  it("should return an access token with the application kind `sales_channel` (grantType: `password`).", async () => {
+    const response = await authenticate("password", {
       clientId,
       domain,
       username,
@@ -192,15 +192,15 @@ describe('Organization auth', () => {
     })
 
     expect(response).keys(
-      'accessToken',
-      'createdAt',
-      'expires',
-      'expiresIn',
-      'scope',
-      'tokenType',
-      'ownerId',
-      'ownerType',
-      'refreshToken',
+      "accessToken",
+      "createdAt",
+      "expires",
+      "expiresIn",
+      "scope",
+      "tokenType",
+      "ownerId",
+      "ownerType",
+      "refreshToken",
     )
 
     expect(response.expires).toBeInstanceOf(Date)
@@ -208,22 +208,22 @@ describe('Organization auth', () => {
 
     expect(jwtDecode(response.accessToken)).toMatchObject({
       header: {
-        alg: 'RS512',
-        typ: 'JWT',
+        alg: "RS512",
+        typ: "JWT",
       },
       payload: {
         application: {
-          kind: 'sales_channel',
+          kind: "sales_channel",
           public: true,
           client_id: clientId,
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
           enterprise: true,
-          region: 'eu-west-1',
+          region: "eu-west-1",
         },
         owner: {
-          type: 'Customer',
+          type: "Customer",
           id: process.env.VITE_TEST_CUSTOMER_ID,
         },
         market: {
@@ -237,19 +237,19 @@ describe('Organization auth', () => {
     })
 
     expect(jwtDecode(response.accessToken).payload).toHaveProperty(
-      'organization.id',
+      "organization.id",
     )
     expect(jwtDecode(response.accessToken).payload).toHaveProperty(
-      'application.id',
+      "application.id",
     )
-    expect(jwtDecode(response.accessToken).payload).toHaveProperty('market.id')
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty("market.id")
     expect(jwtDecode(response.accessToken).payload).toHaveProperty(
-      'market.stock_location_ids',
+      "market.stock_location_ids",
     )
   })
 
-  it('should be able to refresh a customer token.', async () => {
-    const customerResponse = await authenticate('password', {
+  it("should be able to refresh a customer token.", async () => {
+    const customerResponse = await authenticate("password", {
       clientId,
       domain,
       username,
@@ -257,7 +257,7 @@ describe('Organization auth', () => {
       scope,
     })
 
-    const refreshResponse = await authenticate('refresh_token', {
+    const refreshResponse = await authenticate("refresh_token", {
       clientId,
       domain,
       refreshToken: customerResponse.refreshToken,
@@ -265,15 +265,15 @@ describe('Organization auth', () => {
     })
 
     expect(refreshResponse).keys(
-      'accessToken',
-      'createdAt',
-      'expires',
-      'expiresIn',
-      'scope',
-      'tokenType',
-      'ownerId',
-      'ownerType',
-      'refreshToken',
+      "accessToken",
+      "createdAt",
+      "expires",
+      "expiresIn",
+      "scope",
+      "tokenType",
+      "ownerId",
+      "ownerType",
+      "refreshToken",
     )
 
     expect(refreshResponse.expires).toBeInstanceOf(Date)
@@ -281,22 +281,22 @@ describe('Organization auth', () => {
 
     expect(jwtDecode(refreshResponse.accessToken)).toMatchObject({
       header: {
-        alg: 'RS512',
-        typ: 'JWT',
+        alg: "RS512",
+        typ: "JWT",
       },
       payload: {
         application: {
-          kind: 'sales_channel',
+          kind: "sales_channel",
           public: true,
           client_id: clientId,
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
           enterprise: true,
-          region: 'eu-west-1',
+          region: "eu-west-1",
         },
         owner: {
-          type: 'Customer',
+          type: "Customer",
           id: process.env.VITE_TEST_CUSTOMER_ID,
         },
         market: {
@@ -310,37 +310,37 @@ describe('Organization auth', () => {
     })
 
     expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
-      'organization.id',
+      "organization.id",
     )
     expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
-      'application.id',
+      "application.id",
     )
     expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
-      'market.id',
+      "market.id",
     )
     expect(jwtDecode(refreshResponse.accessToken).payload).toHaveProperty(
-      'market.stock_location_ids',
+      "market.stock_location_ids",
     )
   })
 })
 
-describe.skip('authorization_code', () => {})
+describe.skip("authorization_code", () => {})
 
-describe('Provisioning auth', () => {
-  it('should return an access token with the application kind `user` (grantType: `client_credentials`)', async () => {
-    const response = await authenticate('client_credentials', {
+describe("Provisioning auth", () => {
+  it("should return an access token with the application kind `user` (grantType: `client_credentials`)", async () => {
+    const response = await authenticate("client_credentials", {
       domain: process.env.VITE_TEST_PROVISIONING_DOMAIN,
       clientId: process.env.VITE_TEST_PROVISIONING_CLIENT_ID,
       clientSecret: process.env.VITE_TEST_PROVISIONING_CLIENT_SECRET,
     })
 
     expect(response).keys(
-      'accessToken',
-      'createdAt',
-      'expires',
-      'expiresIn',
-      'scope',
-      'tokenType',
+      "accessToken",
+      "createdAt",
+      "expires",
+      "expiresIn",
+      "scope",
+      "tokenType",
     )
 
     expect(response.expires).toBeInstanceOf(Date)
@@ -348,13 +348,13 @@ describe('Provisioning auth', () => {
 
     expect(jwtDecode(response.accessToken)).toMatchObject({
       header: {
-        alg: 'RS512',
-        typ: 'JWT',
+        alg: "RS512",
+        typ: "JWT",
       },
       payload: {
         iss: tokenIss,
         application: {
-          kind: 'user',
+          kind: "user",
           public: false,
           client_id: process.env.VITE_TEST_PROVISIONING_CLIENT_ID,
         },
@@ -362,21 +362,21 @@ describe('Provisioning auth', () => {
       },
     })
 
-    expect(jwtDecode(response.accessToken).payload).toHaveProperty('user.id')
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty("user.id")
     expect(jwtDecode(response.accessToken).payload.scope).toContain(
-      'provisioning-api',
+      "provisioning-api",
     )
   })
 })
 
-describe('JWT Bearer', () => {
-  describe('with a `sales_channel` grant type', () => {
+describe("JWT Bearer", () => {
+  describe("with a `sales_channel` grant type", () => {
     runJWTBearerTests(
       process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID,
       process.env.VITE_TEST_SALES_CHANNEL_CLIENT_SECRET,
       {
         application: {
-          kind: 'sales_channel',
+          kind: "sales_channel",
           public: true,
           client_id: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID,
         },
@@ -384,13 +384,13 @@ describe('JWT Bearer', () => {
     )
   })
 
-  describe('with an `integration` grant type', () => {
+  describe("with an `integration` grant type", () => {
     runJWTBearerTests(
       process.env.VITE_TEST_INTEGRATION_CLIENT_ID,
       process.env.VITE_TEST_INTEGRATION_CLIENT_SECRET,
       {
         application: {
-          kind: 'integration',
+          kind: "integration",
           public: false,
           client_id: process.env.VITE_TEST_INTEGRATION_CLIENT_ID,
         },
@@ -398,13 +398,13 @@ describe('JWT Bearer', () => {
     )
   })
 
-  describe('with an `authorization_code` grant type', () => {
+  describe("with an `authorization_code` grant type", () => {
     runJWTBearerTests(
       process.env.VITE_TEST_AUTHORIZATION_CODE_CLIENT_ID,
       process.env.VITE_TEST_AUTHORIZATION_CODE_CLIENT_SECRET,
       {
         application: {
-          kind: 'webapp',
+          kind: "webapp",
           public: false,
           client_id: process.env.VITE_TEST_AUTHORIZATION_CODE_CLIENT_ID,
         },
@@ -418,9 +418,9 @@ function runJWTBearerTests(
   clientSecret: string,
   overridePayload: Record<string, unknown> = {},
 ): void {
-  it('should throw an assertion error when the assertion is empty.', async () => {
+  it("should throw an assertion error when the assertion is empty.", async () => {
     const response = await authenticate(
-      'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      "urn:ietf:params:oauth:grant-type:jwt-bearer",
       {
         clientId,
         clientSecret,
@@ -428,34 +428,34 @@ function runJWTBearerTests(
         assertion: await createAssertion({
           payload: {
             // @ts-expect-error I want to test this scenario
-            'https://commercelayer.io/claims': {},
+            "https://commercelayer.io/claims": {},
           },
         }),
       },
     )
 
-    expect(response).toHaveProperty('errors')
+    expect(response).toHaveProperty("errors")
     expect(response.errors).toBeInstanceOf(Array)
     expect(response.errors?.[0]).toMatchObject({
-      code: 'BAD_REQUEST',
-      detail: 'The provided assertion is invalid.',
+      code: "BAD_REQUEST",
+      detail: "The provided assertion is invalid.",
       status: 400,
-      title: 'invalid_assertion',
+      title: "invalid_assertion",
     })
   })
 
-  it('should return an access token with custom claims.', async () => {
+  it("should return an access token with custom claims.", async () => {
     const response = await authenticate(
-      'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      "urn:ietf:params:oauth:grant-type:jwt-bearer",
       {
         clientId,
         clientSecret,
         domain: process.env.VITE_TEST_DOMAIN,
         assertion: await createAssertion({
           payload: {
-            'https://commercelayer.io/claims': {
+            "https://commercelayer.io/claims": {
               custom_claim: {
-                app: 'supabase',
+                app: "supabase",
               },
             },
           },
@@ -464,51 +464,51 @@ function runJWTBearerTests(
     )
 
     expect(response).keys(
-      'accessToken',
-      'createdAt',
-      'expires',
-      'expiresIn',
-      'refreshToken',
-      'scope',
-      'tokenType',
+      "accessToken",
+      "createdAt",
+      "expires",
+      "expiresIn",
+      "refreshToken",
+      "scope",
+      "tokenType",
     )
 
     expect(jwtDecode(response.accessToken)).toMatchObject({
       header: {
-        alg: 'RS512',
-        typ: 'JWT',
+        alg: "RS512",
+        typ: "JWT",
       },
       payload: {
         custom_claim: {
-          app: 'supabase',
+          app: "supabase",
         },
         iss: tokenIss,
         organization: {
           enterprise: true,
-          region: 'eu-west-1',
+          region: "eu-west-1",
           slug: process.env.VITE_TEST_SLUG,
         },
-        scope: 'market:all',
+        scope: "market:all",
         test: true,
         ...overridePayload,
       },
     })
 
-    expect(jwtDecode(response.accessToken).payload).not.toHaveProperty('owner')
+    expect(jwtDecode(response.accessToken).payload).not.toHaveProperty("owner")
   })
 
-  it('should return an access token with a `User` as the owner.', async () => {
+  it("should return an access token with a `User` as the owner.", async () => {
     const response = await authenticate(
-      'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      "urn:ietf:params:oauth:grant-type:jwt-bearer",
       {
         clientId,
         clientSecret,
         domain: process.env.VITE_TEST_DOMAIN,
         assertion: await createAssertion({
           payload: {
-            'https://commercelayer.io/claims': {
+            "https://commercelayer.io/claims": {
               owner: {
-                type: 'User',
+                type: "User",
                 id: process.env.VITE_TEST_USER_ID,
               },
             },
@@ -518,59 +518,59 @@ function runJWTBearerTests(
     )
 
     expect(response).keys(
-      'accessToken',
-      'createdAt',
-      'expires',
-      'expiresIn',
-      'refreshToken',
-      'scope',
-      'tokenType',
-      'ownerType',
-      'ownerId',
+      "accessToken",
+      "createdAt",
+      "expires",
+      "expiresIn",
+      "refreshToken",
+      "scope",
+      "tokenType",
+      "ownerType",
+      "ownerId",
     )
 
-    expect(response).toHaveProperty('ownerType', 'user')
-    expect(response).toHaveProperty('ownerId', process.env.VITE_TEST_USER_ID)
+    expect(response).toHaveProperty("ownerType", "user")
+    expect(response).toHaveProperty("ownerId", process.env.VITE_TEST_USER_ID)
 
     expect(jwtDecode(response.accessToken)).toMatchObject({
       header: {
-        alg: 'RS512',
-        typ: 'JWT',
+        alg: "RS512",
+        typ: "JWT",
       },
       payload: {
         owner: {
-          type: 'User',
+          type: "User",
           id: process.env.VITE_TEST_USER_ID,
         },
         iss: tokenIss,
         organization: {
           enterprise: true,
-          region: 'eu-west-1',
+          region: "eu-west-1",
           slug: process.env.VITE_TEST_SLUG,
         },
-        scope: 'market:all',
+        scope: "market:all",
         test: true,
         ...overridePayload,
       },
     })
 
     expect(jwtDecode(response.accessToken).payload).not.toHaveProperty(
-      'custom_claim',
+      "custom_claim",
     )
   })
 
-  it('should return an access token with a `Customer` as the owner.', async () => {
+  it("should return an access token with a `Customer` as the owner.", async () => {
     const response = await authenticate(
-      'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      "urn:ietf:params:oauth:grant-type:jwt-bearer",
       {
         clientId,
         clientSecret,
         domain: process.env.VITE_TEST_DOMAIN,
         assertion: await createAssertion({
           payload: {
-            'https://commercelayer.io/claims': {
+            "https://commercelayer.io/claims": {
               owner: {
-                type: 'Customer',
+                type: "Customer",
                 id: process.env.VITE_TEST_CUSTOMER_ID,
               },
             },
@@ -580,68 +580,68 @@ function runJWTBearerTests(
     )
 
     expect(response).keys(
-      'accessToken',
-      'createdAt',
-      'expires',
-      'expiresIn',
-      'refreshToken',
-      'scope',
-      'tokenType',
-      'ownerType',
-      'ownerId',
+      "accessToken",
+      "createdAt",
+      "expires",
+      "expiresIn",
+      "refreshToken",
+      "scope",
+      "tokenType",
+      "ownerType",
+      "ownerId",
     )
 
-    expect(response).toHaveProperty('ownerType', 'customer')
+    expect(response).toHaveProperty("ownerType", "customer")
     expect(response).toHaveProperty(
-      'ownerId',
+      "ownerId",
       process.env.VITE_TEST_CUSTOMER_ID,
     )
 
     expect(jwtDecode(response.accessToken)).toMatchObject({
       header: {
-        alg: 'RS512',
-        typ: 'JWT',
+        alg: "RS512",
+        typ: "JWT",
       },
       payload: {
         owner: {
-          type: 'Customer',
+          type: "Customer",
           id: process.env.VITE_TEST_CUSTOMER_ID,
         },
         iss: tokenIss,
         organization: {
           enterprise: true,
-          region: 'eu-west-1',
+          region: "eu-west-1",
           slug: process.env.VITE_TEST_SLUG,
         },
-        scope: 'market:all',
+        scope: "market:all",
         test: true,
         ...overridePayload,
       },
     })
 
     expect(jwtDecode(response.accessToken).payload).not.toHaveProperty(
-      'custom_claim',
+      "custom_claim",
     )
   })
 
-  it('should return an access token with a `Customer` as the owner and custom claims.', async () => {
+  it("should return an access token with a `Customer` as the owner and custom claims.", async () => {
     const assertion = await createAssertion({
       payload: {
-        'https://commercelayer.io/claims': {
+        "https://commercelayer.io/claims": {
           owner: {
-            type: 'Customer',
+            type: "Customer",
             id: process.env.VITE_TEST_CUSTOMER_ID,
           },
           custom_claim: {
-            first_name: 'John',
-            last_name: 'Doe',
+            first_name: "John",
+            last_name: "Doe",
           },
         },
       },
     })
 
     const response = await authenticate(
-      'urn:ietf:params:oauth:grant-type:jwt-bearer',
+      "urn:ietf:params:oauth:grant-type:jwt-bearer",
       {
         clientId,
         clientSecret,
@@ -651,44 +651,44 @@ function runJWTBearerTests(
     )
 
     expect(response).keys(
-      'accessToken',
-      'createdAt',
-      'expires',
-      'expiresIn',
-      'refreshToken',
-      'scope',
-      'tokenType',
-      'ownerType',
-      'ownerId',
+      "accessToken",
+      "createdAt",
+      "expires",
+      "expiresIn",
+      "refreshToken",
+      "scope",
+      "tokenType",
+      "ownerType",
+      "ownerId",
     )
 
-    expect(response).toHaveProperty('ownerType', 'customer')
+    expect(response).toHaveProperty("ownerType", "customer")
     expect(response).toHaveProperty(
-      'ownerId',
+      "ownerId",
       process.env.VITE_TEST_CUSTOMER_ID,
     )
 
     expect(jwtDecode(response.accessToken)).toMatchObject({
       header: {
-        alg: 'RS512',
-        typ: 'JWT',
+        alg: "RS512",
+        typ: "JWT",
       },
       payload: {
         owner: {
-          type: 'Customer',
+          type: "Customer",
           id: process.env.VITE_TEST_CUSTOMER_ID,
         },
         custom_claim: {
-          first_name: 'John',
-          last_name: 'Doe',
+          first_name: "John",
+          last_name: "Doe",
         },
         iss: tokenIss,
         organization: {
           enterprise: true,
-          region: 'eu-west-1',
+          region: "eu-west-1",
           slug: process.env.VITE_TEST_SLUG,
         },
-        scope: 'market:all',
+        scope: "market:all",
         test: true,
         ...overridePayload,
       },

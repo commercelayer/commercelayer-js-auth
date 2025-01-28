@@ -1,4 +1,4 @@
-import { TokenError } from './TokenError.js'
+import { TokenError } from "./TokenError.js"
 
 /**
  * The token is not valid.
@@ -6,6 +6,6 @@ import { TokenError } from './TokenError.js'
 export class InvalidTokenError extends TokenError {
   constructor(message: string) {
     super(message)
-    this.name = 'InvalidTokenError'
+    this.name = "InvalidTokenError"
   }
 }

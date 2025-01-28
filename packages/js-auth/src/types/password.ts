@@ -1,4 +1,4 @@
-import type { TBaseOptions, TBaseReturn } from './base.js'
+import type { TBaseOptions, TBaseReturn } from "./base.js"
 
 /**
  * The password grant type is used by first-party clients to exchange a user's credentials for an access token.
@@ -17,6 +17,6 @@ export interface TPasswordOptions extends TBaseOptions {
  */
 export interface TPasswordReturn extends TBaseReturn {
   ownerId: string
-  ownerType: 'customer'
+  ownerType: "customer"
   refreshToken: string
 }

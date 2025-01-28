@@ -2,11 +2,11 @@ import type {
   AuthenticateOptions,
   AuthenticateReturn,
   GrantType,
-} from './types/index.js'
+} from "./types/index.js"
 
-import { camelCaseToSnakeCase } from './utils/camelCaseToSnakeCase.js'
-import { mapKeys } from './utils/mapKeys.js'
-import { snakeCaseToCamelCase } from './utils/snakeCaseToCamelCase.js'
+import { camelCaseToSnakeCase } from "./utils/camelCaseToSnakeCase.js"
+import { mapKeys } from "./utils/mapKeys.js"
+import { snakeCaseToCamelCase } from "./utils/snakeCaseToCamelCase.js"
 
 interface TokenJson {
   errors?: unknown
@@ -38,7 +38,7 @@ interface TokenJson {
 export async function authenticate<TGrantType extends GrantType>(
   grantType: TGrantType,
   {
-    domain = 'commercelayer.io',
+    domain = "commercelayer.io",
     headers,
     ...options
   }: AuthenticateOptions<TGrantType>,
@@ -52,10 +52,10 @@ export async function authenticate<TGrantType extends GrantType>(
   )
 
   const response = await fetch(`https://auth.${domain}/oauth/token`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      "Content-Type": "application/json",
+      Accept: "application/json",
       ...headers,
     },
     body: JSON.stringify(body),

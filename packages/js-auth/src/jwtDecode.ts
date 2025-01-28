@@ -1,5 +1,5 @@
-import { InvalidTokenError } from './errors/InvalidTokenError.js'
-import { decodeBase64URLSafe } from './utils/base64.js'
+import { InvalidTokenError } from "./errors/InvalidTokenError.js"
+import { decodeBase64URLSafe } from "./utils/base64.js"
 
 /**
  * Decode a Commerce Layer access token without verifying if the signature is valid.
@@ -8,15 +8,15 @@ import { decodeBase64URLSafe } from './utils/base64.js'
  * If you need to verify the access token before decoding, you can use `jwtVerify` instead._
  */
 export function jwtDecode(accessToken: string): CommerceLayerJWT {
-  const [encodedHeader, encodedPayload, signature] = `${accessToken}`.split('.')
+  const [encodedHeader, encodedPayload, signature] = `${accessToken}`.split(".")
 
   if (encodedHeader == null || encodedPayload == null || signature == null) {
-    throw new InvalidTokenError('Invalid token format')
+    throw new InvalidTokenError("Invalid token format")
   }
 
   return {
-    header: JSON.parse(decodeBase64URLSafe(encodedHeader, 'binary')),
-    payload: JSON.parse(decodeBase64URLSafe(encodedPayload, 'utf-8')),
+    header: JSON.parse(decodeBase64URLSafe(encodedHeader, "binary")),
+    payload: JSON.parse(decodeBase64URLSafe(encodedPayload, "utf-8")),
     signature,
   }
 }
@@ -72,7 +72,7 @@ interface JWTBase {
 export type JWTUser = JWTBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
-    kind: 'user'
+    kind: "user"
   }
   /** The authenticated user. */
   user: {
@@ -86,7 +86,7 @@ export type JWTUser = JWTBase & {
 export type JWTDashboard = JWTBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
-    kind: 'dashboard'
+    kind: "dashboard"
   }
   /** The authenticated user. */
   user: {
@@ -105,7 +105,7 @@ type JWTOrganizationBase = JWTBase & {
   /** The owner (if any) authenticating to the APIs. */
   owner?: {
     id: string
-    type: 'Customer' | 'User'
+    type: "Customer" | "User"
   }
   /**
    * Any other information (key/value pairs) you want to enrich the token with,
@@ -127,10 +127,10 @@ type JWTOrganizationBase = JWTBase & {
 /**
  * A JWT payload that represents a `webapp`.
  */
-export type JWTWebApp = SetRequired<JWTOrganizationBase, 'owner'> & {
+export type JWTWebApp = SetRequired<JWTOrganizationBase, "owner"> & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
-    kind: 'webapp'
+    kind: "webapp"
   }
 }
 
@@ -143,7 +143,7 @@ type SetRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] }
 export type JWTSalesChannel = JWTOrganizationBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
-    kind: 'sales_channel'
+    kind: "sales_channel"
   }
 }
 
@@ -153,7 +153,7 @@ export type JWTSalesChannel = JWTOrganizationBase & {
 export type JWTIntegration = JWTOrganizationBase & {
   /** The type of credentials you're using to authenticate to the APIs. */
   application: {
-    kind: 'integration'
+    kind: "integration"
   }
 }
 
@@ -163,7 +163,7 @@ export type JWTIntegration = JWTOrganizationBase & {
  * @returns
  */
 export function jwtIsUser(payload: Payload): payload is JWTUser {
-  return payload.application.kind === 'user'
+  return payload.application.kind === "user"
 }
 
 /**
@@ -172,7 +172,7 @@ export function jwtIsUser(payload: Payload): payload is JWTUser {
  * @returns
  */
 export function jwtIsDashboard(payload: Payload): payload is JWTDashboard {
-  return payload.application.kind === 'dashboard'
+  return payload.application.kind === "dashboard"
 }
 
 /**
@@ -181,7 +181,7 @@ export function jwtIsDashboard(payload: Payload): payload is JWTDashboard {
  * @returns
  */
 export function jwtIsIntegration(payload: Payload): payload is JWTIntegration {
-  return payload.application.kind === 'integration'
+  return payload.application.kind === "integration"
 }
 
 /**
@@ -192,7 +192,7 @@ export function jwtIsIntegration(payload: Payload): payload is JWTIntegration {
 export function jwtIsSalesChannel(
   payload: Payload,
 ): payload is JWTSalesChannel {
-  return payload.application.kind === 'sales_channel'
+  return payload.application.kind === "sales_channel"
 }
 
 /**
@@ -201,5 +201,5 @@ export function jwtIsSalesChannel(
  * @returns
  */
 export function jwtIsWebApp(payload: Payload): payload is JWTWebApp {
-  return payload.application.kind === 'webapp'
+  return payload.application.kind === "webapp"
 }

@@ -29,7 +29,7 @@ export interface TBaseOptions {
      *
      * **Note: This is an enterprise feature.**
      */
-    'x-backend-auth'?: string
+    "x-backend-auth"?: string
     /**
      * Optional header to forward the client IP address in server-side requests. Its use requires the presence of
      * the `x-backend-auth` header for authentication. This approach helps to differentiate between client requests
@@ -37,7 +37,7 @@ export interface TBaseOptions {
      *
      * **Note: This is an enterprise feature.**
      */
-    'x-true-client-ip'?: string
+    "x-true-client-ip"?: string
     /**
      * Allows for additional headers as needed, where each key is the header name and the value is the header content.
      * Header values should be strings, or `undefined` if the header is not set.
@@ -54,7 +54,7 @@ export type TBaseReturn = {
   /**
    * The token type.
    */
-  tokenType: 'bearer'
+  tokenType: "bearer"
   /**
    * The access token expiration time in seconds.
    */

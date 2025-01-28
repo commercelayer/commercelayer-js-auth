@@ -1,5 +1,5 @@
-import type { TBaseOptions } from './base.js'
-import type { TPasswordReturn } from './password.js'
+import type { TBaseOptions } from "./base.js"
+import type { TPasswordReturn } from "./password.js"
 
 /**
  * Commerce Layer, through OAuth2, provides the support of token exchange in the on-behalf-of (delegation) scenario which allows,
@@ -25,6 +25,6 @@ export interface TJwtBearerOptions extends TBaseOptions {
   assertion: string
 }
 
-export interface TJwtBearerReturn extends Omit<TPasswordReturn, 'ownerType'> {
-  ownerType: 'user' | 'customer'
+export interface TJwtBearerReturn extends Omit<TPasswordReturn, "ownerType"> {
+  ownerType: "user" | "customer"
 }
