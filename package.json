@@ -9,6 +9,8 @@
     "preinstall": "npx only-allow pnpm",
     "build": "pnpm --filter js-auth build",
     "prepare": "husky",
+    "lint": "pnpm --filter js-auth lint",
+    "lint:fix": "pnpm --filter js-auth lint:fix",
     "test": "pnpm --filter js-auth test",
     "test:production": "pnpm --filter js-auth test -- --mode production",
     "test:watch": "pnpm --filter js-auth test:watch",
