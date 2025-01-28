@@ -24,26 +24,26 @@ describe('jwtDecode', () => {
       header: {
         alg: 'RS512',
         typ: 'JWT',
-        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d'
+        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d',
       },
       payload: {
         user: {
-          id: 'gblowSyVeq'
+          id: 'gblowSyVeq',
         },
         application: {
           id: 'nGVqailVyN',
           kind: 'dashboard',
-          public: false
+          public: false,
         },
         scope: 'provisioning-api metrics-api',
         exp: 1710976695,
         test: false,
         rand: 0.7652800760652307,
         iat: 1710969495,
-        iss: 'https://commercelayer.io'
+        iss: 'https://commercelayer.io',
       },
       signature:
-        'YYk1PRFa8zcAlus8uaDFcJF7FRBtXYz-h--OYyuxJ0pc_qG0jdZ7lNgKxZC0Xnb4f9QmO3nHC4b4leGm6aAw8Yw4atZZaEDEkPrlG-ZegtdM4_X2Wbeul_Swkxo91PCIkYRMue0tl-zwl3dH_bS48IGOgOCbNWIcuHFvILaN_oXOHaeGfbVY5zXFfMK8P77TWZEoK0BYvmXIv2o_x_uYQZVcev7sSy1aX2zkikMFu54PIDl-II94ETT2g51QgNglDVh64qIFRvb24uPZo3woEBtd4ogupMRY5c3BvbxtfKHeASjT2NMxSkg-J55V7L4Wv5Q3Oh5p7ePz-95n7lG7uQ'
+        'YYk1PRFa8zcAlus8uaDFcJF7FRBtXYz-h--OYyuxJ0pc_qG0jdZ7lNgKxZC0Xnb4f9QmO3nHC4b4leGm6aAw8Yw4atZZaEDEkPrlG-ZegtdM4_X2Wbeul_Swkxo91PCIkYRMue0tl-zwl3dH_bS48IGOgOCbNWIcuHFvILaN_oXOHaeGfbVY5zXFfMK8P77TWZEoK0BYvmXIv2o_x_uYQZVcev7sSy1aX2zkikMFu54PIDl-II94ETT2g51QgNglDVh64qIFRvb24uPZo3woEBtd4ogupMRY5c3BvbxtfKHeASjT2NMxSkg-J55V7L4Wv5Q3Oh5p7ePz-95n7lG7uQ',
     })
   })
 
@@ -55,26 +55,26 @@ describe('jwtDecode', () => {
       header: {
         alg: 'RS512',
         typ: 'JWT',
-        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d'
+        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d',
       },
       payload: {
         user: {
-          id: 'gblowSyVeq'
+          id: 'gblowSyVeq',
         },
         application: {
           id: 'nGVqailVyN',
           kind: 'user',
-          public: false
+          public: false,
         },
         scope: 'provisioning-api',
         exp: 1710950430,
         test: false,
         rand: 0.6690384536561933,
         iat: 1710943230,
-        iss: 'https://commercelayer.io'
+        iss: 'https://commercelayer.io',
       },
       signature:
-        'NB1PVDXU-CbatAkOKUyKDVo4e1YrracajM1JXUZCnDqGPyD2oMzCQC9ztqtOXrbvlV3FHIWm0yzd8yQvKokFjvPDDH9TvfuWgi_hFN-Dh_7IZBj0tUBfUmF694QfrUOoRfX5OX-jBkRk0IrlYUi2WleiilkSbTV9YdAiLNDWFA1MjeK7YS-QLzrrYL6RsUcII4qrDb7UZZOWiZiXTbZ1HFiSZacrZfu3Eu1BGKVUl8ZhhgYOJ1mCPlVmqn4OTnMfZby8M8Jvo3z7HDbC1-lCWMhoQ7o_PH-duA4DnaMyVrchw1S_3aSmVx6rWykvZ80d9Qz-8oSvqZwhkmnMFvUKvQ'
+        'NB1PVDXU-CbatAkOKUyKDVo4e1YrracajM1JXUZCnDqGPyD2oMzCQC9ztqtOXrbvlV3FHIWm0yzd8yQvKokFjvPDDH9TvfuWgi_hFN-Dh_7IZBj0tUBfUmF694QfrUOoRfX5OX-jBkRk0IrlYUi2WleiilkSbTV9YdAiLNDWFA1MjeK7YS-QLzrrYL6RsUcII4qrDb7UZZOWiZiXTbZ1HFiSZacrZfu3Eu1BGKVUl8ZhhgYOJ1mCPlVmqn4OTnMfZby8M8Jvo3z7HDbC1-lCWMhoQ7o_PH-duA4DnaMyVrchw1S_3aSmVx6rWykvZ80d9Qz-8oSvqZwhkmnMFvUKvQ',
     })
   })
 
@@ -86,29 +86,29 @@ describe('jwtDecode', () => {
       header: {
         alg: 'RS512',
         typ: 'JWT',
-        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d'
+        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d',
       },
       payload: {
         organization: {
           id: 'enWoxFMOnp',
           slug: 'the-blue-brand-3',
           enterprise: false,
-          region: 'eu-west-1'
+          region: 'eu-west-1',
         },
         application: {
           id: 'nGVqaiEYNA',
           kind: 'sales_channel',
-          public: true
+          public: true,
         },
         scope: 'market:all',
         exp: 1710957630,
         test: true,
         rand: 0.34788204415424695,
         iat: 1710943230,
-        iss: 'https://commercelayer.io'
+        iss: 'https://commercelayer.io',
       },
       signature:
-        'XhcMqwVwAh5wP2rbNyODBuPpTicwJjvK09KPmhe3nM1Lg0Hp0bIEQIOS81ohLyLE9ecaRH_7CsfLkAqYmRtdOTAKu9m4xvWw-Z_hBQpY67FTaikInMVltNffLvNDe5qmleNi5jnXtJl_yEGhtlDydpFBx1x8u3ofgtZSPFWm3Tl4KQoxFxT8CnnxPd2LTW_PfvnqS3QEGgvVnEXSTnJ41EU4dB8c9cZmmJY6e9SeH9fHVd469N_ipP4bymIL7kLPpkBBDuxxZ0787dOblGI31geAW-hHGbCpnj4_i5WJAVVsj_ImBtqt9Bihc-O-iHIMJlVOzWWXTAnmWGsHiwL5Ag'
+        'XhcMqwVwAh5wP2rbNyODBuPpTicwJjvK09KPmhe3nM1Lg0Hp0bIEQIOS81ohLyLE9ecaRH_7CsfLkAqYmRtdOTAKu9m4xvWw-Z_hBQpY67FTaikInMVltNffLvNDe5qmleNi5jnXtJl_yEGhtlDydpFBx1x8u3ofgtZSPFWm3Tl4KQoxFxT8CnnxPd2LTW_PfvnqS3QEGgvVnEXSTnJ41EU4dB8c9cZmmJY6e9SeH9fHVd469N_ipP4bymIL7kLPpkBBDuxxZ0787dOblGI31geAW-hHGbCpnj4_i5WJAVVsj_ImBtqt9Bihc-O-iHIMJlVOzWWXTAnmWGsHiwL5Ag',
     })
   })
 
@@ -120,29 +120,29 @@ describe('jwtDecode', () => {
       header: {
         alg: 'RS512',
         typ: 'JWT',
-        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d'
+        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d',
       },
       payload: {
         organization: {
           id: 'enWoxFMOnp',
           slug: 'the-blue-brand-3',
           enterprise: false,
-          region: 'eu-west-1'
+          region: 'eu-west-1',
         },
         application: {
           id: 'dMnWmigapb',
           kind: 'integration',
-          public: false
+          public: false,
         },
         scope: 'market:all',
         exp: 1710950430,
         test: true,
         rand: 0.21467933304457676,
         iat: 1710943230,
-        iss: 'https://commercelayer.io'
+        iss: 'https://commercelayer.io',
       },
       signature:
-        'dkTswP2_lUwsKDoR8ogdCeGHgoY2zsVAl3kvX8nVBnQJh5N7ODCBGa3Rjy0MkUna7ufiAjUbuSAW8Crm8Jli3eh1WPq3nEkzjnlz8N9syRBgdKwkS46Z-3ZCEdRTBikkF38GAQIDhCqZ6ar6hIdm-6FRxDxSCzQ0zcruJc9g8EwXAO4BhvPOAw3gZ6O2uiLlQSxH3dAqg0qWehMhtZODMtFngBh38pOWbO3tRk1ojyfUq1Ckow8NyVPQa38suIf1wlrKkyKS3okP1WsN2ux7kVn8cXZ3uaP9rsKM82wICYgXfmlcxA-6AlKfgZ5ExCsCOVfubwSy8tUAGp_EPGDr9w'
+        'dkTswP2_lUwsKDoR8ogdCeGHgoY2zsVAl3kvX8nVBnQJh5N7ODCBGa3Rjy0MkUna7ufiAjUbuSAW8Crm8Jli3eh1WPq3nEkzjnlz8N9syRBgdKwkS46Z-3ZCEdRTBikkF38GAQIDhCqZ6ar6hIdm-6FRxDxSCzQ0zcruJc9g8EwXAO4BhvPOAw3gZ6O2uiLlQSxH3dAqg0qWehMhtZODMtFngBh38pOWbO3tRk1ojyfUq1Ckow8NyVPQa38suIf1wlrKkyKS3okP1WsN2ux7kVn8cXZ3uaP9rsKM82wICYgXfmlcxA-6AlKfgZ5ExCsCOVfubwSy8tUAGp_EPGDr9w',
     })
   })
 
@@ -154,39 +154,39 @@ describe('jwtDecode', () => {
       header: {
         alg: 'RS512',
         typ: 'JWT',
-        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d'
+        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d',
       },
       payload: {
         organization: {
           id: 'enWoxFMOnp',
           slug: 'the-blue-brand-3',
           enterprise: false,
-          region: 'eu-west-1'
+          region: 'eu-west-1',
         },
         application: {
           id: 'nGVqaiEYNA',
           kind: 'sales_channel',
-          public: true
+          public: true,
         },
         market: {
           id: ['BjxrJhymlM'],
           stock_location_ids: ['xGXBXurDME', 'dMqXyuVVkN'],
           geocoder_id: null,
-          allows_external_prices: false
+          allows_external_prices: false,
         },
         owner: {
           id: 'gOqzZhZrmQ',
-          type: 'Customer'
+          type: 'Customer',
         },
         scope: 'market:58',
         exp: 1710957630,
         test: true,
         rand: 0.933338480635189,
         iat: 1710943230,
-        iss: 'https://commercelayer.io'
+        iss: 'https://commercelayer.io',
       },
       signature:
-        'DC-XTnNf8i-4yWFq3SsVJEuDDIwXnKK6ALWw0vzizYlMb9tRk100TCcgaWiicmC86YuUmS3fsNt2d2rC9f_cE3CxBqwg8ncaSGore59pWBHMH45e6M2DR09K2oFzQk4ZJf3pngqydo_N9Ds6xGZW7vIff9Ga247pAu3-FSahjvhpKXMDkdYB769VGctYOlT1Xz1KCwB0JVpLjr7AR2i8S6R8GAdV3-YNUF_KzYm7qz0jmp7_guqUkYURHSugu9kXMkvUmb6KpyrpW-YBeE789TDra6dXK29WeEtq_nkBZKNmgPOfEEdM2RegmzEFpZNdanbtj__B_i-axqjnJ5lqMQ'
+        'DC-XTnNf8i-4yWFq3SsVJEuDDIwXnKK6ALWw0vzizYlMb9tRk100TCcgaWiicmC86YuUmS3fsNt2d2rC9f_cE3CxBqwg8ncaSGore59pWBHMH45e6M2DR09K2oFzQk4ZJf3pngqydo_N9Ds6xGZW7vIff9Ga247pAu3-FSahjvhpKXMDkdYB769VGctYOlT1Xz1KCwB0JVpLjr7AR2i8S6R8GAdV3-YNUF_KzYm7qz0jmp7_guqUkYURHSugu9kXMkvUmb6KpyrpW-YBeE789TDra6dXK29WeEtq_nkBZKNmgPOfEEdM2RegmzEFpZNdanbtj__B_i-axqjnJ5lqMQ',
     })
   })
 
@@ -198,39 +198,39 @@ describe('jwtDecode', () => {
       header: {
         alg: 'RS512',
         typ: 'JWT',
-        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d'
+        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d',
       },
       payload: {
         organization: {
           id: 'enWoxFMOnp',
           slug: 'the-blue-brand-3',
           enterprise: false,
-          region: 'eu-west-1'
+          region: 'eu-west-1',
         },
         application: {
           id: 'nGVqaiEYNA',
           kind: 'sales_channel',
-          public: true
+          public: true,
         },
         market: {
           id: ['BjxrJhymlM'],
           stock_location_ids: ['xGXBXurDME', 'dMqXyuVVkN'],
           geocoder_id: null,
-          allows_external_prices: false
+          allows_external_prices: false,
         },
         owner: {
           id: 'gOqzZhZrmQ',
-          type: 'Customer'
+          type: 'Customer',
         },
         scope: 'market:58',
         exp: 1710957631,
         test: true,
         rand: 0.4629159987942896,
         iat: 1710943231,
-        iss: 'https://commercelayer.io'
+        iss: 'https://commercelayer.io',
       },
       signature:
-        'liTBwOIvx_LeVeBRGm4NwQCOR5F4SDVRVzaHM8uw4oihgUCo-IMktSJs8IRCyUfLfBNhsFfDjwkOXSY7-ApPT5-pMZ-cU3PP9EyFPH5pS9BpMOrhQfQaa9wYhC7r3c4MFwM7NuWRCpgie-juMWxUz1IwX-GfqCe_la6k9qwC8xdMNjfPHohjIEyfqD6TEYd69IxeBBxK_yOZ0zi4yOSo9-6y9T9i5EhMi5MPM8wHR0T9oPD0s-HrC23bMQ2s5asIzrwCRzmu1ZsQp3yf0UVpYuoNstQqUSTHWO5anh0oMipQtOphnczago85TPALDbY8AlaAZTIirXFgNHmCQpX4gQ'
+        'liTBwOIvx_LeVeBRGm4NwQCOR5F4SDVRVzaHM8uw4oihgUCo-IMktSJs8IRCyUfLfBNhsFfDjwkOXSY7-ApPT5-pMZ-cU3PP9EyFPH5pS9BpMOrhQfQaa9wYhC7r3c4MFwM7NuWRCpgie-juMWxUz1IwX-GfqCe_la6k9qwC8xdMNjfPHohjIEyfqD6TEYd69IxeBBxK_yOZ0zi4yOSo9-6y9T9i5EhMi5MPM8wHR0T9oPD0s-HrC23bMQ2s5asIzrwCRzmu1ZsQp3yf0UVpYuoNstQqUSTHWO5anh0oMipQtOphnczago85TPALDbY8AlaAZTIirXFgNHmCQpX4gQ',
     })
   })
 
@@ -242,39 +242,39 @@ describe('jwtDecode', () => {
       header: {
         alg: 'RS512',
         typ: 'JWT',
-        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d'
+        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d',
       },
       payload: {
         organization: {
           id: 'enWoxFMOnp',
           slug: 'the-blue-brand-3',
           enterprise: false,
-          region: 'eu-west-1'
+          region: 'eu-west-1',
         },
         application: {
           id: 'GRvDirJlDG',
           kind: 'webapp',
-          public: false
+          public: false,
         },
         market: {
           id: ['BjxrJhymlM'],
           stock_location_ids: ['xGXBXurDME', 'dMqXyuVVkN'],
           geocoder_id: null,
-          allows_external_prices: false
+          allows_external_prices: false,
         },
         owner: {
           id: 'gblowSyVeq',
-          type: 'User'
+          type: 'User',
         },
         scope: 'market:id:robAnhPdGl',
         exp: 1710974019,
         test: true,
         rand: 0.06011815493142392,
         iat: 1710966819,
-        iss: 'https://commercelayer.io'
+        iss: 'https://commercelayer.io',
       },
       signature:
-        'RhXDw7UajFr9Bxl18Q8Es82MlbXw1YcJCRe0g1-mPpDaxcBDtvHyu8GQYLpRYm-4xQ5fbg57Pzqxue0jOxv2Kcsl7XhOUHwEs9jTyS5_tfeJTQ_Ab4zKi27EFfb9NmA78xXEa1wyznVDoYvUy-PzemPPchEDezx1qrJkd0zMqnr5CJntSmfPCP22g0ljLscNUtUlbACT7xpIVXAe37XZ6_DBHOuAToleupFoyUKbNH3fRTc3FIrzexWt1m8RQALQ-QGDPljjFpnWjo3aiJQMZAu9FoZgdJn-qlbW0iYRFl91TAu8VAJ8bJJo8o3jbNdlggs9kNYFy3h15Zx3rnOUyA'
+        'RhXDw7UajFr9Bxl18Q8Es82MlbXw1YcJCRe0g1-mPpDaxcBDtvHyu8GQYLpRYm-4xQ5fbg57Pzqxue0jOxv2Kcsl7XhOUHwEs9jTyS5_tfeJTQ_Ab4zKi27EFfb9NmA78xXEa1wyznVDoYvUy-PzemPPchEDezx1qrJkd0zMqnr5CJntSmfPCP22g0ljLscNUtUlbACT7xpIVXAe37XZ6_DBHOuAToleupFoyUKbNH3fRTc3FIrzexWt1m8RQALQ-QGDPljjFpnWjo3aiJQMZAu9FoZgdJn-qlbW0iYRFl91TAu8VAJ8bJJo8o3jbNdlggs9kNYFy3h15Zx3rnOUyA',
     })
   })
 
@@ -286,35 +286,35 @@ describe('jwtDecode', () => {
       header: {
         alg: 'RS512',
         typ: 'JWT',
-        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d'
+        kid: 'aba4cc628d1fce3fb93a3ee55826e41cfaf18dc2dff3b07222740380e9199d5d',
       },
       payload: {
         organization: {
           id: 'enWoxFMOnp',
           slug: 'the-blue-brand-3',
           enterprise: false,
-          region: 'eu-west-1'
+          region: 'eu-west-1',
         },
         application: {
           id: 'GRvDirJlDG',
           kind: 'webapp',
-          public: false
+          public: false,
         },
         custom_claim: {
           customer: {
             first_name: 'Jörg',
-            last_name: 'Doe'
-          }
+            last_name: 'Doe',
+          },
         },
         scope: 'market:all',
         exp: 1729779144,
         test: true,
         rand: 0.6976628043658695,
         iat: 1729771944,
-        iss: 'https://auth.commercelayer.co'
+        iss: 'https://auth.commercelayer.co',
       },
       signature:
-        'jtOrSfSZMITiiYLqmu5p5oiY3pZnQSGNvDeN7nMQ7vpTByMvy-XQvY9YVCVxCwqDy3I_57c3HiEhgEz47crmv-4g4TpcfFjFqg4i2TQGHf0VNJJ5LOsh_cTUYNf13Q7Vy5jmrJ-sC8MJ0tEcs-f2ACizCJ_uRCqvybB-WwmeIf9A-ExiKN24Ku1Tw9aE0zjuTL3rmwNuR_6H1Umx6XzAQIRjNGL0vOTPTQ52-MrTwV3MYqFxlaWw0HZfr-0RgnUBhXN1LnW4sFYVmLLeYPJ1khYs3blcbKOJo5BQ8Fbnyj7E33Mx2B-3Z63y6uA8vTf45GzucZvIiHBXPeYLtUnglHv9KkhZYksb6xj4WMddZzKGC0r8LVl3ac8ZdWf00epLCBnIDkY8T94NgYF9xCWESB477x8rVLUs8WoKrnvrMzc7OZF2xk22q6Ajc24q9FOhnvymS674N_e1yI5QjNxxZHA5R-W79P-pXbm_nmCRqhKnewZupUKKehbm3SyLYmUndDilJNPkD7qxYZhlDr4rpd5VUpFONAU7qZznGgAak92RY-lJHh-RycyRRf8y-M2Q2jeQfXOrsTXAbK35-c2zvCDXBG7fYTc_fzGZFFMEvMpcfFw4PWfEFZTwxLRWWUHw2WYjg5da94c09z0oUWd2Lmp6P6Yw5vAqeHQn9A5x_y0'
+        'jtOrSfSZMITiiYLqmu5p5oiY3pZnQSGNvDeN7nMQ7vpTByMvy-XQvY9YVCVxCwqDy3I_57c3HiEhgEz47crmv-4g4TpcfFjFqg4i2TQGHf0VNJJ5LOsh_cTUYNf13Q7Vy5jmrJ-sC8MJ0tEcs-f2ACizCJ_uRCqvybB-WwmeIf9A-ExiKN24Ku1Tw9aE0zjuTL3rmwNuR_6H1Umx6XzAQIRjNGL0vOTPTQ52-MrTwV3MYqFxlaWw0HZfr-0RgnUBhXN1LnW4sFYVmLLeYPJ1khYs3blcbKOJo5BQ8Fbnyj7E33Mx2B-3Z63y6uA8vTf45GzucZvIiHBXPeYLtUnglHv9KkhZYksb6xj4WMddZzKGC0r8LVl3ac8ZdWf00epLCBnIDkY8T94NgYF9xCWESB477x8rVLUs8WoKrnvrMzc7OZF2xk22q6Ajc24q9FOhnvymS674N_e1yI5QjNxxZHA5R-W79P-pXbm_nmCRqhKnewZupUKKehbm3SyLYmUndDilJNPkD7qxYZhlDr4rpd5VUpFONAU7qZznGgAak92RY-lJHh-RycyRRf8y-M2Q2jeQfXOrsTXAbK35-c2zvCDXBG7fYTc_fzGZFFMEvMpcfFw4PWfEFZTwxLRWWUHw2WYjg5da94c09z0oUWd2Lmp6P6Yw5vAqeHQn9A5x_y0',
     })
   })
 })

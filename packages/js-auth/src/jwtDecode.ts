@@ -17,7 +17,7 @@ export function jwtDecode(accessToken: string): CommerceLayerJWT {
   return {
     header: JSON.parse(decodeBase64URLSafe(encodedHeader, 'binary')),
     payload: JSON.parse(decodeBase64URLSafe(encodedPayload, 'utf-8')),
-    signature
+    signature,
   }
 }
 
@@ -190,7 +190,7 @@ export function jwtIsIntegration(payload: Payload): payload is JWTIntegration {
  * @returns
  */
 export function jwtIsSalesChannel(
-  payload: Payload
+  payload: Payload,
 ): payload is JWTSalesChannel {
   return payload.application.kind === 'sales_channel'
 }

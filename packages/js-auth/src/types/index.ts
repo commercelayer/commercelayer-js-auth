@@ -1,6 +1,6 @@
 import type {
   TAuthorizationCodeOptions,
-  TAuthorizationCodeReturn
+  TAuthorizationCodeReturn,
 } from './authorizationCode.js'
 import type { TBaseOptions, TBaseReturn, TError } from './base.js'
 import type { TClientCredentialsOptions } from './clientCredentials.js'

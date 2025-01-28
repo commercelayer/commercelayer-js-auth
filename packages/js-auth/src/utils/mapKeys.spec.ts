@@ -8,26 +8,26 @@ describe('mapKeys', () => {
       mapKeys(
         {
           johnDoe: 42,
-          firstSecondThird: 'ehi there!'
+          firstSecondThird: 'ehi there!',
         },
-        camelCaseToSnakeCase
-      )
+        camelCaseToSnakeCase,
+      ),
     ).toEqual({
       john_doe: 42,
-      first_second_third: 'ehi there!'
+      first_second_third: 'ehi there!',
     })
 
     expect(
       mapKeys(
         {
           john_doe: 42,
-          first_second_third: 'ehi there!'
+          first_second_third: 'ehi there!',
         },
-        snakeCaseToCamelCase
-      )
+        snakeCaseToCamelCase,
+      ),
     ).toEqual({
       johnDoe: 42,
-      firstSecondThird: 'ehi there!'
+      firstSecondThird: 'ehi there!',
     })
   })
 })

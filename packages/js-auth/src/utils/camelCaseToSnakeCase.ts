@@ -1,6 +1,6 @@
 export type CamelCaseToSnakeCase<
   T extends string,
-  P extends string = ''
+  P extends string = '',
 > = string extends T
   ? string
   : T extends `${infer C}${infer R}`
@@ -11,10 +11,10 @@ export type CamelCaseToSnakeCase<
     : P
 
 export function camelCaseToSnakeCase<S extends string>(
-  str: S
+  str: S,
 ): CamelCaseToSnakeCase<S> {
   return str.replace(
     /[A-Z]/g,
-    (letter) => `_${letter.toLowerCase()}`
+    (letter) => `_${letter.toLowerCase()}`,
   ) as CamelCaseToSnakeCase<S>
 }

@@ -28,9 +28,9 @@ export async function revoke(options: RevokeOptions): Promise<RevokeReturn> {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      Accept: 'application/json'
+      Accept: 'application/json',
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   })
 
   return (await response.json()) as RevokeReturn

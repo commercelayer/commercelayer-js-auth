@@ -25,7 +25,7 @@ export function getCoreApiBaseEndpoint(
      * @default true
      */
     shouldThrow?: true
-  }
+  },
 ): string
 
 /**
@@ -51,14 +51,14 @@ export function getCoreApiBaseEndpoint(
      * @default true
      */
     shouldThrow: false
-  }
+  },
 ): string | null
 
 export function getCoreApiBaseEndpoint(
   accessToken: string,
   options: {
     shouldThrow?: boolean
-  } = {}
+  } = {},
 ): string | null {
   const { shouldThrow = true } = options
   const decodedJWT = jwtDecode(accessToken)
@@ -73,6 +73,6 @@ export function getCoreApiBaseEndpoint(
 
   return extractIssuer(decodedJWT).replace(
     'auth',
-    decodedJWT.payload.organization.slug
+    decodedJWT.payload.organization.slug,
   )
 }

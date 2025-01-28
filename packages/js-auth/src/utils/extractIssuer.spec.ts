@@ -5,8 +5,8 @@ describe('extractIssuer', () => {
     expect(
       extractIssuer(
         // @ts-expect-error I want to test this scenario
-        {}
-      )
+        {},
+      ),
     ).toEqual('https://auth.commercelayer.io')
   })
 
@@ -15,9 +15,9 @@ describe('extractIssuer', () => {
       extractIssuer({
         // @ts-expect-error I want to test this scenario
         payload: {
-          iss: 'https://commercelayer.io'
-        }
-      })
+          iss: 'https://commercelayer.io',
+        },
+      }),
     ).toEqual('https://auth.commercelayer.io')
   })
 
@@ -26,18 +26,18 @@ describe('extractIssuer', () => {
       extractIssuer({
         // @ts-expect-error I want to test this scenario
         payload: {
-          iss: 'https://auth.commercelayer.io'
-        }
-      })
+          iss: 'https://auth.commercelayer.io',
+        },
+      }),
     ).toEqual('https://auth.commercelayer.io')
 
     expect(
       extractIssuer({
         // @ts-expect-error I want to test this scenario
         payload: {
-          iss: 'https://auth.commercelayer.co'
-        }
-      })
+          iss: 'https://auth.commercelayer.co',
+        },
+      }),
     ).toEqual('https://auth.commercelayer.co')
   })
 })

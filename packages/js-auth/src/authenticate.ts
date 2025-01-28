@@ -1,7 +1,7 @@
 import type {
   AuthenticateOptions,
   AuthenticateReturn,
-  GrantType
+  GrantType,
 } from './types/index.js'
 
 import { camelCaseToSnakeCase } from './utils/camelCaseToSnakeCase.js'
@@ -41,14 +41,14 @@ export async function authenticate<TGrantType extends GrantType>(
     domain = 'commercelayer.io',
     headers,
     ...options
-  }: AuthenticateOptions<TGrantType>
+  }: AuthenticateOptions<TGrantType>,
 ): Promise<AuthenticateReturn<TGrantType>> {
   const body = mapKeys(
     {
       grant_type: grantType,
-      ...options
+      ...options,
     },
-    camelCaseToSnakeCase
+    camelCaseToSnakeCase,
   )
 
   const response = await fetch(`https://auth.${domain}/oauth/token`, {
@@ -56,9 +56,9 @@ export async function authenticate<TGrantType extends GrantType>(
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      ...headers
+      ...headers,
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   })
 
   const json: TokenJson = await response.json()
@@ -69,6 +69,6 @@ export async function authenticate<TGrantType extends GrantType>(
 
   return mapKeys(
     json,
-    snakeCaseToCamelCase
+    snakeCaseToCamelCase,
   ) as unknown as AuthenticateReturn<TGrantType>
 }

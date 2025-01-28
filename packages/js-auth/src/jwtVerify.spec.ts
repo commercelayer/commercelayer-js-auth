@@ -17,17 +17,17 @@ afterEach(() => {
 describe('jwtVerify', () => {
   it('should throw when token expired.', async () => {
     await expect(async () => await jwtVerify(accessTokenIo)).rejects.toThrow(
-      TokenExpiredError
+      TokenExpiredError,
     )
   })
 
   it('should be able to verify a JWT.', async () => {
     const jsonwebtokenDecoded = jwt.decode(accessTokenIo, {
-      complete: true
+      complete: true,
     })
 
     const verification = await jwtVerify(accessTokenIo, {
-      ignoreExpiration: true
+      ignoreExpiration: true,
     })
 
     expect(verification).toStrictEqual(jsonwebtokenDecoded)
@@ -35,11 +35,11 @@ describe('jwtVerify', () => {
 
   it('should be able to verify a JWT from a different domain.', async () => {
     const jsonwebtokenDecoded = jwt.decode(accessTokenCo, {
-      complete: true
+      complete: true,
     })
 
     const verification = await jwtVerify(accessTokenCo, {
-      ignoreExpiration: true
+      ignoreExpiration: true,
     })
 
     expect(verification).toStrictEqual(jsonwebtokenDecoded)
@@ -47,11 +47,11 @@ describe('jwtVerify', () => {
 
   it('should be able to verify a JWT with custom claims and special chars.', async () => {
     const jsonwebtokenDecoded = jwt.decode(accessTokenCustomClaims, {
-      complete: true
+      complete: true,
     })
 
     const verification = await jwtVerify(accessTokenCustomClaims, {
-      ignoreExpiration: true
+      ignoreExpiration: true,
     })
 
     expect(verification).toStrictEqual(jsonwebtokenDecoded)
@@ -73,23 +73,23 @@ describe('jwtVerify', () => {
               ext: true,
               kid: '8d12f36956c1dc8d2308',
               alg: 'RS512',
-              use: 'sig'
-            }
-          ]
+              use: 'sig',
+            },
+          ],
         })
-      }
+      },
     )
 
     const jsonwebtokenDecoded = jwt.decode(accessTokenWithFakeKid1, {
-      complete: true
+      complete: true,
     })
 
     const verification1 = await jwtVerify(accessTokenWithFakeKid1, {
-      ignoreExpiration: true
+      ignoreExpiration: true,
     })
 
     const verification2 = await jwtVerify(accessTokenWithFakeKid1, {
-      ignoreExpiration: true
+      ignoreExpiration: true,
     })
 
     expect(verification1).toStrictEqual(jsonwebtokenDecoded)
@@ -99,7 +99,7 @@ describe('jwtVerify', () => {
 
   it('should use the provided JWK.', async () => {
     const jsonwebtokenDecoded = jwt.decode(accessTokenWithFakeKid2, {
-      complete: true
+      complete: true,
     })
 
     const verification = await jwtVerify(accessTokenWithFakeKid2, {
@@ -111,8 +111,8 @@ describe('jwtVerify', () => {
         ext: true,
         kid: '367a4928f8988e8f120183c7',
         alg: 'RS512',
-        use: 'sig'
-      }
+        use: 'sig',
+      },
     })
 
     expect(verification).toStrictEqual(jsonwebtokenDecoded)
@@ -129,8 +129,8 @@ describe('jwtVerify', () => {
           ext: true,
           kid: '1234',
           alg: 'RS512',
-          use: 'sig'
-        }
+          use: 'sig',
+        },
       })
 
     await expect(doVerify).rejects.toThrow(InvalidTokenError)
@@ -147,13 +147,13 @@ describe('jwtVerify', () => {
       const newAccessToken = [
         header,
         encodeBase64URLSafe(JSON.stringify(newPayload), 'utf-8'),
-        signature
+        signature,
       ].join('.')
 
       expect(
         await jwtVerify(newAccessToken, {
-          ignoreExpiration: true
-        })
+          ignoreExpiration: true,
+        }),
       ).toStrictEqual(decodedJWT)
     })
 
@@ -168,12 +168,12 @@ describe('jwtVerify', () => {
       const newAccessToken = [
         header,
         encodeBase64URLSafe(JSON.stringify(newPayload), 'utf-8'),
-        signature
+        signature,
       ].join('.')
 
       const doVerify = async (): Promise<CommerceLayerJWT> =>
         await jwtVerify(newAccessToken, {
-          ignoreExpiration: true
+          ignoreExpiration: true,
         })
 
       await expect(doVerify).rejects.toThrow(InvalidTokenError)

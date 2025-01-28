@@ -25,7 +25,7 @@ export function getProvisioningApiBaseEndpoint(
      * @default true
      */
     shouldThrow?: true
-  }
+  },
 ): string
 
 /**
@@ -51,14 +51,14 @@ export function getProvisioningApiBaseEndpoint(
      * @default true
      */
     shouldThrow: false
-  }
+  },
 ): string | null
 
 export function getProvisioningApiBaseEndpoint(
   accessToken: string,
   options: {
     shouldThrow?: boolean
-  } = {}
+  } = {},
 ): string | null {
   const { shouldThrow = true } = options
   const decodedJWT = jwtDecode(accessToken)

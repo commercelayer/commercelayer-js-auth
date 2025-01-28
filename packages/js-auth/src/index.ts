@@ -12,7 +12,7 @@ export {
   type JWTIntegration,
   type JWTSalesChannel,
   type JWTUser,
-  type JWTWebApp
+  type JWTWebApp,
 } from './jwtDecode.js'
 
 export { jwtVerify } from './jwtVerify.js'
@@ -24,7 +24,7 @@ export type {
   AuthenticateReturn,
   GrantType,
   RevokeOptions,
-  RevokeReturn
+  RevokeReturn,
 } from './types/index.js'
 
 export { getCoreApiBaseEndpoint } from './getCoreApiBaseEndpoint.js'

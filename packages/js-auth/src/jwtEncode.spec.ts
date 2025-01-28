@@ -4,22 +4,22 @@ import { createAssertion } from './jwtEncode.js'
 describe('createAssertion', () => {
   it('should be able to create a JWT assertion with and empty payload.', async () => {
     const payload = {
-      'https://commercelayer.io/claims': {}
+      'https://commercelayer.io/claims': {},
     } as const
 
     const jsonwebtokenAssertion = jwt.sign(payload, 'cl', {
-      algorithm: 'HS512'
+      algorithm: 'HS512',
     })
 
     const assertion = await createAssertion({
       payload: {
         // @ts-expect-error I want to test this scenario
-        'https://commercelayer.io/claims': {}
-      }
+        'https://commercelayer.io/claims': {},
+      },
     })
 
     expect(jwt.verify(assertion, 'cl')).toMatchObject({
-      'https://commercelayer.io/claims': {}
+      'https://commercelayer.io/claims': {},
     })
 
     expect(assertion).toStrictEqual(jsonwebtokenAssertion)
@@ -30,13 +30,13 @@ describe('createAssertion', () => {
       'https://commercelayer.io/claims': {
         owner: {
           type: 'User',
-          id: '1234'
-        }
-      }
+          id: '1234',
+        },
+      },
     } as const
 
     const jsonwebtokenAssertion = jwt.sign(payload, 'cl', {
-      algorithm: 'HS512'
+      algorithm: 'HS512',
     })
 
     const assertion = await createAssertion({ payload })
@@ -48,13 +48,13 @@ describe('createAssertion', () => {
     const payload = {
       'https://commercelayer.io/claims': {
         custom_claim: {
-          name: 'John'
-        }
-      }
+          name: 'John',
+        },
+      },
     } as const
 
     const jsonwebtokenAssertion = jwt.sign(payload, 'cl', {
-      algorithm: 'HS512'
+      algorithm: 'HS512',
     })
 
     const assertion = await createAssertion({ payload })
@@ -67,16 +67,16 @@ describe('createAssertion', () => {
       'https://commercelayer.io/claims': {
         owner: {
           type: 'User',
-          id: '1234'
+          id: '1234',
         },
         custom_claim: {
-          name: 'John'
-        }
-      }
+          name: 'John',
+        },
+      },
     } as const
 
     const jsonwebtokenAssertion = jwt.sign(payload, 'cl', {
-      algorithm: 'HS512'
+      algorithm: 'HS512',
     })
 
     const assertion = await createAssertion({ payload })
@@ -89,16 +89,16 @@ describe('createAssertion', () => {
       'https://commercelayer.io/claims': {
         owner: {
           type: 'User',
-          id: '1234'
+          id: '1234',
         },
         custom_claim: {
-          name: 'Jörg'
-        }
-      }
+          name: 'Jörg',
+        },
+      },
     } as const
 
     const jsonwebtokenAssertion = jwt.sign(payload, 'cl', {
-      algorithm: 'HS512'
+      algorithm: 'HS512',
     })
 
     const assertion = await createAssertion({ payload })

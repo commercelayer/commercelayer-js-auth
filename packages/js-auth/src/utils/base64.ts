@@ -11,7 +11,7 @@
  */
 export function encodeBase64URLSafe(
   stringToEncode: string,
-  encoding: 'utf-8' | 'binary'
+  encoding: 'utf-8' | 'binary',
 ): string {
   if (typeof btoa !== 'undefined') {
     let utf8String = stringToEncode
@@ -50,7 +50,7 @@ export function encodeBase64URLSafe(
  */
 export function decodeBase64URLSafe(
   encodedData: string,
-  encoding: 'utf-8' | 'binary'
+  encoding: 'utf-8' | 'binary',
 ): string {
   if (typeof atob !== 'undefined') {
     const decoded = atob(
@@ -59,13 +59,13 @@ export function decodeBase64URLSafe(
         .replaceAll('-', '+')
         .replaceAll('_', '/')
         // Add padding if necessary
-        .padEnd(encodedData.length + ((4 - (encodedData.length % 4)) % 4), '=')
+        .padEnd(encodedData.length + ((4 - (encodedData.length % 4)) % 4), '='),
     )
 
     if (encoding === 'utf-8') {
       // Decode the Base64 string into bytes
       const byteArray = new Uint8Array(
-        [...decoded].map((char) => char.charCodeAt(0))
+        [...decoded].map((char) => char.charCodeAt(0)),
       )
 
       // Convert the bytes back to a UTF-8 string

@@ -58,7 +58,7 @@ interface Assertion {
 
 async function jwtEncode(
   payload: Record<string, unknown>,
-  secret: string
+  secret: string,
 ): Promise<string> {
   const header = { alg: 'HS512', typ: 'JWT' }
 
@@ -67,9 +67,9 @@ async function jwtEncode(
   const encodedPayload = encodeBase64URLSafe(
     JSON.stringify({
       ...payload,
-      iat: Math.floor(new Date().getTime() / 1000)
+      iat: Math.floor(new Date().getTime() / 1000),
     }),
-    'utf-8'
+    'utf-8',
   )
 
   const unsignedToken = `${encodedHeader}.${encodedPayload}`
@@ -88,17 +88,17 @@ async function createSignature(data: string, secret: string): Promise<string> {
     enc.encode(secret),
     algorithm,
     false,
-    ['sign', 'verify']
+    ['sign', 'verify'],
   )
 
   const signature = await crypto.subtle.sign(
     algorithm.name,
     key,
-    enc.encode(data)
+    enc.encode(data),
   )
 
   return encodeBase64URLSafe(
     String.fromCharCode(...new Uint8Array(signature)),
-    'binary'
+    'binary',
   )
 }
