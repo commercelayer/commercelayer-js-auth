@@ -1,9 +1,9 @@
-import { jwtDecode } from './jwtDecode.js'
-import type { RevokeOptions, RevokeReturn } from './types/index.js'
+import { jwtDecode } from "./jwtDecode.js"
+import type { RevokeOptions, RevokeReturn } from "./types/index.js"
 
-import { camelCaseToSnakeCase } from './utils/camelCaseToSnakeCase.js'
-import { extractIssuer } from './utils/extractIssuer.js'
-import { mapKeys } from './utils/mapKeys.js'
+import { camelCaseToSnakeCase } from "./utils/camelCaseToSnakeCase.js"
+import { extractIssuer } from "./utils/extractIssuer.js"
+import { mapKeys } from "./utils/mapKeys.js"
 
 /**
  * Revoke a previously generated access token (refresh tokens included) before its natural expiration date.
@@ -25,12 +25,12 @@ export async function revoke(options: RevokeOptions): Promise<RevokeReturn> {
   const issuer = extractIssuer(decodedJWT)
 
   const response = await fetch(`${issuer}/oauth/revoke`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
+      "Content-Type": "application/json",
+      Accept: "application/json",
     },
-    body: JSON.stringify(body)
+    body: JSON.stringify(body),
   })
 
   return (await response.json()) as RevokeReturn

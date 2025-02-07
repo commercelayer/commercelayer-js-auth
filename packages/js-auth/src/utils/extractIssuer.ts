@@ -1,4 +1,4 @@
-import type { CommerceLayerJWT } from 'src/jwtDecode.js'
+import type { CommerceLayerJWT } from "src/jwtDecode.js"
 
 /**
  * Extract the `iss` from the decoded JWT.
@@ -8,9 +8,9 @@ import type { CommerceLayerJWT } from 'src/jwtDecode.js'
  * - the value can be `https://commercelayer.io` is old tokens.
  */
 export function extractIssuer(
-  decodedJWT: CommerceLayerJWT
+  decodedJWT: CommerceLayerJWT,
 ): `https://auth.${string}` {
-  return decodedJWT?.payload?.iss?.startsWith('https://auth.')
+  return decodedJWT?.payload?.iss?.startsWith("https://auth.")
     ? (decodedJWT.payload.iss as `https://auth.${string}`)
-    : 'https://auth.commercelayer.io'
+    : "https://auth.commercelayer.io"
 }

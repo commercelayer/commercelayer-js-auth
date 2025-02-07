@@ -1,6 +1,6 @@
-import { InvalidTokenError } from './errors/InvalidTokenError.js'
-import { jwtDecode } from './jwtDecode.js'
-import { extractIssuer } from './utils/extractIssuer.js'
+import { InvalidTokenError } from "./errors/InvalidTokenError.js"
+import { jwtDecode } from "./jwtDecode.js"
+import { extractIssuer } from "./utils/extractIssuer.js"
 
 /**
  * Derives the [Core API base endpoint](https://docs.commercelayer.io/core/api-specification#base-endpoint) given a valid access token.
@@ -25,7 +25,7 @@ export function getCoreApiBaseEndpoint(
      * @default true
      */
     shouldThrow?: true
-  }
+  },
 ): string
 
 /**
@@ -51,28 +51,28 @@ export function getCoreApiBaseEndpoint(
      * @default true
      */
     shouldThrow: false
-  }
+  },
 ): string | null
 
 export function getCoreApiBaseEndpoint(
   accessToken: string,
   options: {
     shouldThrow?: boolean
-  } = {}
+  } = {},
 ): string | null {
   const { shouldThrow = true } = options
   const decodedJWT = jwtDecode(accessToken)
 
-  if (!('organization' in decodedJWT.payload)) {
+  if (!("organization" in decodedJWT.payload)) {
     if (shouldThrow) {
-      throw new InvalidTokenError('Invalid token format')
+      throw new InvalidTokenError("Invalid token format")
     }
 
     return null
   }
 
   return extractIssuer(decodedJWT).replace(
-    'auth',
-    decodedJWT.payload.organization.slug
+    "auth",
+    decodedJWT.payload.organization.slug,
   )
 }

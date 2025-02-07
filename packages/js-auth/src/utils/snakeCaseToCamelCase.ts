@@ -4,9 +4,9 @@ export type SnakeCaseToCamelCase<S extends string> =
     : S
 
 export function snakeCaseToCamelCase<S extends string>(
-  str: S
+  str: S,
 ): SnakeCaseToCamelCase<S> {
   return str.replace(/([-_][a-z])/g, (group) =>
-    group.toUpperCase().replace('-', '').replace('_', '')
+    group.toUpperCase().replace("-", "").replace("_", ""),
   ) as SnakeCaseToCamelCase<S>
 }

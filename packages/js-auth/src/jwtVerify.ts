@@ -1,9 +1,9 @@
-import { InvalidTokenError } from './errors/InvalidTokenError.js'
-import { TokenError } from './errors/TokenError.js'
-import { TokenExpiredError } from './errors/TokenExpiredError.js'
-import { jwtDecode, type CommerceLayerJWT } from './jwtDecode.js'
-import { decodeBase64URLSafe } from './utils/base64.js'
-import { extractIssuer } from './utils/extractIssuer.js'
+import { InvalidTokenError } from "./errors/InvalidTokenError.js"
+import { TokenError } from "./errors/TokenError.js"
+import { TokenExpiredError } from "./errors/TokenExpiredError.js"
+import { type CommerceLayerJWT, jwtDecode } from "./jwtDecode.js"
+import { decodeBase64URLSafe } from "./utils/base64.js"
+import { extractIssuer } from "./utils/extractIssuer.js"
 
 /**
  * Verify a Commerce Layer access token.
@@ -11,7 +11,7 @@ import { extractIssuer } from './utils/extractIssuer.js'
  */
 export async function jwtVerify(
   accessToken: string,
-  { ignoreExpiration = false, jwk }: JwtVerifyOptions = {}
+  { ignoreExpiration = false, jwk }: JwtVerifyOptions = {},
 ): Promise<CommerceLayerJWT> {
   const decodedJWT = jwtDecode(accessToken)
 
@@ -26,37 +26,37 @@ export async function jwtVerify(
   }
 
   const algorithm: RsaHashedImportParams = {
-    name: 'RSASSA-PKCS1-v1_5',
-    hash: 'SHA-512'
+    name: "RSASSA-PKCS1-v1_5",
+    hash: "SHA-512",
   }
 
   const publicKey = await crypto.subtle.importKey(
-    'jwk',
+    "jwk",
     jsonWebKey,
     algorithm,
     true,
-    ['verify']
+    ["verify"],
   )
 
   const rawSignature = new Uint8Array(
-    Array.from(decodeBase64URLSafe(decodedJWT.signature, 'binary'), (c) =>
-      c.charCodeAt(0)
-    )
+    Array.from(decodeBase64URLSafe(decodedJWT.signature, "binary"), (c) =>
+      c.charCodeAt(0),
+    ),
   )
 
   const rawData = new TextEncoder().encode(
-    accessToken.split('.').slice(0, 2).join('.')
+    accessToken.split(".").slice(0, 2).join("."),
   )
 
   const isValid = await crypto.subtle.verify(
     algorithm,
     publicKey,
     rawSignature,
-    rawData
+    rawData,
   )
 
   if (!isValid) {
-    throw new InvalidTokenError('Invalid signature')
+    throw new InvalidTokenError("Invalid signature")
   }
 
   return decodedJWT
@@ -90,7 +90,7 @@ const JWKSCache: Record<string, CommerceLayerJsonWebKey | undefined> = {}
  * @returns
  */
 async function getJsonWebKey(
-  jwt: CommerceLayerJWT
+  jwt: CommerceLayerJWT,
 ): Promise<CommerceLayerJsonWebKey | undefined> {
   const { kid } = jwt.header
 
@@ -110,7 +110,7 @@ async function getJsonWebKey(
  * @returns
  */
 async function getJsonWebKeys(
-  jwt: CommerceLayerJWT
+  jwt: CommerceLayerJWT,
 ): Promise<CommerceLayerJsonWebKey[]> {
   const jwksUrl = `${extractIssuer(jwt)}/.well-known/jwks.json`
 
@@ -120,7 +120,7 @@ async function getJsonWebKeys(
 
   if (response.keys == null) {
     throw new TokenError(
-      `Invalid jwks response from "${jwksUrl}": ${JSON.stringify(response)}`
+      `Invalid jwks response from "${jwksUrl}": ${JSON.stringify(response)}`,
     )
   }
 

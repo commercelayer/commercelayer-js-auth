@@ -1,5 +1,5 @@
-export { authenticate } from './authenticate.js'
-export { revoke } from './revoke.js'
+export { authenticate } from "./authenticate.js"
+export { revoke } from "./revoke.js"
 
 export {
   jwtDecode,
@@ -12,24 +12,24 @@ export {
   type JWTIntegration,
   type JWTSalesChannel,
   type JWTUser,
-  type JWTWebApp
-} from './jwtDecode.js'
+  type JWTWebApp,
+} from "./jwtDecode.js"
 
-export { jwtVerify } from './jwtVerify.js'
+export { jwtVerify } from "./jwtVerify.js"
 
-export { createAssertion } from './jwtEncode.js'
+export { createAssertion } from "./jwtEncode.js"
 
 export type {
   AuthenticateOptions,
   AuthenticateReturn,
   GrantType,
   RevokeOptions,
-  RevokeReturn
-} from './types/index.js'
+  RevokeReturn,
+} from "./types/index.js"
 
-export { getCoreApiBaseEndpoint } from './getCoreApiBaseEndpoint.js'
-export { getProvisioningApiBaseEndpoint } from './getProvisioningApiBaseEndpoint.js'
+export { getCoreApiBaseEndpoint } from "./getCoreApiBaseEndpoint.js"
+export { getProvisioningApiBaseEndpoint } from "./getProvisioningApiBaseEndpoint.js"
 
-export { InvalidTokenError } from './errors/InvalidTokenError.js'
-export { TokenError } from './errors/TokenError.js'
-export { TokenExpiredError } from './errors/TokenExpiredError.js'
+export { InvalidTokenError } from "./errors/InvalidTokenError.js"
+export { TokenError } from "./errors/TokenError.js"
+export { TokenExpiredError } from "./errors/TokenExpiredError.js"

@@ -1,7 +1,7 @@
-import { encodeBase64URLSafe } from './utils/base64.js'
+import { encodeBase64URLSafe } from "./utils/base64.js"
 
 interface Owner {
-  type: 'User' | 'Customer'
+  type: "User" | "Customer"
   id: string
 }
 
@@ -35,7 +35,7 @@ interface Owner {
  * ```
  */
 export async function createAssertion({ payload }: Assertion): Promise<string> {
-  return await jwtEncode(payload, 'cl')
+  return await jwtEncode(payload, "cl")
 }
 
 /** RequireAtLeastOne helps create a type where at least one of the properties of an interface (can be any property) is required to exist. */
@@ -47,7 +47,7 @@ interface Assertion {
   /** Assertion payload. */
   payload: {
     /** At least one of `owner` or `custom_claim` is required. You cannot use an empty object. */
-    'https://commercelayer.io/claims': RequireAtLeastOne<{
+    "https://commercelayer.io/claims": RequireAtLeastOne<{
       /** The customer or user you want to make the calls on behalf of. */
       owner?: Owner
       /** Any other information (key/value pairs) you want to enrich the token with. */
@@ -58,18 +58,18 @@ interface Assertion {
 
 async function jwtEncode(
   payload: Record<string, unknown>,
-  secret: string
+  secret: string,
 ): Promise<string> {
-  const header = { alg: 'HS512', typ: 'JWT' }
+  const header = { alg: "HS512", typ: "JWT" }
 
-  const encodedHeader = encodeBase64URLSafe(JSON.stringify(header), 'binary')
+  const encodedHeader = encodeBase64URLSafe(JSON.stringify(header), "binary")
 
   const encodedPayload = encodeBase64URLSafe(
     JSON.stringify({
       ...payload,
-      iat: Math.floor(new Date().getTime() / 1000)
+      iat: Math.floor(new Date().getTime() / 1000),
     }),
-    'utf-8'
+    "utf-8",
   )
 
   const unsignedToken = `${encodedHeader}.${encodedPayload}`
@@ -81,24 +81,24 @@ async function jwtEncode(
 
 async function createSignature(data: string, secret: string): Promise<string> {
   const enc = new TextEncoder()
-  const algorithm = { name: 'HMAC', hash: 'SHA-512' }
+  const algorithm = { name: "HMAC", hash: "SHA-512" }
 
   const key = await crypto.subtle.importKey(
-    'raw',
+    "raw",
     enc.encode(secret),
     algorithm,
     false,
-    ['sign', 'verify']
+    ["sign", "verify"],
   )
 
   const signature = await crypto.subtle.sign(
     algorithm.name,
     key,
-    enc.encode(data)
+    enc.encode(data),
   )
 
   return encodeBase64URLSafe(
     String.fromCharCode(...new Uint8Array(signature)),
-    'binary'
+    "binary",
   )
 }

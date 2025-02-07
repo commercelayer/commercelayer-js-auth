@@ -1,6 +1,6 @@
-import { InvalidTokenError } from './errors/InvalidTokenError.js'
-import { jwtDecode } from './jwtDecode.js'
-import { extractIssuer } from './utils/extractIssuer.js'
+import { InvalidTokenError } from "./errors/InvalidTokenError.js"
+import { jwtDecode } from "./jwtDecode.js"
+import { extractIssuer } from "./utils/extractIssuer.js"
 
 /**
  * Returns the [Provisioning API base endpoint](https://docs.commercelayer.io/provisioning/getting-started/api-specification#base-endpoint) given a valid access token.
@@ -25,7 +25,7 @@ export function getProvisioningApiBaseEndpoint(
      * @default true
      */
     shouldThrow?: true
-  }
+  },
 ): string
 
 /**
@@ -51,25 +51,25 @@ export function getProvisioningApiBaseEndpoint(
      * @default true
      */
     shouldThrow: false
-  }
+  },
 ): string | null
 
 export function getProvisioningApiBaseEndpoint(
   accessToken: string,
   options: {
     shouldThrow?: boolean
-  } = {}
+  } = {},
 ): string | null {
   const { shouldThrow = true } = options
   const decodedJWT = jwtDecode(accessToken)
 
-  if (!decodedJWT?.payload?.scope?.includes('provisioning-api')) {
+  if (!decodedJWT?.payload?.scope?.includes("provisioning-api")) {
     if (shouldThrow) {
-      throw new InvalidTokenError('Invalid token format')
+      throw new InvalidTokenError("Invalid token format")
     }
 
     return null
   }
 
-  return extractIssuer(decodedJWT).replace('auth', 'provisioning')
+  return extractIssuer(decodedJWT).replace("auth", "provisioning")
 }
