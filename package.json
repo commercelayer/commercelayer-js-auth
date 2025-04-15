@@ -6,6 +6,8 @@
     "email": "support@commercelayer.io"
   },
   "scripts": {
+    "clean": "pnpx rimraf --glob **/node_modules **/pnpm-lock.yaml",
+    "i:examples": "pnpm i -C examples/cjs && pnpm i -C examples/cloudflare-workers && pnpm i -C examples/esm && pnpm i -C examples/nextjs",
     "preinstall": "npx only-allow pnpm",
     "build": "pnpm --filter js-auth build",
     "prepare": "husky",
@@ -22,9 +24,9 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "husky": "^9.1.7",
-    "lerna": "^8.2.1",
+    "lerna": "^8.2.2",
     "replace-in-file": "^8.3.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   },
   "resolutions": {
     "tar": "^6.2.1"
