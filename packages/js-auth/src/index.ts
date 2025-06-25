@@ -27,3 +27,8 @@ export type {
   RevokeOptions,
   RevokeReturn,
 } from "./types/index.js"
+export {
+  makeIntegration,
+  makeSalesChannel,
+  type Storage,
+} from "./apiCredentials/index.js"
