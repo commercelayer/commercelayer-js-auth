@@ -94,7 +94,7 @@ export type JWTDashboard = JWTBase & {
   }
 }
 
-type JWTOrganizationBase = JWTBase & {
+export type JWTOrganizationBase = JWTBase & {
   /** The organization in scope. */
   organization: {
     id: string
