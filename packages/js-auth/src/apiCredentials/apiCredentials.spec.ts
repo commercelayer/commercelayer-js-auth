@@ -10,315 +10,246 @@ const username = process.env.VITE_TEST_USERNAME
 const password = process.env.VITE_TEST_PASSWORD
 
 describe("API Credentials", () => {
-  it("with 'makeSalesChannel'.", async () => {
-    const storage = makeNoStorage()
+  describe("makeSalesChannel", () => {
+    it("should have a built-in memory cache that reduces load on the underlying configured storage.", async () => {
+      const storage = makeMockedStorage()
 
-    const auth = makeSalesChannel(
-      {
-        clientId,
-        scope,
-        domain,
-      },
-      {
-        storage,
-      },
-    )
+      const salesChannel = makeSalesChannel(
+        {
+          clientId,
+          scope,
+          domain,
+        },
+        {
+          storage,
+        },
+      )
 
-    const authorization = await auth.getAuthorization()
+      const authorization = await salesChannel.getAuthorization() // 2 calls - first one is to check customer token and second one is to check guest token
 
-    expect(authorization.accessToken).toBeTypeOf("string")
-    expect(authorization.createdAt).toBeTypeOf("number")
-    expect(authorization.expires).toBeInstanceOf(Date)
-    expect(authorization.expiresIn).toBeTypeOf("number")
-    expect(authorization.scope).toEqual(scope)
-    expect(authorization.tokenType).toEqual("bearer")
-    expect(authorization.type).toEqual("guest")
+      await salesChannel.getAuthorization() // 1 call - to check customer token (guest token is already in the built-in memory cache)
+      const lastAuthorization = await salesChannel.getAuthorization() // 1 call - to check customer token (guest token is already in the built-in memory cache)
 
-    expect(storage.setItem).toHaveBeenCalledTimes(1)
-    expect(storage.setItem).toHaveBeenNthCalledWith(
-      1,
-      `cl_guest-${clientId}-${scope}`,
-      JSON.stringify(authorization),
-    )
+      expect(authorization.accessToken).toBeTypeOf("string")
+      expect(authorization.createdAt).toBeTypeOf("number")
+      expect(authorization.expires).toBeInstanceOf(Date)
+      expect(authorization.expiresIn).toBeTypeOf("number")
+      expect(authorization.scope).toEqual(scope)
+      expect(authorization.tokenType).toEqual("bearer")
+      expect(authorization.type).toEqual("guest")
 
-    expect(storage.getItem).toHaveBeenCalledTimes(2)
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      1,
-      `cl_customer-${clientId}-${scope}`,
-    )
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      2,
-      `cl_guest-${clientId}-${scope}`,
-    )
+      expect(lastAuthorization.accessToken).toBeTypeOf("string")
+      expect(lastAuthorization.createdAt).toBeTypeOf("number")
+      expect(lastAuthorization.expires).toBeInstanceOf(Date)
+      expect(lastAuthorization.expiresIn).toBeTypeOf("number")
+      expect(lastAuthorization.scope).toEqual(scope)
+      expect(lastAuthorization.tokenType).toEqual("bearer")
+      expect(lastAuthorization.type).toEqual("guest")
 
-    expect(storage.removeItem).toHaveBeenCalledTimes(0)
-  })
+      expect(storage.setItem).toHaveBeenCalledTimes(1)
+      expect(storage.setItem).toHaveBeenNthCalledWith(
+        1,
+        `cl_guest-${clientId}-${scope}`,
+        {
+          accessToken: authorization.accessToken,
+          refreshToken: authorization.refreshToken,
+          scope: authorization.scope,
+        },
+      )
 
-  it("with 'password'.", async () => {
-    const storage = makeInMemoryStorage()
+      expect(storage.getItem).toHaveBeenCalledTimes(2 + 1 + 1)
+      expect(storage.getItem).toHaveBeenNthCalledWith(
+        1,
+        `cl_customer-${clientId}-${scope}`,
+      )
+      expect(storage.getItem).toHaveBeenNthCalledWith(
+        2,
+        `cl_guest-${clientId}-${scope}`,
+      )
+      expect(storage.getItem).toHaveBeenNthCalledWith(
+        3,
+        `cl_customer-${clientId}-${scope}`,
+      )
+      expect(storage.getItem).toHaveBeenNthCalledWith(
+        4,
+        `cl_customer-${clientId}-${scope}`,
+      )
 
-    const auth = makeSalesChannel(
-      {
-        clientId,
-        scope,
-        domain,
-      },
-      {
-        storage,
-      },
-    )
-
-    const authorizationBefore = await auth.getAuthorization()
-
-    const customerToken = await authenticate("password", {
-      clientId,
-      scope,
-      domain,
-      username,
-      password,
+      expect(storage.removeItem).toHaveBeenCalledTimes(0)
     })
 
-    await auth.setCustomer(customerToken)
+    it("should be able to set and revoke a customer token.", async () => {
+      const storage = makeMockedStorage()
 
-    const authorizationAfter = await auth.getAuthorization()
+      const salesChannel = makeSalesChannel(
+        {
+          clientId,
+          scope,
+          domain,
+        },
+        {
+          storage,
+        },
+      )
 
-    expect(authorizationBefore.accessToken).toBeTypeOf("string")
-    expect(authorizationBefore.createdAt).toBeTypeOf("number")
-    expect(authorizationBefore.expires).toBeInstanceOf(Date)
-    expect(authorizationBefore.expiresIn).toBeTypeOf("number")
-    expect(authorizationBefore.scope).toEqual(scope)
-    expect(authorizationBefore.tokenType).toEqual("bearer")
-    expect(authorizationBefore.type).toEqual("guest")
+      const authorizationBefore = await salesChannel.getAuthorization()
 
-    expect(authorizationAfter.accessToken).toBeTypeOf("string")
-    expect(authorizationAfter.createdAt).toBeTypeOf("number")
-    expect(authorizationAfter.expires).toBeInstanceOf(Date)
-    expect(authorizationAfter.expiresIn).toBeTypeOf("number")
-    expect(authorizationAfter.scope).toEqual(scope)
-    expect(authorizationAfter.tokenType).toEqual("bearer")
-    expect(authorizationAfter.type).toEqual("customer")
-    // @ts-expect-error `customerId` is present only when type is `customer`
-    expect(authorizationAfter.customerId).toEqual("gOqzZhZrmQ")
-
-    expect(storage.setItem).toHaveBeenCalledTimes(2)
-    expect(storage.setItem).toHaveBeenNthCalledWith(
-      1,
-      `cl_guest-${clientId}-${scope}`,
-      JSON.stringify(authorizationBefore),
-    )
-    expect(storage.setItem).toHaveBeenNthCalledWith(
-      2,
-      `cl_customer-${clientId}-${scope}`,
-      JSON.stringify(authorizationAfter),
-    )
-
-    expect(storage.getItem).toHaveBeenCalledTimes(3)
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      1,
-      `cl_customer-${clientId}-${scope}`,
-    )
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      2,
-      `cl_guest-${clientId}-${scope}`,
-    )
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      3,
-      `cl_customer-${clientId}-${scope}`,
-    )
-
-    expect(storage.removeItem).toHaveBeenCalledTimes(0)
-  })
-
-  it("with 'integration'.", async () => {
-    const storage = makeNoStorage()
-
-    const auth = makeIntegration(
-      {
-        clientId: integrationClientId,
-        clientSecret,
-        scope,
-        domain,
-      },
-      {
-        storage,
-      },
-    )
-
-    const authorization = await auth.getAuthorization()
-
-    expect(authorization.accessToken).toBeTypeOf("string")
-    expect(authorization.createdAt).toBeTypeOf("number")
-    expect(authorization.expires).toBeInstanceOf(Date)
-    expect(authorization.expiresIn).toBeTypeOf("number")
-    expect(authorization.scope).toEqual(scope)
-    expect(authorization.tokenType).toEqual("bearer")
-    expect(authorization.type).toEqual("guest")
-
-    expect(storage.setItem).toHaveBeenCalledTimes(1)
-    expect(storage.setItem).toHaveBeenNthCalledWith(
-      1,
-      `cl_guest-${integrationClientId}-${scope}`,
-      JSON.stringify(authorization),
-    )
-
-    expect(storage.getItem).toHaveBeenCalledTimes(2)
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      1,
-      `cl_customer-${integrationClientId}-${scope}`,
-    )
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      2,
-      `cl_guest-${integrationClientId}-${scope}`,
-    )
-
-    expect(storage.removeItem).toHaveBeenCalledTimes(0)
-  })
-})
-
-describe("makeAuth with custom storage", () => {
-  it("no storage provided.", async () => {
-    const storage = makeNoStorage()
-
-    const auth = makeSalesChannel(
-      {
+      const customerToken = await authenticate("password", {
         clientId,
         scope,
         domain,
-      },
-      {
-        storage,
-      },
-    )
+        username,
+        password,
+      })
 
-    const authorization1 = await auth.getAuthorization()
-    const authorization2 = await auth.getAuthorization()
+      await salesChannel.setCustomer(customerToken)
 
-    expect(authorization1.accessToken).toBeTypeOf("string")
-    expect(authorization1.createdAt).toBeTypeOf("number")
-    expect(authorization1.expires).toBeInstanceOf(Date)
-    expect(authorization1.expiresIn).toBeTypeOf("number")
-    expect(authorization1.scope).toEqual(scope)
-    expect(authorization1.tokenType).toEqual("bearer")
-    expect(authorization1.type).toEqual("guest")
+      const authorizationAfter = await salesChannel.getAuthorization()
 
-    expect(authorization2.accessToken).toBeTypeOf("string")
-    expect(authorization2.createdAt).toBeTypeOf("number")
-    expect(authorization2.expires).toBeInstanceOf(Date)
-    expect(authorization2.expiresIn).toBeTypeOf("number")
-    expect(authorization2.scope).toEqual(scope)
-    expect(authorization2.tokenType).toEqual("bearer")
-    expect(authorization2.type).toEqual("guest")
+      expect(authorizationBefore.accessToken).toBeTypeOf("string")
+      expect(authorizationBefore.createdAt).toBeTypeOf("number")
+      expect(authorizationBefore.expires).toBeInstanceOf(Date)
+      expect(authorizationBefore.expiresIn).toBeTypeOf("number")
+      expect(authorizationBefore.scope).toEqual(scope)
+      expect(authorizationBefore.tokenType).toEqual("bearer")
+      expect(authorizationBefore.type).toEqual("guest")
 
-    expect(storage.setItem).toHaveBeenCalledTimes(2)
-    expect(storage.setItem).toHaveBeenNthCalledWith(
-      1,
-      `cl_guest-${clientId}-${scope}`,
-      JSON.stringify(authorization1),
-    )
-    expect(storage.setItem).toHaveBeenNthCalledWith(
-      2,
-      `cl_guest-${clientId}-${scope}`,
-      JSON.stringify(authorization2),
-    )
+      expect(authorizationAfter.accessToken).toBeTypeOf("string")
+      expect(authorizationAfter.createdAt).toBeTypeOf("number")
+      expect(authorizationAfter.expires).toBeInstanceOf(Date)
+      expect(authorizationAfter.expiresIn).toBeTypeOf("number")
+      expect(authorizationAfter.scope).toEqual(scope)
+      expect(authorizationAfter.tokenType).toEqual("bearer")
+      expect(authorizationAfter.type).toEqual("customer")
+      // @ts-expect-error `customerId` is present only when type is `customer`
+      expect(authorizationAfter.customerId).toEqual("gOqzZhZrmQ")
 
-    expect(storage.getItem).toHaveBeenCalledTimes(4)
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      1,
-      `cl_customer-${clientId}-${scope}`,
-    )
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      2,
-      `cl_guest-${clientId}-${scope}`,
-    )
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      3,
-      `cl_customer-${clientId}-${scope}`,
-    )
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      4,
-      `cl_guest-${clientId}-${scope}`,
-    )
+      expect(storage.setItem).toHaveBeenCalledTimes(2)
+      expect(storage.setItem).toHaveBeenNthCalledWith(
+        1,
+        `cl_guest-${clientId}-${scope}`,
+        {
+          accessToken: authorizationBefore.accessToken,
+          refreshToken: authorizationBefore.refreshToken,
+          scope: authorizationBefore.scope,
+        },
+      )
+      expect(storage.setItem).toHaveBeenNthCalledWith(
+        2,
+        `cl_customer-${clientId}-${scope}`,
+        {
+          accessToken: authorizationAfter.accessToken,
+          refreshToken: authorizationAfter.refreshToken,
+          scope: authorizationAfter.scope,
+        },
+      )
 
-    expect(storage.removeItem).toHaveBeenCalledTimes(0)
+      // This is called only twice because the last customer token result is taken from the built-in memory cache.
+      expect(storage.getItem).toHaveBeenCalledTimes(2)
+      expect(storage.getItem).toHaveBeenNthCalledWith(
+        1,
+        `cl_customer-${clientId}-${scope}`,
+      )
+      expect(storage.getItem).toHaveBeenNthCalledWith(
+        2,
+        `cl_guest-${clientId}-${scope}`,
+      )
+
+      await salesChannel.logoutCustomer()
+
+      const authorizationAfterLogout = await salesChannel.getAuthorization()
+
+      expect(authorizationAfterLogout.accessToken).toBeTypeOf("string")
+      expect(authorizationAfterLogout.createdAt).toBeTypeOf("number")
+      expect(authorizationAfterLogout.expires).toBeInstanceOf(Date)
+      expect(authorizationAfterLogout.expiresIn).toBeTypeOf("number")
+      expect(authorizationAfterLogout.scope).toEqual(scope)
+      expect(authorizationAfterLogout.tokenType).toEqual("bearer")
+      expect(authorizationAfterLogout.type).toEqual("guest")
+
+      expect(storage.setItem).toHaveBeenCalledTimes(2)
+      expect(storage.getItem).toHaveBeenCalledTimes(3) // This is called 3 times instead of 4, because the last guest token result is taken from the built-in memory cache.
+      expect(storage.getItem).toHaveBeenNthCalledWith(
+        3,
+        `cl_customer-${clientId}-${scope}`,
+      )
+
+      expect(storage.removeItem).toHaveBeenCalledTimes(1)
+    })
   })
 
-  it("in-memory'.", async () => {
-    const storage = makeInMemoryStorage()
+  describe("makeIntegration", () => {
+    it("should have a built-in memory cache that reduces load on the underlying configured storage.", async () => {
+      const storage = makeMockedStorage()
 
-    const auth = makeSalesChannel(
-      {
-        clientId,
-        scope,
-        domain,
-      },
-      {
-        storage,
-      },
-    )
+      const integration = makeIntegration(
+        {
+          clientId: integrationClientId,
+          clientSecret,
+          scope,
+          domain,
+        },
+        {
+          storage,
+        },
+      )
 
-    const authorization1 = await auth.getAuthorization()
-    const authorization2 = await auth.getAuthorization()
+      const authorization = await integration.getAuthorization() // 2 calls - first one is to check customer token and second one is to check guest token
 
-    expect(authorization1.accessToken).toBeTypeOf("string")
-    expect(authorization1.createdAt).toBeTypeOf("number")
-    expect(authorization1.expires).toBeInstanceOf(Date)
-    expect(authorization1.expiresIn).toBeTypeOf("number")
-    expect(authorization1.scope).toEqual(scope)
-    expect(authorization1.tokenType).toEqual("bearer")
-    expect(authorization1.type).toEqual("guest")
+      await integration.getAuthorization() // 1 call - to check customer token (guest token is already in the built-in memory cache)
+      const lastAuthorization = await integration.getAuthorization() // 1 call - to check customer token (guest token is already in the built-in memory cache)
 
-    expect(authorization2.accessToken).toBeTypeOf("string")
-    expect(authorization2.createdAt).toBeTypeOf("number")
-    expect(authorization2.expires).toBeInstanceOf(Date)
-    expect(authorization2.expiresIn).toBeTypeOf("number")
-    expect(authorization2.scope).toEqual(scope)
-    expect(authorization2.tokenType).toEqual("bearer")
-    expect(authorization2.type).toEqual("guest")
+      expect(authorization.accessToken).toBeTypeOf("string")
+      expect(authorization.createdAt).toBeTypeOf("number")
+      expect(authorization.expires).toBeInstanceOf(Date)
+      expect(authorization.expiresIn).toBeTypeOf("number")
+      expect(authorization.scope).toEqual(scope)
+      expect(authorization.tokenType).toEqual("bearer")
+      expect(authorization.type).toEqual("guest")
 
-    expect(storage.setItem).toHaveBeenCalledTimes(1)
-    expect(storage.setItem).toHaveBeenNthCalledWith(
-      1,
-      `cl_guest-${clientId}-${scope}`,
-      JSON.stringify(authorization1),
-    )
+      expect(lastAuthorization.accessToken).toBeTypeOf("string")
+      expect(lastAuthorization.createdAt).toBeTypeOf("number")
+      expect(lastAuthorization.expires).toBeInstanceOf(Date)
+      expect(lastAuthorization.expiresIn).toBeTypeOf("number")
+      expect(lastAuthorization.scope).toEqual(scope)
+      expect(lastAuthorization.tokenType).toEqual("bearer")
+      expect(lastAuthorization.type).toEqual("guest")
 
-    expect(storage.getItem).toHaveBeenCalledTimes(4)
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      1,
-      `cl_customer-${clientId}-${scope}`,
-    )
-    expect(storage.getItem).toHaveNthResolvedWith(1, null)
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      2,
-      `cl_guest-${clientId}-${scope}`,
-    )
-    expect(storage.getItem).toHaveNthResolvedWith(2, null)
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      3,
-      `cl_customer-${clientId}-${scope}`,
-    )
-    expect(storage.getItem).toHaveNthResolvedWith(3, null)
-    expect(storage.getItem).toHaveBeenNthCalledWith(
-      4,
-      `cl_guest-${clientId}-${scope}`,
-    )
-    expect(storage.getItem).toHaveNthResolvedWith(
-      4,
-      JSON.stringify(authorization1),
-    )
+      expect(storage.setItem).toHaveBeenCalledTimes(1)
+      expect(storage.setItem).toHaveBeenNthCalledWith(
+        1,
+        `cl_guest-${integrationClientId}-${scope}`,
+        {
+          accessToken: authorization.accessToken,
+          refreshToken: authorization.refreshToken,
+          scope: authorization.scope,
+        },
+      )
 
-    expect(storage.removeItem).toHaveBeenCalledTimes(0)
+      expect(storage.getItem).toHaveBeenCalledTimes(2 + 1 + 1)
+      expect(storage.getItem).toHaveBeenNthCalledWith(
+        1,
+        `cl_customer-${integrationClientId}-${scope}`,
+      )
+      expect(storage.getItem).toHaveBeenNthCalledWith(
+        2,
+        `cl_guest-${integrationClientId}-${scope}`,
+      )
+      expect(storage.getItem).toHaveBeenNthCalledWith(
+        3,
+        `cl_customer-${integrationClientId}-${scope}`,
+      )
+      expect(storage.getItem).toHaveBeenNthCalledWith(
+        4,
+        `cl_customer-${integrationClientId}-${scope}`,
+      )
+
+      expect(storage.removeItem).toHaveBeenCalledTimes(0)
+    })
   })
 })
 
-const makeNoStorage: () => Storage = () => {
-  return {
-    setItem: vitest.fn(),
-    getItem: vitest.fn(),
-    removeItem: vitest.fn(),
-  }
-}
-const makeInMemoryStorage: () => Storage = () => {
+const makeMockedStorage: () => Storage = () => {
   const state: Record<string, string> = {}
 
   return {
