@@ -4,13 +4,15 @@ import type {
   AuthenticateReturn,
 } from "src/types/index.js"
 
-export type Authorization = TBaseReturn & { refreshToken?: string } & (
+export type ApiCredentialsAuthorization = TBaseReturn &
+  (
     | {
-        type: "guest"
+        ownerType: "guest"
       }
     | {
-        type: "customer"
-        customerId: string
+        ownerType: "customer"
+        ownerId: string
+        refreshToken?: string
       }
   )
 
@@ -36,7 +38,7 @@ export type StoreOptions = {
       clientId: string
       scope?: string
     },
-    type: Authorization["type"],
+    type: ApiCredentialsAuthorization["ownerType"],
   ) => Promise<string>
   /**
    * Storage instance for storing authorizations.
