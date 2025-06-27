@@ -237,7 +237,7 @@ function toAuthorization<Options extends SetAuthorizationOptions | null>(
 
   if (
     hasOwner(decodedJWT.payload) &&
-    decodedJWT.payload.owner.type !== "Customer"
+    decodedJWT.payload.owner.type.toLowerCase() !== "customer"
   ) {
     throw new Error(
       "The provided access token does not contain a valid customer owner.",
