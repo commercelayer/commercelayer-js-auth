@@ -1,6 +1,6 @@
 # Commerce Layer JS Auth
 
-A lightweight JavaScript library designed to simplify [authentication](https://docs.commercelayer.io/developers/authentication) when interacting with the Commerce Layer API.
+A lightweight JavaScript library designed to simplify [authentication](https://docs.commercelayer.io/developers/authentication) when interacting with the Commerce Layer API. It provides a robust token caching system out-of-the-box, with support for built-in memory storage, configurable persistent storage, and dedicated customer token management.
 
 It works everywhere. On your browser, server, or at the edge.
 
@@ -8,26 +8,22 @@ It works everywhere. On your browser, server, or at the edge.
 
 [Commerce Layer](https://commercelayer.io) is a multi-market commerce API and order management system that lets you add global shopping capabilities to any website, mobile app, chatbot, wearable, voice, or IoT device, with ease. Compose your stack with the best-of-breed tools you already mastered and love. Make any experience shoppable, anywhere, through a blazing-fast, enterprise-grade, and secure API.
 
-## Table of contents
+## Table of contents <!-- omit from toc -->
 
 - [What is Commerce Layer?](#what-is-commerce-layer)
-- [Table of contents](#table-of-contents)
 - [Getting started](#getting-started)
-  - [Installation](#installation)
-- [Authorization flows](#authorization-flows)
 - [API credentials](#api-credentials)
   - [Storage strategy](#storage-strategy)
   - [Sales Channel](#sales-channel)
+    - [Password-based Customer Authentication](#password-based-customer-authentication)
+    - [JWT Bearer Authentication](#jwt-bearer-authentication)
   - [Integration](#integration)
-- [Use cases](#use-cases)
-  - [Sales channel application with client credentials flow](#sales-channel-application-with-client-credentials-flow)
-  - [Sales channel application with password flow](#sales-channel-application-with-password-flow)
-  - [Integration application with client credentials flow](#integration-application-with-client-credentials-flow)
+- [Other flows](#other-flows)
   - [Webapp application with authorization code flow](#webapp-application-with-authorization-code-flow)
   - [Provisioning application](#provisioning-application)
-  - [JWT bearer](#jwt-bearer)
-  - [Revoking a token](#revoking-a-token)
+  - [Client credentials flow](#client-credentials-flow)
 - [Utilities](#utilities)
+  - [Revoking a token](#revoking-a-token)
   - [Decode an access token](#decode-an-access-token)
   - [Verify an access token](#verify-an-access-token)
   - [Get Core API base endpoint](#get-core-api-base-endpoint)
@@ -48,7 +44,7 @@ To get started with Commerce Layer JS Auth, you need to install it and add it to
 &nbsp;&nbsp;&nbsp;
 [![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=ffffff)](https://discord.gg/commercelayer)
 
-### Installation
+### Installation <!-- omit from toc --> 
 
 Commerce Layer JS Auth is available as an npm package.
 
@@ -61,21 +57,22 @@ yarn add @commercelayer/js-auth
 
 # pnpm
 pnpm add @commercelayer/js-auth
+
+# deno
+deno add jsr:@commercelayer/js-auth
+
+# bun
+bun add @commercelayer/js-auth
 ```
 
-## Authorization flows
+## API credentials
 
-To get an access token, you need to execute an [OAuth 2.0](https://oauth.net/2/) authorization flow by using a valid application as the client.
+Commerce Layer implements the industry-standard [OAuth 2.0](https://oauth.net/2/) protocol to manage clients' authorization. It defines different types of API credentials. Which one to use depends on your specific need.
 
-| Grant type             | Sales channel | Integration | Webapp |
-| ---------------------- | :-----------: | :---------: | :----: |
-| **Client credentials** | ✅            | ✅          |        |
-| **Password**           | ✅            |             |        |
-| **Refresh token**      | ✅            |             | ✅     |
-| **Authorization code** |               |             | ✅     |
-| **JWT bearer**         | ✅            |             | ✅     |
+> [!NOTE]
+> Check our [API credentials documentation](https://docs.commercelayer.io/core/api-credentials) for further information for each credential type and learn how to create them through the Commerce Layer dashboard.
 
-Check our [documentation](https://docs.commercelayer.io/developers/authentication) for further information on each single authorization flow.
+To use Commerce Layer API you need to be authorized in the first place. This means you need to get a valid access token.
 
 ```mermaid
 flowchart TB
@@ -85,11 +82,11 @@ flowchart TB
   %% Main nodes
   auth(<b>Auth API</b><br/><br/>https://<b>auth</b>.commercelayer.io)
 
-  dashboard("dashboard")
-  user("user")
-  sales_channel("sales_channel")
-  integration("integration")
-  webapp("webapp")
+  dashboard("JWT Dashboard")
+  user("JWT User")
+  sales_channel("JWT Sales Channel")
+  integration("JWT Integration")
+  webapp("JWT WebApp")
 
   provisioningAPI(<b>Provisioning API</b><br/><br/>https://<b>provisioning</b>.commercelayer.io)
   coreAPI(<b>Core API</b><br/><br/>https://&lt;<b>slug</b>&gt;.commercelayer.io)
@@ -132,13 +129,12 @@ flowchart TB
   linkStyle 12 stroke:#9673A6
 ```
 
-## API credentials
+Authentication calls are subject to [rate limiting](https://docs.commercelayer.io/core/rate-limits#authentication-endpoint). To avoid hitting these limits, you should cache the authentication token in a storage (e.g., cookies, Redis, KV). This prevents requesting a new token for each API call.
 
-To use Commerce Layer API you need to be authorized in the first place. This means you need to get a valid access token. The permissions you're granted authenticating with that token are determined by the type of API client you used to get it.
+This library provides a robust token caching system out-of-the-box, with support for built-in memory storage, configurable persistent storage, and dedicated customer token management.
 
-Authentication calls are subject to rate limiting. To avoid hitting these limits, you should cache the authentication token in a storage (e.g., cookies, Redis, KV). This prevents requesting a new token for each API call.
-
-This library manages this caching mechanism out-of-the-box with two small helpers.
+> [!NOTE]
+> For advanced use cases where you need direct control over token management, you can bypass the built-in caching helpers (`makeSalesChannel` and `makeIntegration`) and [use the `authenticate` method directly](#client-credentials-flow).
 
 ### Storage strategy
 
@@ -146,9 +142,7 @@ This library manages this caching mechanism out-of-the-box with two small helper
 - **Configured Storage**: Can provides persistent storage that survives page reloads and browser sessions. You can implement any storage solution.
 - **Customer Storage** (*Sales Channel only*): Optional dedicated storage for customer authentication tokens, separate from guest tokens.
 
-<details>
-
-<summary>The following flowchart illustrates how the library manages token caching, validation, and refresh flow.</summary>
+The following flowchart illustrates how the library manages token caching, validation, and refresh flow:
 
 ```mermaid
 flowchart TB
@@ -200,7 +194,6 @@ flowchart TB
   class RefreshToken,StoreCustomerTokenInMemory,CreateNewGuest,StoreNewToken,StoreNewGuestToken process;
   class ReturnCustomerToken,ReturnGuestToken endState;
 ```
-</details>
 
 ### Sales Channel
 
@@ -209,12 +202,16 @@ flowchart TB
 Below is a complete example showing how to use a Sales Channel for both guest and customer authentication:
 
 ```ts
+import { authenticate, makeSalesChannel } from '@commercelayer/js-auth'
+
 const salesChannel = makeSalesChannel({
-  clientId: '1234',
-  scope: 'market:id:ABCD'
+  clientId: 'your-client-id',
+  scope: 'market:code:europe'
 }, {
-  // you can use any storage implementation you prefer or implement your own
-  // in this example we use `unstorage` with the `localStorage` driver
+  /**
+   * you can use any storage implementation you prefer or implement your own
+   * in this example we use `unstorage` with the `localStorage` driver
+   */
   storage: createStorage({
     driver: localStorageDriver({}),
   })
@@ -231,7 +228,10 @@ const guestAuthorization = await salesChannel.getAuthorization()
  * though the JWT Bearer flow.
  */
 const customerCredentials = await authenticate('password', {
-  ...
+  clientId: 'your-client-id',
+  scope: 'market:code:europe',
+  username: 'john@example.com',
+  password: 'secret'
 })
 
 /**
@@ -241,8 +241,10 @@ await salesChannel.setCustomer({
   accessToken: customerCredentials.accessToken,
   scope: customerCredentials.scope,
 
-  // when `refreshToken` is provided, it'll be used
-  // to automatically refresh the customer access token when it expires
+  /**
+   * when `refreshToken` is provided, it'll be used
+   * to automatically refresh the customer access token when it expires
+   */
   refreshToken: customerCredentials.refreshToken
 })
 
@@ -259,6 +261,86 @@ const customerAuthorization = await salesChannel.getAuthorization()
 await salesChannel.logoutCustomer()
 ```
 
+Customer authentication is supported through two OAuth 2.0 grant types: Password and JWT Bearer. Both flows return an `accessToken`, `scope`, and `refreshToken` that can be stored using the `setCustomer` method.
+
+#### Password-based Customer Authentication
+
+Sales channel applications can use the [password](https://docs.commercelayer.io/developers/authentication/password) grant type to exchange customer credentials for an access token (i.e., to get a "logged" access token).
+
+```ts
+import { authenticate } from '@commercelayer/js-auth'
+
+const auth = await authenticate('password', {
+  clientId: 'your-client-id',
+  scope: 'market:code:europe',
+  username: 'john@example.com',
+  password: 'secret'
+})
+
+console.log('My access token:', auth.accessToken)
+console.log('Expiration date:', auth.expires)
+console.log('My refresh token:', auth.refreshToken)
+```
+
+Sales channel applications can use the [refresh token](https://docs.commercelayer.io/developers/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option:
+
+```ts
+import { authenticate } from '@commercelayer/js-auth'
+
+const newToken = await authenticate('refresh_token', {
+  clientId: 'your-client-id',
+  scope: 'market:code:europe',
+  refreshToken: 'your-refresh-token'
+})
+```
+
+> [!NOTE]
+> When using the `makeSalesChannel` helper, token refresh is handled automatically. The helper monitors token expiration and seamlessly refreshes customer tokens in the background, eliminating the need for manual refresh calls.
+
+
+#### JWT Bearer Authentication
+
+Commerce Layer supports OAuth 2.0 JWT Bearer token exchange, enabling applications to obtain access tokens by exchanging JWT assertions. This is particularly useful for implementing delegated authentication flows, where an application needs to make API calls on behalf of a customer without requiring their direct interaction. The flow consists of two steps:
+
+1. Creating a signed JWT assertion containing the customer's claims
+
+    ```ts
+    const assertion = await createAssertion({
+      payload: {
+        'https://commercelayer.io/claims': {
+          owner: {
+            type: 'Customer',
+            id: '4tepftJsT2'
+          },
+          custom_claim: {
+            customer: {
+              first_name: 'John',
+              last_name: 'Doe'
+            }
+          }
+        }
+      }
+    })
+    ```
+
+1. Exchanging this assertion for an access token
+
+    ```ts
+    import { authenticate } from '@commercelayer/js-auth'
+
+    const auth = await authenticate('urn:ietf:params:oauth:grant-type:jwt-bearer', {
+      clientId: 'your-client-id',
+      clientSecret: 'your-client-secret',
+      scope: 'market:code:europe',
+      assertion
+    })
+
+    console.log('My access token: ', auth.accessToken)
+    console.log('Expiration date: ', auth.expires)
+    ```
+
+Both **Sales channels** and **webapps** can use this [JWT Bearer flow](https://docs.commercelayer.io/core/authentication/jwt-bearer) to implement secure delegated authentication.
+
 ### Integration
 
 [**Integrations**](https://docs.commercelayer.io/core/api-credentials#integration) are used to develop backend integrations with any 3rd-party system.
@@ -268,8 +350,10 @@ const integration = makeIntegration({
   clientId: '1234',
   clientSecret: 'secret-5678',
 }, {
-  // you can use any storage implementation you prefer or implement your own
-  // in this example we use `unstorage` with the `redis` driver
+  /**
+   * you can use any storage implementation you prefer or implement your own
+   * in this example we use `unstorage` with the `redis` driver
+   */
   storage: createStorage({
     driver: redisDriver({ ... }),
   })
@@ -289,90 +373,7 @@ const authorization = await integration.getAuthorization()
 await integration.revokeAuthorization()
 ```
 
-## Use cases
-
-Based on the authorization flow and application you want to use, you can get your access token in a few simple steps. These are the most common use cases:
-
-### Sales channel application with client credentials flow
-
-Sales channel applications use the [client credentials](https://docs.commercelayer.io/developers/authentication/client-credentials) grant type to get a "guest" access token.
-
-#### Steps <!-- omit from toc -->
-
-1. Create a **sales channel** application on Commerce Layer and take note of your API credentials (base endpoint, client ID, and the ID of the market you want to put in scope)
-
-2. Use this code to get your access token:
-
-```ts
-import { authenticate } from '@commercelayer/js-auth'
-
-const auth = await authenticate('client_credentials', {
-  clientId: 'your-client-id',
-  scope: 'market:code:europe'
-})
-
-console.log('My access token: ', auth.accessToken)
-console.log('Expiration date: ', auth.expires)
-```
-
-### Sales channel application with password flow
-
-Sales channel applications can use the [password](https://docs.commercelayer.io/developers/authentication/password) grant type to exchange customer credentials for an access token (i.e., to get a "logged" access token).
-
-#### Steps <!-- omit from toc -->
-
-1. Create a **sales channel** application on Commerce Layer and take note of your API credentials (base endpoint, client ID, and the ID of the market you want to put in scope)
-
-2. Use this code (changing user name and password with the customer credentials) to get the access token:
-
-```ts
-import { authenticate } from '@commercelayer/js-auth'
-
-const auth = await authenticate('password', {
-  clientId: 'your-client-id',
-  scope: 'market:code:europe',
-  username: 'john@example.com',
-  password: 'secret'
-})
-
-console.log('My access token: ', auth.accessToken)
-console.log('Expiration date: ', auth.expires)
-console.log('My refresh token: ', auth.refreshToken)
-```
-
-Sales channel applications can use the [refresh token](https://docs.commercelayer.io/developers/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option:
-
-```ts
-import { authenticate } from '@commercelayer/js-auth'
-
-const newToken = await authenticate('refresh_token', {
-  clientId: 'your-client-id',
-  scope: 'market:code:europe',
-  refreshToken: 'your-refresh-token'
-})
-```
-
-### Integration application with client credentials flow
-
-Integration applications use the [client credentials](https://docs.commercelayer.io/developers/authentication/client-credentials) grant type to get an access token for themselves.
-
-#### Steps <!-- omit from toc -->
-
-1. Create an **integration** application on Commerce Layer and take note of your API credentials (client ID, client secret, and base endpoint)
-
-2. Use this code to get the access token:
-
-```ts
-import { authenticate } from '@commercelayer/js-auth'
-
-const auth = await authenticate('client_credentials', {
-  clientId: 'your-client-id',
-  clientSecret: 'your-client-secret',
-})
-
-console.log('My access token: ', auth.accessToken)
-console.log('Expiration date: ', auth.expires)
-```
+## Other flows
 
 ### Webapp application with authorization code flow
 
@@ -434,51 +435,42 @@ console.log('My access token: ', auth.accessToken)
 console.log('Expiration date: ', auth.expires)
 ```
 
-### JWT bearer
+### Client credentials flow
 
-Commerce Layer, through OAuth2, provides the support of token exchange in the _on-behalf-of_ (delegation) scenario which allows,
-for example, to make calls on behalf of a user and get an access token of the requesting user without direct user interaction.
-**Sales channels** and **webapps** can accomplish it by leveraging the [JWT Bearer flow](https://docs.commercelayer.io/core/authentication/jwt-bearer),
-which allows a client application to obtain an access token using a JSON Web Token (JWT) [assertion](https://docs.commercelayer.io/core/authentication/jwt-bearer#creating-the-jwt-assertion).
+For advanced use cases where you need direct control over token management, you can bypass the built-in caching helpers (`makeSalesChannel` and `makeIntegration`) and use the `authenticate` method directly.
 
-#### Steps <!-- omit from toc -->
+> [!WARNING]
+> Note that you'll be responsible for implementing your own token caching and refresh logic.
 
-1. Use this code to create an assertion:
-
-```ts
-const assertion = await createAssertion({
-  payload: {
-    'https://commercelayer.io/claims': {
-      owner: {
-        type: 'Customer',
-        id: '4tepftJsT2'
-      },
-      custom_claim: {
-        customer: {
-          first_name: 'John',
-          last_name: 'Doe'
-        }
-      }
-    }
-  }
-})
-```
-
-2. Use this code to get the access token:
+Sales channel applications use the [client credentials](https://docs.commercelayer.io/developers/authentication/client-credentials) grant type to get a "guest" access token.
 
 ```ts
 import { authenticate } from '@commercelayer/js-auth'
 
-const auth = await authenticate('urn:ietf:params:oauth:grant-type:jwt-bearer', {
+const auth = await authenticate('client_credentials', {
   clientId: 'your-client-id',
-  clientSecret: 'your-client-secret',
-  scope: 'market:code:europe',
-  assertion
+  scope: 'market:code:europe'
 })
 
 console.log('My access token: ', auth.accessToken)
 console.log('Expiration date: ', auth.expires)
 ```
+
+Integration applications use the [client credentials](https://docs.commercelayer.io/developers/authentication/client-credentials) grant type to get an access token for themselves.
+
+```ts
+import { authenticate } from '@commercelayer/js-auth'
+
+const auth = await authenticate('client_credentials', {
+  clientId: 'your-client-id',
+  clientSecret: 'your-client-secret',
+})
+
+console.log('My access token: ', auth.accessToken)
+console.log('Expiration date: ', auth.expires)
+```
+
+## Utilities
 
 ### Revoking a token
 
@@ -493,8 +485,6 @@ await revoke({
   token: 'a-generated-access-token'
 })
 ```
-
-## Utilities
 
 ### Decode an access token
 
@@ -589,7 +579,7 @@ git clone https://github.com/<your username>/commercelayer-js-auth.git && cd com
 ## Need help?
 
 - Join [Commerce Layer's Discord community](https://discord.gg/commercelayer).
-- Ping us on [Bluesky](https://bsky.app/profile/commercelayer.io), [X (formerly Twitter)](https://x.com/commercelayer), or [LinkedIn](https://www.linkedin.com/company/commerce-layer).
+- Ping us on [Bluesky](https://bsky.app/profile/commercelayer.io), [X](https://x.com/commercelayer), or [LinkedIn](https://www.linkedin.com/company/commerce-layer).
 - Is there a bug? Create an [issue](https://github.com/commercelayer/commercelayer-js-auth/issues) on this repository.
 
 ## License
