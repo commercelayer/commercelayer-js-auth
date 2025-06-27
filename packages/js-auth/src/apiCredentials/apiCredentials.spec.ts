@@ -36,7 +36,7 @@ describe("API Credentials", () => {
       expect(authorization.expiresIn).toBeTypeOf("number")
       expect(authorization.scope).toEqual(scope)
       expect(authorization.tokenType).toEqual("bearer")
-      expect(authorization.type).toEqual("guest")
+      expect(authorization.ownerType).toEqual("guest")
 
       expect(lastAuthorization.accessToken).toBeTypeOf("string")
       expect(lastAuthorization.createdAt).toBeTypeOf("number")
@@ -44,7 +44,7 @@ describe("API Credentials", () => {
       expect(lastAuthorization.expiresIn).toBeTypeOf("number")
       expect(lastAuthorization.scope).toEqual(scope)
       expect(lastAuthorization.tokenType).toEqual("bearer")
-      expect(lastAuthorization.type).toEqual("guest")
+      expect(lastAuthorization.ownerType).toEqual("guest")
 
       expect(storage.setItem).toHaveBeenCalledTimes(1)
       expect(storage.setItem).toHaveBeenNthCalledWith(
@@ -52,7 +52,10 @@ describe("API Credentials", () => {
         `cl_guest-${clientId}-${scope}`,
         {
           accessToken: authorization.accessToken,
-          refreshToken: authorization.refreshToken,
+          refreshToken:
+            authorization.ownerType === "customer"
+              ? authorization.refreshToken
+              : undefined,
           scope: authorization.scope,
         },
       )
@@ -112,7 +115,7 @@ describe("API Credentials", () => {
       expect(authorizationBefore.expiresIn).toBeTypeOf("number")
       expect(authorizationBefore.scope).toEqual(scope)
       expect(authorizationBefore.tokenType).toEqual("bearer")
-      expect(authorizationBefore.type).toEqual("guest")
+      expect(authorizationBefore.ownerType).toEqual("guest")
 
       expect(authorizationAfter.accessToken).toBeTypeOf("string")
       expect(authorizationAfter.createdAt).toBeTypeOf("number")
@@ -120,9 +123,10 @@ describe("API Credentials", () => {
       expect(authorizationAfter.expiresIn).toBeTypeOf("number")
       expect(authorizationAfter.scope).toEqual(scope)
       expect(authorizationAfter.tokenType).toEqual("bearer")
-      expect(authorizationAfter.type).toEqual("customer")
-      // @ts-expect-error `customerId` is present only when type is `customer`
-      expect(authorizationAfter.customerId).toEqual("gOqzZhZrmQ")
+      expect(authorizationAfter.ownerType).toEqual("customer")
+      if (authorizationAfter.ownerType === "customer") {
+        expect(authorizationAfter.ownerId).toEqual("gOqzZhZrmQ")
+      }
 
       expect(storage.setItem).toHaveBeenCalledTimes(2)
       expect(storage.setItem).toHaveBeenNthCalledWith(
@@ -130,7 +134,10 @@ describe("API Credentials", () => {
         `cl_guest-${clientId}-${scope}`,
         {
           accessToken: authorizationBefore.accessToken,
-          refreshToken: authorizationBefore.refreshToken,
+          refreshToken:
+            authorizationBefore.ownerType === "customer"
+              ? authorizationBefore.refreshToken
+              : undefined,
           scope: authorizationBefore.scope,
         },
       )
@@ -139,7 +146,10 @@ describe("API Credentials", () => {
         `cl_customer-${clientId}-${scope}`,
         {
           accessToken: authorizationAfter.accessToken,
-          refreshToken: authorizationAfter.refreshToken,
+          refreshToken:
+            authorizationAfter.ownerType === "customer"
+              ? authorizationAfter.refreshToken
+              : undefined,
           scope: authorizationAfter.scope,
         },
       )
@@ -165,7 +175,7 @@ describe("API Credentials", () => {
       expect(authorizationAfterLogout.expiresIn).toBeTypeOf("number")
       expect(authorizationAfterLogout.scope).toEqual(scope)
       expect(authorizationAfterLogout.tokenType).toEqual("bearer")
-      expect(authorizationAfterLogout.type).toEqual("guest")
+      expect(authorizationAfterLogout.ownerType).toEqual("guest")
 
       expect(storage.setItem).toHaveBeenCalledTimes(2)
       expect(storage.getItem).toHaveBeenCalledTimes(3) // This is called 3 times instead of 4, because the last guest token result is taken from the built-in memory cache.
@@ -194,10 +204,10 @@ describe("API Credentials", () => {
         },
       )
 
-      const authorization = await integration.getAuthorization() // 2 calls - first one is to check customer token and second one is to check guest token
+      const authorization = await integration.getAuthorization() // 1 calls - when using the integration, it always checks for the guest only token (it will never check for customer token)
 
-      await integration.getAuthorization() // 1 call - to check customer token (guest token is already in the built-in memory cache)
-      const lastAuthorization = await integration.getAuthorization() // 1 call - to check customer token (guest token is already in the built-in memory cache)
+      await integration.getAuthorization() // 0 call - guest token is already in the built-in memory cache
+      const lastAuthorization = await integration.getAuthorization() // 0 call - guest token is already in the built-in memory cache
 
       expect(authorization.accessToken).toBeTypeOf("string")
       expect(authorization.createdAt).toBeTypeOf("number")
@@ -205,7 +215,7 @@ describe("API Credentials", () => {
       expect(authorization.expiresIn).toBeTypeOf("number")
       expect(authorization.scope).toEqual(scope)
       expect(authorization.tokenType).toEqual("bearer")
-      expect(authorization.type).toEqual("guest")
+      expect(authorization.ownerType).toEqual("guest")
 
       expect(lastAuthorization.accessToken).toBeTypeOf("string")
       expect(lastAuthorization.createdAt).toBeTypeOf("number")
@@ -213,7 +223,7 @@ describe("API Credentials", () => {
       expect(lastAuthorization.expiresIn).toBeTypeOf("number")
       expect(lastAuthorization.scope).toEqual(scope)
       expect(lastAuthorization.tokenType).toEqual("bearer")
-      expect(lastAuthorization.type).toEqual("guest")
+      expect(lastAuthorization.ownerType).toEqual("guest")
 
       expect(storage.setItem).toHaveBeenCalledTimes(1)
       expect(storage.setItem).toHaveBeenNthCalledWith(
@@ -221,27 +231,18 @@ describe("API Credentials", () => {
         `cl_guest-${integrationClientId}-${scope}`,
         {
           accessToken: authorization.accessToken,
-          refreshToken: authorization.refreshToken,
+          refreshToken:
+            authorization.ownerType === "customer"
+              ? authorization.refreshToken
+              : undefined,
           scope: authorization.scope,
         },
       )
 
-      expect(storage.getItem).toHaveBeenCalledTimes(2 + 1 + 1)
+      expect(storage.getItem).toHaveBeenCalledTimes(1)
       expect(storage.getItem).toHaveBeenNthCalledWith(
         1,
-        `cl_customer-${integrationClientId}-${scope}`,
-      )
-      expect(storage.getItem).toHaveBeenNthCalledWith(
-        2,
         `cl_guest-${integrationClientId}-${scope}`,
-      )
-      expect(storage.getItem).toHaveBeenNthCalledWith(
-        3,
-        `cl_customer-${integrationClientId}-${scope}`,
-      )
-      expect(storage.getItem).toHaveBeenNthCalledWith(
-        4,
-        `cl_customer-${integrationClientId}-${scope}`,
       )
 
       expect(storage.removeItem).toHaveBeenCalledTimes(0)

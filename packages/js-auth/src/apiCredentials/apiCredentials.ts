@@ -1,14 +1,26 @@
-import { hasOwner } from "src/utils/hasOwner.js"
 import { authenticate } from "../authenticate.js"
 import { jwtDecode } from "../jwtDecode.js"
+import { hasOwner } from "../utils/hasOwner.js"
 import type {
+  ApiCredentialsAuthorization,
   AuthOptions,
-  Authorization,
   StorageValue,
   StoreOptions,
 } from "./types.js"
 
-export function makeAuth(options: AuthOptions, store: StoreOptions) {
+export function makeAuth(
+  options: AuthOptions,
+  store: StoreOptions,
+  /**
+   * Whether to allow only guest authorizations.
+   * If set to `true`, the helper will only return guest authorizations
+   * and will not attempt to read or refresh customer authorizations.
+   * This is useful for integrations that do not require customer authentication,
+   * such as backend integrations or public APIs.
+   * @default false
+   */
+  guestOnly = false,
+) {
   function log(message: string, ...args: unknown[]) {
     if (options.debug) {
       console.log(`[CommerceLayer • auth.js] ${message}`, ...args)
@@ -23,67 +35,72 @@ export function makeAuth(options: AuthOptions, store: StoreOptions) {
       return `cl_${type}-${configuration.clientId}-${configuration.scope}`
     })
 
-  async function getAuthorization(): Promise<Authorization> {
-    // read `customer` authorization
-    const customerKey = await getStorageKey(
-      {
-        clientId: options.clientId,
-        scope: options.scope,
-      },
-      "customer",
-    )
-
-    const customerMemoryItem = memoryStorage.getItem(customerKey)
-
-    if (customerMemoryItem === "fetching") {
-      throw new Error("Fetching a customer authorization should never happen.")
-    }
-
-    const customerAuthorization_fromMemory = toAuthorization(customerMemoryItem)
-
-    const customerAuthorization =
-      customerAuthorization_fromMemory ??
-      toAuthorization(
-        await (store.customerStorage ?? store.storage).getItem(customerKey),
+  async function getAuthorization(): Promise<ApiCredentialsAuthorization> {
+    if (guestOnly === false) {
+      // read `customer` authorization
+      const customerKey = await getStorageKey(
+        {
+          clientId: options.clientId,
+          scope: options.scope,
+        },
+        "customer",
       )
 
-    if (customerAuthorization != null) {
-      if (customerAuthorization.expires > new Date()) {
-        log(
-          `Found customer authorization in storage${customerAuthorization_fromMemory != null ? " (from memory)" : ""}`,
-          customerAuthorization,
+      const customerMemoryItem = memoryStorage.getItem(customerKey)
+
+      if (customerMemoryItem === "fetching") {
+        throw new Error(
+          "Fetching a customer authorization should never happen.",
         )
-
-        memoryStorage.setItem(customerKey, {
-          accessToken: customerAuthorization.accessToken,
-          scope: customerAuthorization.scope,
-          refreshToken: customerAuthorization.refreshToken,
-        })
-
-        return customerAuthorization
       }
 
-      log("Customer authorization expired", customerAuthorization)
+      const customerAuthorization_fromMemory =
+        toAuthorization(customerMemoryItem)
 
-      // if customer token is expired, refresh it
-      if (customerAuthorization.refreshToken != null) {
-        const { accessToken, scope, refreshToken } = await authenticate(
-          "refresh_token",
-          {
-            ...options,
-            refreshToken: customerAuthorization.refreshToken,
-          },
+      const customerAuthorization =
+        customerAuthorization_fromMemory ??
+        toAuthorization(
+          await (store.customerStorage ?? store.storage).getItem(customerKey),
         )
 
-        const authorization = await setAuthorization({
-          accessToken,
-          scope,
-          refreshToken,
-        })
+      if (customerAuthorization?.ownerType === "customer") {
+        if (customerAuthorization.expires > new Date()) {
+          log(
+            `Found customer authorization in storage${customerAuthorization_fromMemory != null ? " (from memory)" : ""}`,
+            customerAuthorization,
+          )
 
-        log("Refreshed customer authorization", authorization)
+          memoryStorage.setItem(customerKey, {
+            accessToken: customerAuthorization.accessToken,
+            scope: customerAuthorization.scope,
+            refreshToken: customerAuthorization.refreshToken,
+          })
 
-        return authorization
+          return customerAuthorization
+        }
+
+        log("Customer authorization expired", customerAuthorization)
+
+        // if customer token is expired, refresh it
+        if (customerAuthorization.refreshToken != null) {
+          const { accessToken, scope, refreshToken } = await authenticate(
+            "refresh_token",
+            {
+              ...options,
+              refreshToken: customerAuthorization.refreshToken,
+            },
+          )
+
+          const authorization = await setAuthorization({
+            accessToken,
+            scope,
+            refreshToken,
+          })
+
+          log("Refreshed customer authorization", authorization)
+
+          return authorization
+        }
       }
     }
 
@@ -110,7 +127,10 @@ export function makeAuth(options: AuthOptions, store: StoreOptions) {
       guestAuthorization_fromMemory ?? (await store.storage.getItem(guestKey)),
     )
 
-    if (guestAuthorization != null && guestAuthorization.expires > new Date()) {
+    if (
+      guestAuthorization?.ownerType === "guest" &&
+      guestAuthorization.expires > new Date()
+    ) {
       log(
         `Found guest authorization in storage${guestAuthorization_fromMemory != null ? " (from memory)" : ""}`,
         guestAuthorization,
@@ -119,7 +139,6 @@ export function makeAuth(options: AuthOptions, store: StoreOptions) {
       memoryStorage.setItem(guestKey, {
         accessToken: guestAuthorization.accessToken,
         scope: guestAuthorization.scope,
-        refreshToken: guestAuthorization.refreshToken,
       })
 
       return guestAuthorization
@@ -145,28 +164,29 @@ export function makeAuth(options: AuthOptions, store: StoreOptions) {
 
   async function setAuthorization(
     auth: SetAuthorizationOptions,
-  ): Promise<Authorization> {
+  ): Promise<ApiCredentialsAuthorization> {
     const authorization = toAuthorization(auth)
 
     const key = await getStorageKey(
       { clientId: options.clientId, scope: auth.scope },
-      authorization.type,
+      authorization.ownerType,
     )
 
-    memoryStorage.setItem(key, {
+    const value: StorageValue = {
       accessToken: authorization.accessToken,
       scope: authorization.scope,
-      refreshToken: authorization.refreshToken,
-    })
+      refreshToken:
+        authorization.ownerType === "customer"
+          ? authorization.refreshToken
+          : undefined,
+    }
 
-    await (authorization.type === "customer"
+    memoryStorage.setItem(key, value)
+
+    await (authorization.ownerType === "customer"
       ? (store.customerStorage ?? store.storage)
       : store.storage
-    ).setItem(key, {
-      accessToken: authorization.accessToken,
-      scope: authorization.scope,
-      refreshToken: authorization.refreshToken,
-    })
+    ).setItem(key, value)
 
     log("Stored authorization in memory and storage", authorization)
 
@@ -175,7 +195,7 @@ export function makeAuth(options: AuthOptions, store: StoreOptions) {
 
   async function removeAuthorization({
     type,
-  }: { type: Authorization["type"] }): Promise<void> {
+  }: { type: ApiCredentialsAuthorization["ownerType"] }): Promise<void> {
     const key = await getStorageKey(
       { clientId: options.clientId, scope: options.scope },
       type,
@@ -204,9 +224,13 @@ export function makeAuth(options: AuthOptions, store: StoreOptions) {
  */
 function toAuthorization<Options extends SetAuthorizationOptions | null>(
   options: Options,
-): Options extends null ? Authorization | null : Authorization {
+): Options extends null
+  ? ApiCredentialsAuthorization | null
+  : ApiCredentialsAuthorization {
   if (options == null) {
-    return null as Options extends null ? Authorization | null : Authorization
+    return null as Options extends null
+      ? ApiCredentialsAuthorization | null
+      : ApiCredentialsAuthorization
   }
 
   const decodedJWT = jwtDecode(options.accessToken)
@@ -221,18 +245,21 @@ function toAuthorization<Options extends SetAuthorizationOptions | null>(
   }
 
   const type = hasOwner(decodedJWT.payload)
-    ? ({ type: "customer", customerId: decodedJWT.payload.owner.id } as const)
-    : ({ type: "guest" } as const)
+    ? ({
+        ownerType: "customer",
+        ownerId: decodedJWT.payload.owner.id,
+        refreshToken: options.refreshToken,
+      } as const)
+    : ({ ownerType: "guest" } as const)
 
   const expiresIn = Math.round(decodedJWT.payload.exp - Date.now() / 1000)
 
-  const authorization: Authorization = {
+  const authorization: ApiCredentialsAuthorization = {
     ...type,
     tokenType: "bearer",
     createdAt: decodedJWT.payload.iat,
     scope: options.scope,
     accessToken: options.accessToken,
-    refreshToken: options.refreshToken,
     expiresIn,
     expires: new Date(Date.now() + expiresIn * 1000),
   }

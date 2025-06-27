@@ -30,5 +30,6 @@ export type {
 export {
   makeIntegration,
   makeSalesChannel,
+  type ApiCredentialsAuthorization,
   type Storage,
 } from "./apiCredentials/index.js"

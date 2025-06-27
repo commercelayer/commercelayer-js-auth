@@ -1,16 +1,20 @@
-import { hasOwner } from "src/utils/hasOwner.js"
 import { jwtDecode } from "../jwtDecode.js"
 import { revoke } from "../revoke.js"
+import type { RevokeReturn } from "../types/index.js"
+import { hasOwner } from "../utils/hasOwner.js"
 import { makeAuth } from "./apiCredentials.js"
 import type {
+  ApiCredentialsAuthorization,
   AuthOptions,
-  Authorization,
   SetRequired,
   StorageValue,
   StoreOptions,
 } from "./types.js"
 
-export type { Storage } from "./types.js"
+export type {
+  Storage,
+  ApiCredentialsAuthorization,
+} from "./types.js"
 
 /**
  * [**Integrations**](https://docs.commercelayer.io/core/api-credentials#integration) are used
@@ -21,18 +25,29 @@ export type { Storage } from "./types.js"
 export function makeIntegration(
   options: SetRequired<AuthOptions, "clientSecret">,
   store: Omit<StoreOptions, "customerStorage">,
-) {
-  const auth = makeAuth(options, store)
+): {
+  options: SetRequired<AuthOptions, "clientSecret">
+  getAuthorization: () => Promise<ApiCredentialsAuthorization>
+  revokeAuthorization: () => Promise<RevokeReturn>
+} {
+  const auth = makeAuth(options, store, true)
 
   return {
-    options: auth.options,
+    options,
+    /**
+     * Get the current integration authorization.
+     *
+     * This will return the authorization from memory or storage.
+     * If the authorization is not found or expired, it will fetch a new one.
+     */
     getAuthorization: auth.getAuthorization,
     /**
      * Revoke the current integration authorization.
+     *
      * This will remove the authorization from memory and storage, and revoke the access token.
      */
     revokeAuthorization: async () => {
-      const { type, accessToken } = await auth.getAuthorization()
+      const { ownerType: type, accessToken } = await auth.getAuthorization()
 
       if (type === "guest") {
         await auth.removeAuthorization({ type: "guest" })
@@ -59,18 +74,33 @@ export function makeIntegration(
 export function makeSalesChannel(
   options: Omit<AuthOptions, "clientSecret">,
   store: StoreOptions,
-) {
+): {
+  options: Omit<AuthOptions, "clientSecret">
+  getAuthorization: () => Promise<ApiCredentialsAuthorization>
+  setCustomer: (options: StorageValue) => Promise<ApiCredentialsAuthorization>
+  logoutCustomer: () => Promise<RevokeReturn>
+} {
   const auth = makeAuth(options, store)
 
   return {
-    options: auth.options,
+    options,
+    /**
+     * Get the current sales channel authorization.
+     *
+     * This will return the authorization from memory or storage.
+     * If the authorization is not found or expired, it will fetch a new one.
+     * IF the customer is logged in with a `refreshToken`, it will also attempt to refresh the token when expired.
+     */
     getAuthorization: auth.getAuthorization,
     /**
      * Sets the customer authorization.
+     * This will store the authorization in memory and storage.
+     * It will also validate the access token to ensure it contains a valid customer owner.
      *
-     *
+     * The option `refreshToken` is optional and can be used to set a refresh token for the customer (e.g. "remember me" functionality).
+     * It will be used to refresh the access token when it expires.
      */
-    setCustomer: async (options: StorageValue): Promise<Authorization> => {
+    setCustomer: async (options) => {
       const decodedJWT = jwtDecode(options.accessToken)
 
       if (hasOwner(decodedJWT.payload)) {
@@ -86,8 +116,8 @@ export function makeSalesChannel(
      *
      * This will remove the customer authorization from memory and storage, and revoke the access token.
      */
-    logoutCustomer: async (): Promise<ReturnType<typeof revoke>> => {
-      const { type, accessToken } = await auth.getAuthorization()
+    logoutCustomer: async () => {
+      const { ownerType: type, accessToken } = await auth.getAuthorization()
 
       if (type === "customer") {
         await auth.removeAuthorization({

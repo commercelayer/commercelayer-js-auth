@@ -2,12 +2,12 @@ import { jwtDecode } from "../jwtDecode.js"
 import { hasOwner } from "./hasOwner.js"
 
 describe("hasOwner", () => {
-  it("should return false when the provided payload has an 'owner'", () => {
+  it("should return false when the provided payload does not have an 'owner'", () => {
     const decodedJWT = jwtDecode(accessTokenWithoutOwner)
     expect(hasOwner(decodedJWT.payload)).toBe(false)
   })
 
-  it("should return true when the provided payload does not have an 'owner'", () => {
+  it("should return true when the provided payload has an 'owner'", () => {
     const decodedJWT = jwtDecode(accessTokenWithOwner)
     expect(hasOwner(decodedJWT.payload)).toBe(true)
   })
