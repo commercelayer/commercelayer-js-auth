@@ -3,18 +3,15 @@ import { revoke } from "../revoke.js"
 import type { RevokeReturn } from "../types/index.js"
 import { hasOwner } from "../utils/hasOwner.js"
 import { makeAuth } from "./apiCredentials.js"
+import type { StorageValue, StoreOptions } from "./storage.js"
 import type {
   ApiCredentialsAuthorization,
   AuthOptions,
   SetRequired,
-  StorageValue,
-  StoreOptions,
 } from "./types.js"
 
-export type {
-  Storage,
-  ApiCredentialsAuthorization,
-} from "./types.js"
+export type { ApiCredentialsAuthorization } from "./types.js"
+export { type Storage, createCompositeStorage } from "./storage.js"
 
 /**
  * [**Integrations**](https://docs.commercelayer.io/core/api-credentials#integration) are used

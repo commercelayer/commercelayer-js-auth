@@ -1,12 +1,9 @@
 import { authenticate } from "../authenticate.js"
 import { jwtDecode } from "../jwtDecode.js"
 import { hasOwner } from "../utils/hasOwner.js"
-import type {
-  ApiCredentialsAuthorization,
-  AuthOptions,
-  StorageValue,
-  StoreOptions,
-} from "./types.js"
+import { debounce } from "./debounce.js"
+import type { StorageValue, StoreOptions } from "./storage.js"
+import type { ApiCredentialsAuthorization, AuthOptions } from "./types.js"
 
 export function makeAuth(
   options: AuthOptions,
@@ -27,8 +24,6 @@ export function makeAuth(
     }
   }
 
-  const memoryStorage = makeMemoryStorage()
-
   const getStorageKey =
     store.getKey ??
     ((configuration, type) => {
@@ -46,35 +41,13 @@ export function makeAuth(
         "customer",
       )
 
-      const customerMemoryItem = memoryStorage.getItem(customerKey)
-
-      if (customerMemoryItem === "fetching") {
-        throw new Error(
-          "Fetching a customer authorization should never happen.",
-        )
-      }
-
-      const customerAuthorization_fromMemory =
-        toAuthorization(customerMemoryItem)
-
-      const customerAuthorization =
-        customerAuthorization_fromMemory ??
-        toAuthorization(
-          await (store.customerStorage ?? store.storage).getItem(customerKey),
-        )
+      const customerAuthorization = toAuthorization(
+        await (store.customerStorage ?? store.storage).getItem(customerKey),
+      )
 
       if (customerAuthorization?.ownerType === "customer") {
         if (customerAuthorization.expires > new Date()) {
-          log(
-            `Found customer authorization in storage${customerAuthorization_fromMemory != null ? " (from memory)" : ""}`,
-            customerAuthorization,
-          )
-
-          memoryStorage.setItem(customerKey, {
-            accessToken: customerAuthorization.accessToken,
-            scope: customerAuthorization.scope,
-            refreshToken: customerAuthorization.refreshToken,
-          })
+          log("Found customer authorization in storage", customerAuthorization)
 
           return customerAuthorization
         }
@@ -83,13 +56,13 @@ export function makeAuth(
 
         // if customer token is expired, refresh it
         if (customerAuthorization.refreshToken != null) {
-          const { accessToken, scope, refreshToken } = await authenticate(
-            "refresh_token",
-            {
-              ...options,
-              refreshToken: customerAuthorization.refreshToken,
-            },
-          )
+          const refreshTokenResponse = authenticate("refresh_token", {
+            ...options,
+            refreshToken: customerAuthorization.refreshToken,
+          })
+
+          const { accessToken, scope, refreshToken } =
+            await refreshTokenResponse
 
           const authorization = await setAuthorization({
             accessToken,
@@ -113,33 +86,15 @@ export function makeAuth(
       "guest",
     )
 
-    let memoryItem = memoryStorage.getItem(guestKey)
-    if (memoryItem == null) {
-      memoryStorage.setItem(guestKey, "fetching")
-    }
-    if (memoryItem === "fetching") {
-      memoryItem = await memoryStorage.waitFor(guestKey)
-    }
-
-    const guestAuthorization_fromMemory = toAuthorization(memoryItem)
-
     const guestAuthorization = toAuthorization(
-      guestAuthorization_fromMemory ?? (await store.storage.getItem(guestKey)),
+      await store.storage.getItem(guestKey),
     )
 
     if (
       guestAuthorization?.ownerType === "guest" &&
       guestAuthorization.expires > new Date()
     ) {
-      log(
-        `Found guest authorization in storage${guestAuthorization_fromMemory != null ? " (from memory)" : ""}`,
-        guestAuthorization,
-      )
-
-      memoryStorage.setItem(guestKey, {
-        accessToken: guestAuthorization.accessToken,
-        scope: guestAuthorization.scope,
-      })
+      log("Found guest authorization in storage", guestAuthorization)
 
       return guestAuthorization
     }
@@ -149,10 +104,12 @@ export function makeAuth(
     log("No valid authorization found, requesting a new guest token")
 
     // create `guest` authorization
-    const { accessToken, scope } = await authenticate(
+    const clientCredentialsResponse = authenticate(
       "client_credentials",
       options,
     )
+
+    const { accessToken, scope } = await clientCredentialsResponse
 
     const authorization = await setAuthorization({
       accessToken,
@@ -181,14 +138,12 @@ export function makeAuth(
           : undefined,
     }
 
-    memoryStorage.setItem(key, value)
-
     await (authorization.ownerType === "customer"
       ? (store.customerStorage ?? store.storage)
       : store.storage
     ).setItem(key, value)
 
-    log("Stored authorization in memory and storage", authorization)
+    log("Stored authorization in storage", authorization)
 
     return authorization
   }
@@ -201,8 +156,6 @@ export function makeAuth(
       type,
     )
 
-    memoryStorage.removeItem(key)
-
     await (type === "customer"
       ? (store.customerStorage ?? store.storage)
       : store.storage
@@ -213,7 +166,7 @@ export function makeAuth(
 
   return {
     options,
-    getAuthorization,
+    getAuthorization: debounce(getAuthorization),
     setAuthorization,
     removeAuthorization,
   }
@@ -265,37 +218,6 @@ function toAuthorization<Options extends SetAuthorizationOptions | null>(
   }
 
   return authorization
-}
-
-/**
- * A simple in-memory storage implementation.
- * It is used to reduce load on the underlying configured storage (e.g., Redis, DB) by caching tokens in memory.
- */
-function makeMemoryStorage() {
-  const data = new Map()
-
-  return {
-    getItem: (key: string): StorageValue | "fetching" | null => {
-      return data.get(key) ?? null
-    },
-    waitFor: (key: string): Promise<StorageValue | null> => {
-      return new Promise((resolve) => {
-        const interval = setInterval(() => {
-          const value: StorageValue | "fetching" | null = data.get(key) ?? null
-          if (value !== "fetching") {
-            clearInterval(interval)
-            resolve(value)
-          }
-        }, 100)
-      })
-    },
-    setItem: (key: string, value: StorageValue | "fetching") => {
-      data.set(key, value)
-    },
-    removeItem: (key: string) => {
-      data.delete(key)
-    },
-  }
 }
 
 type SetAuthorizationOptions = StorageValue

@@ -30,6 +30,7 @@ export type {
 export {
   makeIntegration,
   makeSalesChannel,
+  createCompositeStorage,
   type ApiCredentialsAuthorization,
   type Storage,
 } from "./apiCredentials/index.js"
