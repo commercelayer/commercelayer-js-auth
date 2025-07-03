@@ -1,6 +1,6 @@
 # Commerce Layer JS Auth
 
-A lightweight JavaScript library designed to simplify [authentication](https://docs.commercelayer.io/developers/authentication) when interacting with the Commerce Layer API. It provides a robust token caching system out-of-the-box, with support for built-in memory storage, configurable persistent storage, and dedicated customer token management.
+A lightweight JavaScript library designed to simplify [authentication](https://docs.commercelayer.io/developers/authentication) when interacting with the Commerce Layer API. It provides a robust token caching system out-of-the-box, with support for configurable persistent storage, composite storage strategies, and dedicated customer token management.
 
 It works everywhere — on your browser, server, or at the edge.
 
@@ -130,16 +130,47 @@ flowchart TB
 
 Authentication calls are subject to [rate limiting](https://docs.commercelayer.io/core/rate-limits#authentication-endpoint). To avoid hitting these limits, you should cache the authentication token in a storage (e.g., cookies, Redis, KV). This prevents requesting a new token for each API call.
 
-This library provides a robust token caching system out-of-the-box, with support for built-in memory storage, configurable persistent storage, and dedicated customer token management.
+This library provides a robust token caching system out-of-the-box, with support for any storage solution you choose. It includes tools for composing multiple storage mechanisms (e.g., memory + Redis) to reduce load on the underlying configured storage, and provides dedicated customer token management.
 
 > [!NOTE]
 > For advanced use cases where you need direct control over token management, you can bypass the built-in caching helpers (`makeSalesChannel` and `makeIntegration`) and [use the `authenticate` method directly](#client-credentials-flow).
 
 ### Storage strategy
 
-- **Built-in memory storage** — Provides fast access with temporary storage. Reduces load on the underlying configured storage (e.g., Redis, DB) by caching tokens in memory.
-- **Configured storage** — Can provide persistent storage that survives page reloads and browser sessions. You can implement any storage solution.
+- **Single storage** — Provides temporary or persistent storage that can survive page reloads. You can implement any storage solution.
+- **Composite storage** — Using the `createCompositeStorage` helper, you can combine multiple storage mechanisms (e.g., memory + Redis) to optimize performance and reduce load on the underlying configured storage.
 - **Customer storage** (*sales channel only*) — Optional dedicated storage for customer authentication tokens, separate from guest tokens.
+
+For example, you can combine in-memory and Redis storage to reduce load on Redis while maintaining persistence:
+
+```ts
+import { createCompositeStorage, makeSalesChannel } from '@commercelayer/js-auth'
+import { createStorage } from 'unstorage'
+import memoryDriver from 'unstorage/drivers/memory'
+import redisDriver from 'unstorage/drivers/redis'
+
+const memoryStorage = createStorage({
+  driver: memoryDriver(),
+})
+
+const redisStorage = createStorage({
+  driver: redisDriver({
+    url: process.env.REDIS_URL,
+  }),
+})
+
+const compositeStorage = createCompositeStorage([
+  memoryStorage,
+  redisStorage
+])
+
+const salesChannel = makeSalesChannel({
+  clientId: 'your-client-id',
+  scope: 'market:code:europe'
+}, {
+  storage: compositeStorage
+})
+```
 
 The following flowchart illustrates how the library manages token caching, validation, and refresh flow:
 
@@ -148,33 +179,27 @@ flowchart TB
   %% Default style for nodes
   classDef node stroke-width:2px,color:#000;
 
-  GetAuthorization(".getAuthorization()") --> CheckCustomerMemory{"Check <b>Customer</b><br/>in memory"}
-  %% Start(["Start"]) --> CheckCustomerMemory{"Check <b>Customer</b><br/>in memory"}
+  GetAuthorization(".getAuthorization()") --> CheckCustomerStorage{"Check <b>Customer</b><br/>in storage"}
 
-  CheckCustomerMemory -->|Found| ValidateCustomerToken{"Is token<br/>still valid?"}
-  CheckCustomerMemory -->|Not Found| CheckCustomerStorage{"Check <b>Customer</b><br/>in provided storage"}
+  CheckCustomerStorage -->|Found| ValidateCustomerToken{"Is token<br/>still valid?"}
+  CheckCustomerStorage -->|Not Found| CheckGuestStorage{"Check <b>Guest</b><br/>in storage"}
 
-  ValidateCustomerToken -->|Yes| StoreCustomerTokenInMemory["Store <b>Customer</b> token<br/>in memory"]
+  ValidateCustomerToken -->|Yes| ReturnCustomerToken(["Return <b>Customer</b> Token"])
   ValidateCustomerToken -->|No| HasRefreshToken{"<b>Customer</b> has<br/>refresh token?"}
 
-  StoreCustomerTokenInMemory --> ReturnCustomerToken(["Return <b>Customer</b> Token"])
-
-  CheckCustomerStorage -->|Found| ValidateCustomerToken
-  CheckCustomerStorage -->|Not Found| CheckGuestMemory{"Check <b>Guest</b><br/>in memory"}
-
   HasRefreshToken -->|Yes| RefreshToken["Refresh <b>Customer</b> token"]
-  HasRefreshToken -->|No| CheckGuestMemory
+  HasRefreshToken -->|No| CheckGuestStorage
 
   RefreshToken --> StoreNewToken["Store new <b>Customer</b> token"]
   StoreNewToken --> ReturnCustomerToken
 
-  CheckGuestMemory -->|Found| ValidateGuestToken{"Is token<br/>still valid?"}
-  CheckGuestMemory -->|Not Found| CheckGuestStorage{"Check <b>Guest</b><br/>in provided storage"}
+  %% CheckGuestMemory -->|Found| ValidateGuestToken{"Is token<br/>still valid?"}
+  %% CheckGuestMemory -->|Not Found| CheckGuestStorage{"Check <b>Guest</b><br/>in storage"}
 
   ValidateGuestToken -->|Yes| ReturnGuestToken(["Return <b>Guest</b> token"])
   ValidateGuestToken -->|No| CreateNewGuest["Create new <b>Guest</b> token"]
 
-  CheckGuestStorage -->|Found| ValidateGuestToken
+  CheckGuestStorage -->|Found| ValidateGuestToken{"Is token<br/>still valid?"}
   CheckGuestStorage -->|Not Found| CreateNewGuest
 
   CreateNewGuest --> StoreNewGuestToken["Store new <b>Guest</b> token"]

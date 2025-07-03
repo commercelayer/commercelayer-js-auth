@@ -1,5 +1,10 @@
 import { authenticate } from "../authenticate.js"
-import { type Storage, makeIntegration, makeSalesChannel } from "./index.js"
+import {
+  type Storage,
+  createCompositeStorage,
+  makeIntegration,
+  makeSalesChannel,
+} from "./index.js"
 
 const clientId = process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID
 const integrationClientId = process.env.VITE_TEST_INTEGRATION_CLIENT_ID
@@ -11,7 +16,7 @@ const password = process.env.VITE_TEST_PASSWORD
 
 describe("API Credentials", () => {
   describe("makeSalesChannel", () => {
-    it("should have a built-in memory cache that reduces load on the underlying configured storage.", async () => {
+    it("can use the 'createCompositeStorage' to reduces load on the underlying configured storage.", async () => {
       const storage = makeMockedStorage()
 
       const salesChannel = makeSalesChannel(
@@ -21,7 +26,7 @@ describe("API Credentials", () => {
           domain,
         },
         {
-          storage,
+          storage: createCompositeStorage([makeMockedStorage(), storage]),
         },
       )
 
@@ -91,7 +96,7 @@ describe("API Credentials", () => {
           domain,
         },
         {
-          storage,
+          storage: createCompositeStorage([makeMockedStorage(), storage]),
         },
       )
 
@@ -200,7 +205,7 @@ describe("API Credentials", () => {
           domain,
         },
         {
-          storage,
+          storage: createCompositeStorage([makeMockedStorage(), storage]),
         },
       )
 
