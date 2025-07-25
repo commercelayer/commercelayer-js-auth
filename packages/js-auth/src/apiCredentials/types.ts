@@ -22,4 +22,8 @@ export type AuthOptions = AuthenticateOptions<"client_credentials"> & {
    * @default false
    */
   debug?: boolean
+
+  // dedupConcurrentCalls?: (
+  //   fn: (...args: any[]) => any,
+  // ) => (...args: any[]) => Promise<Awaited<ReturnType<typeof fn>>>
 }

@@ -1,7 +1,7 @@
 import { authenticate } from "../authenticate.js"
 import { jwtDecode } from "../jwtDecode.js"
 import { hasOwner } from "../utils/hasOwner.js"
-import { debounce } from "./debounce.js"
+import { dedupConcurrentCalls } from "./dedupConcurrentCalls.js"
 import type { StorageValue, StoreOptions } from "./storage.js"
 import type { ApiCredentialsAuthorization, AuthOptions } from "./types.js"
 
@@ -166,7 +166,7 @@ export function makeAuth(
 
   return {
     options,
-    getAuthorization: debounce(getAuthorization),
+    getAuthorization: dedupConcurrentCalls(getAuthorization),
     setAuthorization,
     removeAuthorization,
   }
