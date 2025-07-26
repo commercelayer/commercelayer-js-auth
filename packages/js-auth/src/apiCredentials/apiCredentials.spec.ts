@@ -1,9 +1,9 @@
 import { authenticate } from "../authenticate.js"
 import {
-  type Storage,
   createCompositeStorage,
   makeIntegration,
   makeSalesChannel,
+  type Storage,
 } from "./index.js"
 
 const clientId = process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID

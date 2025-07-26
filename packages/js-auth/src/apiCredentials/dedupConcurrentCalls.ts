@@ -5,7 +5,7 @@
  * once it resolves. This is useful for preventing duplicate API calls or
  * expensive operations that are called simultaneously with the same parameters.
  */
-// biome-ignore lint/suspicious/noExplicitAny:
+// biome-ignore lint/suspicious/noExplicitAny: It accepts any function type.
 export const dedupConcurrentCalls = <T extends (...args: any[]) => any>(
   fn: T,
 ): ((...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>>) => {
