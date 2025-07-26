@@ -1,3 +1,10 @@
+export {
+  type ApiCredentialsAuthorization,
+  createCompositeStorage,
+  makeIntegration,
+  makeSalesChannel,
+  type Storage,
+} from "./apiCredentials/index.js"
 export { authenticate } from "./authenticate.js"
 export { InvalidTokenError } from "./errors/InvalidTokenError.js"
 export { TokenError } from "./errors/TokenError.js"
@@ -27,10 +34,3 @@ export type {
   RevokeOptions,
   RevokeReturn,
 } from "./types/index.js"
-export {
-  makeIntegration,
-  makeSalesChannel,
-  createCompositeStorage,
-  type ApiCredentialsAuthorization,
-  type Storage,
-} from "./apiCredentials/index.js"
