@@ -150,7 +150,9 @@ export function makeAuth(
 
   async function removeAuthorization({
     type,
-  }: { type: ApiCredentialsAuthorization["ownerType"] }): Promise<void> {
+  }: {
+    type: ApiCredentialsAuthorization["ownerType"]
+  }): Promise<void> {
     const key = await getStorageKey(
       { clientId: options.clientId, scope: options.scope },
       type,

@@ -10,8 +10,8 @@ import type {
   SetRequired,
 } from "./types.js"
 
+export { createCompositeStorage, type Storage } from "./storage.js"
 export type { ApiCredentialsAuthorization } from "./types.js"
-export { type Storage, createCompositeStorage } from "./storage.js"
 
 /**
  * [**Integrations**](https://docs.commercelayer.io/core/api-credentials#integration) are used
