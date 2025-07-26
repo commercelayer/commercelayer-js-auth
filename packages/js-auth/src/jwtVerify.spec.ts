@@ -7,6 +7,7 @@ import { TokenExpiredError } from "./errors/TokenExpiredError.js"
 import { type CommerceLayerJWT, jwtDecode } from "./jwtDecode.js"
 import { jwtVerify } from "./jwtVerify.js"
 import { encodeBase64URLSafe } from "./utils/base64.js"
+
 const fetchMocker = createFetchMock(vi)
 
 afterEach(() => {
