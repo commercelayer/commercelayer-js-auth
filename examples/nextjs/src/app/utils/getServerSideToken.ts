@@ -1,19 +1,15 @@
 
-import { createCompositeStorage, makeSalesChannel } from "@commercelayer/js-auth"
-import { cookies } from 'next/headers'
+import {
+  createCompositeStorage,
+  makeSalesChannel,
+} from "@commercelayer/js-auth"
 import { createStorage } from "unstorage"
 import memoryDriver from "unstorage/drivers/memory"
 import redisDriver from "unstorage/drivers/redis"
+import { makeCustomerStorage } from "./customerStorage"
 
 const clientId = process.env.NEXT_PUBLIC_CLIENT_ID as string
 const scope = process.env.NEXT_PUBLIC_SCOPE as string
-
-export function encodeCookieName(name: string): string {
-  return encodeURIComponent(name).replace(
-    /%(2[346B]|5E|60|7C)/g,
-    decodeURIComponent,
-  )
-}
 
 const salesChannel = makeSalesChannel(
   {
@@ -32,26 +28,7 @@ const salesChannel = makeSalesChannel(
         }),
       }),
     ]),
-    customerStorage: {
-      getItem: async (key) => {
-        "use server"
-        const cookieStore = await cookies()
-        const value = cookieStore.get(encodeCookieName(key))?.value
-        return JSON.parse(value ?? "null")
-      },
-      setItem: async (key, value) => {
-        "use server"
-        const cookieStore = await cookies()
-        cookieStore.set(encodeCookieName(key), JSON.stringify(value), {
-          secure: true,
-        })
-      },
-      removeItem: async (key) => {
-        "use server"
-        const cookieStore = await cookies()
-        cookieStore.set(encodeCookieName(key), "null", { maxAge: 0 })
-      },
-    },
+    customerStorage: makeCustomerStorage(),
   },
 )
 
