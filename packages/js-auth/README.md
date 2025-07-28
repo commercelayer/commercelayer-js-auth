@@ -170,6 +170,8 @@ const salesChannel = makeSalesChannel({
 }, {
   storage: compositeStorage
 })
+
+const { accessToken } = await salesChannel.getAuthorization()
 ```
 
 The following flowchart illustrates how the library manages token caching, validation, and refresh flow:
@@ -359,8 +361,9 @@ Commerce Layer supports OAuth 2.0 [JWT Bearer](https://docs.commercelayer.io/cor
       assertion
     })
 
-    console.log('My access token: ', auth.accessToken)
-    console.log('Expiration date: ', auth.expires)
+    console.log('My access token:', auth.accessToken)
+    console.log('Expiration date:', auth.expires)
+    console.log('My refresh token:', auth.refreshToken)
     ```
 
 Both sales channels and webapps can use this JWT bearer flow to implement secure delegated authentication.
