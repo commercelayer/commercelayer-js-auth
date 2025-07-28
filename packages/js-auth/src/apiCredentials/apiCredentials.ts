@@ -31,92 +31,100 @@ export function makeAuth(
     })
 
   async function getAuthorization(): Promise<ApiCredentialsAuthorization> {
-    if (guestOnly === false) {
-      // read `customer` authorization
-      const customerKey = await getStorageKey(
+    try {
+      if (guestOnly === false) {
+        // read `customer` authorization
+        const customerKey = await getStorageKey(
+          {
+            clientId: options.clientId,
+            scope: options.scope,
+          },
+          "customer",
+        )
+
+        const customerAuthorization = toAuthorization(
+          await (store.customerStorage ?? store.storage).getItem(customerKey),
+        )
+
+        if (customerAuthorization?.ownerType === "customer") {
+          if (customerAuthorization.expires > new Date()) {
+            log(
+              "Found customer authorization in storage",
+              customerAuthorization,
+            )
+
+            return customerAuthorization
+          }
+
+          log("Customer authorization expired", customerAuthorization)
+
+          // if customer token is expired, refresh it
+          if (customerAuthorization.refreshToken != null) {
+            const refreshTokenResponse = authenticate("refresh_token", {
+              ...options,
+              refreshToken: customerAuthorization.refreshToken,
+            })
+
+            const { accessToken, scope, refreshToken } =
+              await refreshTokenResponse
+
+            const authorization = await setAuthorization({
+              accessToken,
+              scope,
+              refreshToken,
+            })
+
+            log("Refreshed customer authorization", authorization)
+
+            return authorization
+          }
+        }
+      }
+
+      // read `guest` authorization
+      const guestKey = await getStorageKey(
         {
           clientId: options.clientId,
           scope: options.scope,
         },
-        "customer",
+        "guest",
       )
 
-      const customerAuthorization = toAuthorization(
-        await (store.customerStorage ?? store.storage).getItem(customerKey),
+      const guestAuthorization = toAuthorization(
+        await store.storage.getItem(guestKey),
       )
 
-      if (customerAuthorization?.ownerType === "customer") {
-        if (customerAuthorization.expires > new Date()) {
-          log("Found customer authorization in storage", customerAuthorization)
+      if (
+        guestAuthorization?.ownerType === "guest" &&
+        guestAuthorization.expires > new Date()
+      ) {
+        log("Found guest authorization in storage", guestAuthorization)
 
-          return customerAuthorization
-        }
-
-        log("Customer authorization expired", customerAuthorization)
-
-        // if customer token is expired, refresh it
-        if (customerAuthorization.refreshToken != null) {
-          const refreshTokenResponse = authenticate("refresh_token", {
-            ...options,
-            refreshToken: customerAuthorization.refreshToken,
-          })
-
-          const { accessToken, scope, refreshToken } =
-            await refreshTokenResponse
-
-          const authorization = await setAuthorization({
-            accessToken,
-            scope,
-            refreshToken,
-          })
-
-          log("Refreshed customer authorization", authorization)
-
-          return authorization
-        }
+        return guestAuthorization
       }
+
+      // requesting a new token
+
+      log("No valid authorization found, requesting a new guest token")
+
+      // create `guest` authorization
+      const clientCredentialsResponse = authenticate(
+        "client_credentials",
+        options,
+      )
+
+      const { accessToken, scope } = await clientCredentialsResponse
+
+      const authorization = await setAuthorization({
+        accessToken,
+        scope,
+      })
+
+      return authorization
+    } catch (error) {
+      log("Error getting the authorization.", error)
+      throw error
     }
-
-    // read `guest` authorization
-    const guestKey = await getStorageKey(
-      {
-        clientId: options.clientId,
-        scope: options.scope,
-      },
-      "guest",
-    )
-
-    const guestAuthorization = toAuthorization(
-      await store.storage.getItem(guestKey),
-    )
-
-    if (
-      guestAuthorization?.ownerType === "guest" &&
-      guestAuthorization.expires > new Date()
-    ) {
-      log("Found guest authorization in storage", guestAuthorization)
-
-      return guestAuthorization
-    }
-
-    // requesting a new token
-
-    log("No valid authorization found, requesting a new guest token")
-
-    // create `guest` authorization
-    const clientCredentialsResponse = authenticate(
-      "client_credentials",
-      options,
-    )
-
-    const { accessToken, scope } = await clientCredentialsResponse
-
-    const authorization = await setAuthorization({
-      accessToken,
-      scope,
-    })
-
-    return authorization
   }
 
   async function setAuthorization(

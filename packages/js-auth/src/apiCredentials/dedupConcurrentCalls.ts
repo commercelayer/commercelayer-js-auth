@@ -15,60 +15,45 @@ export const dedupConcurrentCalls = <T extends (...args: any[]) => any>(
   const ongoingCalls = new Map<
     string,
     {
-      response: Promise<Return>
-      resolveList: Array<((value: Return) => void) | null>
+      requestQueue: Array<{
+        resolve: (value: Return) => void
+        reject: Parameters<ConstructorParameters<typeof Promise>[0]>[1]
+      }>
     }
   >()
-
-  type OngoingCalls = Exclude<ReturnType<typeof ongoingCalls.get>, undefined>
 
   return function (this: unknown, ...args: Args): Promise<Return> {
     return new Promise((resolve, reject) => {
       const argsKey = JSON.stringify(args)
       const current = ongoingCalls.get(argsKey)
 
-      if (current !== undefined) {
-        current.resolveList.push(resolve)
-      } else {
-        const resolveList: OngoingCalls["resolveList"] = [null]
-        const response: OngoingCalls["response"] = Promise.resolve(
-          fn.apply(this, args),
-        )
+      if (current === undefined) {
+        ongoingCalls.set(argsKey, { requestQueue: [] })
 
-        ongoingCalls.set(argsKey, { response, resolveList })
-
-        response
+        void Promise.resolve(fn.apply(this, args))
           .then((result) => {
-            const entry = ongoingCalls.get(argsKey)
-            if (entry !== undefined) {
-              for (const resolver of entry.resolveList) {
-                if (resolver !== null) {
-                  resolver(result)
-                }
-              }
-              ongoingCalls.delete(argsKey)
+            const query = ongoingCalls.get(argsKey)?.requestQueue ?? []
+            ongoingCalls.delete(argsKey)
+
+            resolve(result)
+            for (const item of query) {
+              item.resolve(result)
             }
           })
           .catch((error) => {
-            const entry = ongoingCalls.get(argsKey)
-            if (entry !== undefined) {
-              const currentResolvers = entry.resolveList
-              ongoingCalls.delete(argsKey)
-              for (const resolver of currentResolvers) {
-                if (resolver !== null) {
-                  reject(error)
-                }
-              }
-            }
-          })
-          .finally(() => {
-            const entry = ongoingCalls.get(argsKey)
-            if (entry !== undefined) {
-              ongoingCalls.delete(argsKey)
-            }
-          })
+            const query = ongoingCalls.get(argsKey)?.requestQueue ?? []
+            ongoingCalls.delete(argsKey)
 
-        resolve(response)
+            reject(error)
+            for (const item of query) {
+              item.reject(error)
+            }
+          })
+      } else {
+        current.requestQueue.push({
+          resolve,
+          reject,
+        })
       }
     })
   }
