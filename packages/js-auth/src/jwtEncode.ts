@@ -67,7 +67,7 @@ async function jwtEncode(
   const encodedPayload = encodeBase64URLSafe(
     JSON.stringify({
       ...payload,
-      iat: Math.floor(new Date().getTime() / 1000),
+      iat: Math.floor(Date.now() / 1000),
     }),
     "utf-8",
   )
