@@ -19,7 +19,7 @@ export function makeAuth(
   guestOnly = false,
 ) {
   function log(message: string, ...args: unknown[]) {
-    if (options.debug) {
+    if (options.debug === true) {
       console.log(`[CommerceLayer • auth.js] ${message}`, ...args)
     }
   }
