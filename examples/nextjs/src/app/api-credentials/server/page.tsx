@@ -1,12 +1,12 @@
-"use server"
-
-import { getServerSideAuth } from "@/app/utils/getServerSideToken"
-import DefaultTemplate from '@/components/DefaultTemplate'
 import {
   getCoreApiBaseEndpoint,
   jwtDecode
 } from "@commercelayer/js-auth"
+import { getServerSideAuth } from "@/app/utils/getServerSideToken"
+import DefaultTemplate from "@/components/DefaultTemplate"
 import { login, logout } from "./actions"
+
+export const dynamic = "force-dynamic"
 
 export default async function Page() {
   return (
