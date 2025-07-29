@@ -26,6 +26,7 @@ export async function revoke(options: RevokeOptions): Promise<RevokeReturn> {
 
   const response = await fetch(`${issuer}/oauth/revoke`, {
     method: "POST",
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",

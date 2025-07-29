@@ -1,7 +1,8 @@
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
+  --font-mono:
+    ui-monospace, Menlo, Monaco, "Cascadia Mono", "Segoe UI Mono",
     "Roboto Mono", "Oxygen Mono", "Ubuntu Monospace", "Source Code Pro",
     "Fira Mono", "Droid Sans Mono", "Courier New", monospace;
 
@@ -104,4 +105,21 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+button {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  margin: 0 0.25rem;
+}
+
+input {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.5rem;
+  margin: 0 0.25rem;
+}
+
+code {
+  font-weight: 700;
+  font-family: var(--font-mono);
 }
