@@ -27,10 +27,17 @@ export function makeIntegration(
   /**
    * Get the current integration authorization.
    *
-   * This will return the authorization from memory or storage.
+   * This will return the authorization from configured storage.
    * If the authorization is not found or expired, it will fetch a new one.
    */
-  getAuthorization: () => Promise<ApiCredentialsAuthorization>
+  getAuthorization: ReturnType<typeof makeAuth>["getAuthorization"]
+  /**
+   * Remove the guest authorization from configured storages.
+   *
+   * This is particularly useful when you want to get a fresh authorization.
+   * **Note:** This will not revoke the guest token.
+   */
+  removeGuestAuthorization: () => Promise<void>
   /**
    * Revoke the current integration authorization.
    *
@@ -43,6 +50,9 @@ export function makeIntegration(
   return {
     options,
     getAuthorization: auth.getAuthorization,
+    removeGuestAuthorization: async () => {
+      return auth.removeAuthorization({ type: "guest" })
+    },
     revokeAuthorization: async () => {
       const { ownerType: type, accessToken } = await auth.getAuthorization()
 
@@ -80,7 +90,14 @@ export function makeSalesChannel(
    * If the authorization is not found or expired, it will fetch a new one.
    * IF the customer is logged in with a `refreshToken`, it will also attempt to refresh the token when expired.
    */
-  getAuthorization: () => Promise<ApiCredentialsAuthorization>
+  getAuthorization: ReturnType<typeof makeAuth>["getAuthorization"]
+  /**
+   * Remove the guest authorization from configured storages.
+   *
+   * This is particularly useful when you want to get a fresh authorization.
+   * **Note:** This will not revoke the guest token.
+   */
+  removeGuestAuthorization: () => Promise<void>
   /**
    * Sets the customer authorization.
    * This will store the authorization in memory and storage.
@@ -102,6 +119,9 @@ export function makeSalesChannel(
   return {
     options,
     getAuthorization: auth.getAuthorization,
+    removeGuestAuthorization: async () => {
+      return auth.removeAuthorization({ type: "guest" })
+    },
     setCustomer: async (options) => {
       const decodedJWT = jwtDecode(options.accessToken)
 
