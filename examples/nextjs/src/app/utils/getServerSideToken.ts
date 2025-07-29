@@ -42,6 +42,11 @@ export async function getServerSideAuth(): Promise<ReturnType<typeof makeSalesCh
 
       return await salesChannel.getAuthorization()
     },
+    removeGuestAuthorization: async () => {
+      "use server"
+
+      return await salesChannel.removeGuestAuthorization()
+    },
     logoutCustomer: async () => {
       "use server"
 

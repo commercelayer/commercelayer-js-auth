@@ -5,6 +5,17 @@ import { dedupConcurrentCalls } from "./dedupConcurrentCalls.js"
 import type { StorageValue, StoreOptions } from "./storage.js"
 import type { ApiCredentialsAuthorization, AuthOptions } from "./types.js"
 
+type MakeAuthReturn = {
+  options: AuthOptions
+  getAuthorization: () => Promise<ApiCredentialsAuthorization>
+  setAuthorization: (
+    auth: SetAuthorizationOptions,
+  ) => Promise<ApiCredentialsAuthorization>
+  removeAuthorization: (params: {
+    type: ApiCredentialsAuthorization["ownerType"]
+  }) => Promise<void>
+}
+
 export function makeAuth(
   options: AuthOptions,
   store: StoreOptions,
@@ -17,7 +28,7 @@ export function makeAuth(
    * @default false
    */
   guestOnly = false,
-) {
+): MakeAuthReturn {
   function log(message: string, ...args: unknown[]) {
     if (options.debug === true) {
       console.log(`[CommerceLayer • auth.js] ${message}`, ...args)
@@ -30,7 +41,7 @@ export function makeAuth(
       return `cl_${type}-${configuration.clientId}-${configuration.scope}`
     })
 
-  async function getAuthorization(): Promise<ApiCredentialsAuthorization> {
+  const getAuthorization: MakeAuthReturn["getAuthorization"] = async () => {
     try {
       if (guestOnly === false) {
         // read `customer` authorization
@@ -127,9 +138,7 @@ export function makeAuth(
     }
   }
 
-  async function setAuthorization(
-    auth: SetAuthorizationOptions,
-  ): Promise<ApiCredentialsAuthorization> {
+  const setAuthorization: MakeAuthReturn["setAuthorization"] = async (auth) => {
     const authorization = toAuthorization(auth)
 
     const key = await getStorageKey(
@@ -156,11 +165,9 @@ export function makeAuth(
     return authorization
   }
 
-  async function removeAuthorization({
+  const removeAuthorization: MakeAuthReturn["removeAuthorization"] = async ({
     type,
-  }: {
-    type: ApiCredentialsAuthorization["ownerType"]
-  }): Promise<void> {
+  }) => {
     const key = await getStorageKey(
       { clientId: options.clientId, scope: options.scope },
       type,
