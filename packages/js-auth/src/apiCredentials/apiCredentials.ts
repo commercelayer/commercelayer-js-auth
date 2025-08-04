@@ -42,6 +42,21 @@ export function makeAuth(
     })
 
   const getAuthorization: MakeAuthReturn["getAuthorization"] = async () => {
+    /**
+     * Threshold duration before token expiration, in seconds.
+     *
+     * When `authorization.expiresIn` drops below this value,
+     * a new token will be requested to prevent usage of a nearly expired token.
+     *
+     * According to the Commerce Layer documentation, a new token is issued
+     * 15 minutes (900 seconds) before the previous token expires.
+     * During this overlap window, both tokens are valid.
+     *
+     * @example
+     * 600 seconds (10 minutes)
+     */
+    const expirationThreshold = 10 * 60
+
     try {
       if (guestOnly === false) {
         // read `customer` authorization
@@ -58,7 +73,7 @@ export function makeAuth(
         )
 
         if (customerAuthorization?.ownerType === "customer") {
-          if (customerAuthorization.expires > new Date()) {
+          if (customerAuthorization.expiresIn >= expirationThreshold) {
             log(
               "Found customer authorization in storage",
               customerAuthorization,
@@ -69,7 +84,6 @@ export function makeAuth(
 
           log("Customer authorization expired", customerAuthorization)
 
-          // if customer token is expired, refresh it
           if (customerAuthorization.refreshToken != null) {
             const refreshTokenResponse = authenticate("refresh_token", {
               ...options,
@@ -107,7 +121,7 @@ export function makeAuth(
 
       if (
         guestAuthorization?.ownerType === "guest" &&
-        guestAuthorization.expires > new Date()
+        guestAuthorization.expiresIn >= expirationThreshold
       ) {
         log("Found guest authorization in storage", guestAuthorization)
 
