@@ -6,7 +6,10 @@ import { decodeBase64URLSafe } from "./utils/base64.js"
 import { extractIssuer } from "./utils/extractIssuer.js"
 
 /**
- * Verify a Commerce Layer access token.
+ * Validate the integrity and authenticity of the JWT.
+ * It checks if the token is valid by verifying the signature against the public key used to create it.
+ * This is useful to ensure that the token hasn't been tampered with and originates from Commerce Layer.
+ *
  * When the verification succeeds, it resolves to the decoded access token, it rejects otherwise.
  */
 export async function jwtVerify(
