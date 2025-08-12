@@ -4,6 +4,7 @@ import { TokenExpiredError } from "./errors/TokenExpiredError.js"
 import { type CommerceLayerJWT, jwtDecode } from "./jwtDecode.js"
 import { decodeBase64URLSafe } from "./utils/base64.js"
 import { extractIssuer } from "./utils/extractIssuer.js"
+import { hasExpired } from "./utils/hasExpired.js"
 
 /**
  * Validate the integrity and authenticity of the JWT.
@@ -24,7 +25,7 @@ export async function jwtVerify(
     throw new InvalidTokenError('Invalid token "kid"')
   }
 
-  if (!ignoreExpiration && Date.now() >= decodedJWT.payload.exp * 1000) {
+  if (!ignoreExpiration && hasExpired(decodedJWT)) {
     throw new TokenExpiredError()
   }
 
