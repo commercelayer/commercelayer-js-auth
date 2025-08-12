@@ -38,7 +38,7 @@ To get started with Commerce Layer JS Auth, you need to install it and add it to
 
 [![NPM](https://img.shields.io/npm/v/%40commercelayer%2Fjs-auth?style=for-the-badge&labelColor=%23C90501&color=173B4A)](https://www.npmjs.com/package/@commercelayer/js-auth)
 [![JSR](https://img.shields.io/jsr/v/%40commercelayer/js-auth?style=for-the-badge&labelColor=E2CB23&color=173B4A)](https://jsr.io/@commercelayer/js-auth)
-![Lightway](https://img.shields.io/bundlephobia/minzip/%40commercelayer/js-auth?style=for-the-badge)
+![Lightway](https://img.shields.io/bundlejs/size/%40commercelayer%2Fjs-auth?style=for-the-badge)
 &nbsp;&nbsp;&nbsp;
 [![Discord](https://img.shields.io/badge/discord-5865F2?style=for-the-badge&logo=discord&logoColor=ffffff)](https://discord.gg/commercelayer)
 
@@ -365,7 +365,14 @@ if (jwtIsSalesChannel(decodedJWT.payload)) {
 
 ### Verify an access token
 
-We offer an helper method to verify an access token. The return is fully typed:
+We offer an helper method to verify an access token.
+
+It validates the integrity and authenticity of the JWT.
+It checks if the token is valid by verifying the signature against the public key used to create it.
+
+This is useful to ensure that the token hasn't been tampered with and originates from Commerce Layer.
+
+The return is fully typed:
 
 ```ts
 import { authenticate, jwtVerify, jwtIsSalesChannel } from '@commercelayer/js-auth'
