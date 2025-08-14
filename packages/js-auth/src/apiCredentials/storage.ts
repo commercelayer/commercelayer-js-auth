@@ -3,10 +3,14 @@ import type { ApiCredentialsAuthorization } from "./types.js"
 
 /**
  * Creates a composite storage that combines multiple storages.
- * It will return the first non-null value from the storages when getting an item.
  *
- * It is useful when you want to combine different storage mechanisms,
- * for example, to reduce load on the underlying configured storage.
+ * When retrieving an item, it returns the first non-null value from the configured storages.
+ *
+ * The order of the configured storages is important, as it determines priority. The first storage in the array is checked first, followed by the second, and so on.
+ *
+ * Using a composite storage can be useful for reducing the load on the underlying storage.
+ * For example, if you want to use Redis but avoid hitting it on every request, you can use a memory storage as the first storage and Redis as the second.
+ * This way, the memory storage is checked first, and if the item is not found there, it falls back to Redis and is then saved to memory for subsequent requests.
  *
  * @param storages - An array of storage instances to combine.
  * @returns A composite storage instance.
