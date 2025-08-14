@@ -11,9 +11,9 @@ type MakeAuthReturn = {
   setAuthorization: (
     auth: SetAuthorizationOptions,
   ) => Promise<ApiCredentialsAuthorization>
-  removeAuthorization: (params: {
-    type: ApiCredentialsAuthorization["ownerType"]
-  }) => Promise<void>
+  removeAuthorization: (
+    type: ApiCredentialsAuthorization["ownerType"],
+  ) => Promise<void>
 }
 
 export function makeAuth(
@@ -179,9 +179,9 @@ export function makeAuth(
     return authorization
   }
 
-  const removeAuthorization: MakeAuthReturn["removeAuthorization"] = async ({
+  const removeAuthorization: MakeAuthReturn["removeAuthorization"] = async (
     type,
-  }) => {
+  ) => {
     const key = await getStorageKey(
       { clientId: options.clientId, scope: options.scope },
       type,

@@ -32,12 +32,12 @@ export function makeIntegration(
    */
   getAuthorization: ReturnType<typeof makeAuth>["getAuthorization"]
   /**
-   * Remove the guest authorization from configured storages.
+   * Remove the authorization from configured storages.
    *
    * This is particularly useful when you want to get a fresh authorization.
-   * **Note:** This will not revoke the guest token.
+   * **Note:** This will not revoke the token.
    */
-  removeGuestAuthorization: () => Promise<void>
+  removeAuthorization: (type?: "all") => Promise<void>
   /**
    * Revoke the current integration authorization.
    *
@@ -50,14 +50,14 @@ export function makeIntegration(
   return {
     options,
     getAuthorization: auth.getAuthorization,
-    removeGuestAuthorization: async () => {
-      return auth.removeAuthorization({ type: "guest" })
+    removeAuthorization: async () => {
+      return await auth.removeAuthorization("guest")
     },
     revokeAuthorization: async () => {
       const { ownerType: type, accessToken } = await auth.getAuthorization()
 
       if (type === "guest") {
-        await auth.removeAuthorization({ type: "guest" })
+        await auth.removeAuthorization("guest")
 
         return await revoke({
           clientId: options.clientId,
@@ -92,12 +92,14 @@ export function makeSalesChannel(
    */
   getAuthorization: ReturnType<typeof makeAuth>["getAuthorization"]
   /**
-   * Remove the guest authorization from configured storages.
+   * Remove the authorization from configured storages.
    *
    * This is particularly useful when you want to get a fresh authorization.
-   * **Note:** This will not revoke the guest token.
+   * **Note:** This will not revoke the token.
    */
-  removeGuestAuthorization: () => Promise<void>
+  removeAuthorization: (
+    type?: "all" | ApiCredentialsAuthorization["ownerType"],
+  ) => Promise<void>
   /**
    * Sets the customer authorization.
    * This will store the authorization in memory and storage.
@@ -119,8 +121,14 @@ export function makeSalesChannel(
   return {
     options,
     getAuthorization: auth.getAuthorization,
-    removeGuestAuthorization: async () => {
-      return auth.removeAuthorization({ type: "guest" })
+    removeAuthorization: async (type = "all") => {
+      if (type === "all") {
+        await auth.removeAuthorization("customer")
+        await auth.removeAuthorization("guest")
+        return
+      }
+
+      return auth.removeAuthorization(type)
     },
     setCustomer: async (options) => {
       const decodedJWT = jwtDecode(options.accessToken)
@@ -137,9 +145,7 @@ export function makeSalesChannel(
       const { ownerType: type, accessToken } = await auth.getAuthorization()
 
       if (type === "customer") {
-        await auth.removeAuthorization({
-          type: "customer",
-        })
+        await auth.removeAuthorization("customer")
 
         return await revoke({
           clientId: options.clientId,
