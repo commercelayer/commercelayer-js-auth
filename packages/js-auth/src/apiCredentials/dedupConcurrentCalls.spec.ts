@@ -1,7 +1,7 @@
 import { dedupConcurrentCalls } from "./dedupConcurrentCalls.js"
 
 describe("dedupConcurrentCalls", () => {
-  it("should deduplicates concurrent calls to the function (expect 1 dispatch)", async () => {
+  it("should deduplicate concurrent calls to the function (expect 1 dispatch)", async () => {
     const fn = vi.fn().mockImplementation(() => {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -26,7 +26,7 @@ describe("dedupConcurrentCalls", () => {
     expect(fn).toHaveBeenCalledTimes(1)
   })
 
-  it("should deduplicates concurrent calls to the function (expect 2 dispatches)", async () => {
+  it("should deduplicate concurrent calls to the function (expect 2 dispatches)", async () => {
     const fn = vi.fn().mockImplementation(() => {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -51,7 +51,7 @@ describe("dedupConcurrentCalls", () => {
     expect(fn).toHaveBeenCalledTimes(2)
   })
 
-  it("should deduplicates concurrent calls to the function given different arguments (expect 4 dispatches)", async () => {
+  it("should deduplicate concurrent calls to the function given different arguments (expect 4 dispatches)", async () => {
     const fn = vi.fn((num: number, letter: string) => {
       return new Promise<string>((resolve) => {
         setTimeout(() => {
