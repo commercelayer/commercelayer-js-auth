@@ -58,7 +58,7 @@ export type StoreOptions = {
   getKey?: (
     configuration: {
       clientId: string
-      scope?: string
+      scope: string
     },
     type: ApiCredentialsAuthorization["ownerType"],
   ) => Promise<string>

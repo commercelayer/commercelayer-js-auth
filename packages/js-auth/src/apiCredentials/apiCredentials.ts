@@ -3,7 +3,11 @@ import { jwtDecode } from "../jwtDecode.js"
 import { hasOwner } from "../utils/hasOwner.js"
 import { dedupConcurrentCalls } from "./dedupConcurrentCalls.js"
 import type { StorageValue, StoreOptions } from "./storage.js"
-import type { ApiCredentialsAuthorization, AuthOptions } from "./types.js"
+import type {
+  ApiCredentialsAuthorization,
+  AuthOptions,
+  SetRequired,
+} from "./types.js"
 
 type MakeAuthReturn = {
   options: AuthOptions
@@ -29,8 +33,13 @@ export function makeAuth(
    */
   guestOnly = false,
 ): MakeAuthReturn {
+  const authOptions: SetRequired<AuthOptions, "scope"> = {
+    ...options,
+    scope: options.scope ?? "market:all",
+  }
+
   function log(message: string, ...args: unknown[]) {
-    if (options.debug === true) {
+    if (authOptions.debug === true) {
       console.log(`[CommerceLayer • auth.js] ${message}`, ...args)
     }
   }
@@ -62,8 +71,8 @@ export function makeAuth(
         // read `customer` authorization
         const customerKey = await getStorageKey(
           {
-            clientId: options.clientId,
-            scope: options.scope,
+            clientId: authOptions.clientId,
+            scope: authOptions.scope,
           },
           "customer",
         )
@@ -85,18 +94,15 @@ export function makeAuth(
           log("Customer authorization expired", customerAuthorization)
 
           if (customerAuthorization.refreshToken != null) {
-            const refreshTokenResponse = authenticate("refresh_token", {
-              ...options,
+            const refreshTokenResponse = await authenticate("refresh_token", {
+              ...authOptions,
               refreshToken: customerAuthorization.refreshToken,
             })
 
-            const { accessToken, scope, refreshToken } =
-              await refreshTokenResponse
-
             const authorization = await setAuthorization({
-              accessToken,
-              scope,
-              refreshToken,
+              accessToken: refreshTokenResponse.accessToken,
+              scope: refreshTokenResponse.scope,
+              refreshToken: refreshTokenResponse.refreshToken,
             })
 
             log("Refreshed customer authorization", authorization)
@@ -109,8 +115,8 @@ export function makeAuth(
       // read `guest` authorization
       const guestKey = await getStorageKey(
         {
-          clientId: options.clientId,
-          scope: options.scope,
+          clientId: authOptions.clientId,
+          scope: authOptions.scope,
         },
         "guest",
       )
@@ -133,16 +139,14 @@ export function makeAuth(
       log("No valid authorization found, requesting a new guest token")
 
       // create `guest` authorization
-      const clientCredentialsResponse = authenticate(
+      const clientCredentialsResponse = await authenticate(
         "client_credentials",
-        options,
+        authOptions,
       )
 
-      const { accessToken, scope } = await clientCredentialsResponse
-
       const authorization = await setAuthorization({
-        accessToken,
-        scope,
+        accessToken: clientCredentialsResponse.accessToken,
+        scope: clientCredentialsResponse.scope,
       })
 
       return authorization
@@ -156,7 +160,7 @@ export function makeAuth(
     const authorization = toAuthorization(auth)
 
     const key = await getStorageKey(
-      { clientId: options.clientId, scope: auth.scope },
+      { clientId: authOptions.clientId, scope: auth.scope },
       authorization.ownerType,
     )
 
@@ -183,7 +187,7 @@ export function makeAuth(
     type,
   ) => {
     const key = await getStorageKey(
-      { clientId: options.clientId, scope: options.scope },
+      { clientId: authOptions.clientId, scope: authOptions.scope },
       type,
     )
 
@@ -196,7 +200,7 @@ export function makeAuth(
   }
 
   return {
-    options,
+    options: authOptions,
     getAuthorization: dedupConcurrentCalls(getAuthorization),
     setAuthorization,
     removeAuthorization,

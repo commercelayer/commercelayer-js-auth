@@ -201,7 +201,6 @@ describe("API Credentials", () => {
         {
           clientId: integrationClientId,
           clientSecret,
-          scope,
           domain,
         },
         {
@@ -218,7 +217,7 @@ describe("API Credentials", () => {
       expect(authorization.createdAt).toBeTypeOf("number")
       expect(authorization.expires).toBeInstanceOf(Date)
       expect(authorization.expiresIn).toBeTypeOf("number")
-      expect(authorization.scope).toEqual(scope)
+      expect(authorization.scope).toEqual("market:all")
       expect(authorization.tokenType).toEqual("bearer")
       expect(authorization.ownerType).toEqual("guest")
 
@@ -226,14 +225,14 @@ describe("API Credentials", () => {
       expect(lastAuthorization.createdAt).toBeTypeOf("number")
       expect(lastAuthorization.expires).toBeInstanceOf(Date)
       expect(lastAuthorization.expiresIn).toBeTypeOf("number")
-      expect(lastAuthorization.scope).toEqual(scope)
+      expect(lastAuthorization.scope).toEqual("market:all")
       expect(lastAuthorization.tokenType).toEqual("bearer")
       expect(lastAuthorization.ownerType).toEqual("guest")
 
       expect(storage.setItem).toHaveBeenCalledTimes(1)
       expect(storage.setItem).toHaveBeenNthCalledWith(
         1,
-        `cl_guest-${integrationClientId}-${scope}`,
+        `cl_guest-${integrationClientId}-market:all`,
         {
           accessToken: authorization.accessToken,
           refreshToken:
@@ -247,7 +246,7 @@ describe("API Credentials", () => {
       expect(storage.getItem).toHaveBeenCalledTimes(1)
       expect(storage.getItem).toHaveBeenNthCalledWith(
         1,
-        `cl_guest-${integrationClientId}-${scope}`,
+        `cl_guest-${integrationClientId}-market:all`,
       )
 
       expect(storage.removeItem).toHaveBeenCalledTimes(0)
