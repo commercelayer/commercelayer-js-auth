@@ -131,6 +131,7 @@ describe("API Credentials", () => {
       expect(authorizationAfter.ownerType).toEqual("customer")
       if (authorizationAfter.ownerType === "customer") {
         expect(authorizationAfter.ownerId).toEqual("gOqzZhZrmQ")
+        expect(authorizationAfter.refreshToken).toBeTypeOf("string")
       }
 
       expect(storage.setItem).toHaveBeenCalledTimes(2)
