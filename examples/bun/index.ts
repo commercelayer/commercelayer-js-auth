@@ -1,4 +1,10 @@
-import { authenticate, AuthenticateOptions, getCoreApiBaseEndpoint, GrantType, jwtVerify } from '@commercelayer/js-auth'
+import {
+  type AuthenticateOptions,
+  type GrantType,
+  authenticate,
+  getCoreApiBaseEndpoint,
+  jwtVerify,
+} from "@commercelayer/js-auth"
 
 const grantType: GrantType = 'client_credentials'
 
