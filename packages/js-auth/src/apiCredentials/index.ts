@@ -45,7 +45,10 @@ export function makeIntegration(
    */
   revokeAuthorization: () => Promise<RevokeReturn>
 } {
-  const auth = makeAuth(options, store, true)
+  const auth = makeAuth(options, store, {
+    logPrefix: "integration",
+    guestOnly: true,
+  })
 
   return {
     options,
@@ -116,7 +119,9 @@ export function makeSalesChannel(
    */
   logoutCustomer: () => Promise<RevokeReturn>
 } {
-  const auth = makeAuth(options, store)
+  const auth = makeAuth(options, store, {
+    logPrefix: "sales_channel",
+  })
 
   return {
     options,

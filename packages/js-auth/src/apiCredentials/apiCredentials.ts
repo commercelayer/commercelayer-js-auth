@@ -23,15 +23,21 @@ type MakeAuthReturn = {
 export function makeAuth(
   options: AuthOptions,
   store: StoreOptions,
-  /**
-   * Whether to allow only guest authorizations.
-   * If set to `true`, the helper will only return guest authorizations
-   * and will not attempt to read or refresh customer authorizations.
-   * This is useful for integrations that do not require customer authentication,
-   * such as backend integrations or public APIs.
-   * @default false
-   */
-  guestOnly = false,
+  {
+    logPrefix,
+    guestOnly = false,
+  }: {
+    logPrefix: string
+    /**
+     * Whether to allow only guest authorizations.
+     * If set to `true`, the helper will only return guest authorizations
+     * and will not attempt to read or refresh customer authorizations.
+     * This is useful for integrations that do not require customer authentication,
+     * such as backend integrations or public APIs.
+     * @default false
+     */
+    guestOnly?: boolean
+  },
 ): MakeAuthReturn {
   const authOptions: SetRequired<AuthOptions, "scope"> = {
     ...options,
@@ -40,7 +46,10 @@ export function makeAuth(
 
   function log(message: string, ...args: unknown[]) {
     if (authOptions.debug === true) {
-      console.log(`[CommerceLayer • auth.js] ${message}`, ...args)
+      console.log(
+        `[CommerceLayer • auth.js] [${logPrefix}] ${message}`,
+        ...args,
+      )
     }
   }
 
@@ -76,6 +85,8 @@ export function makeAuth(
           },
           "customer",
         )
+
+        log("Checking for customer key:", customerKey)
 
         const customerAuthorization = toAuthorization(
           await (store.customerStorage ?? store.storage).getItem(customerKey),
@@ -120,6 +131,8 @@ export function makeAuth(
         },
         "guest",
       )
+
+      log("Checking for guest key:", guestKey)
 
       const guestAuthorization = toAuthorization(
         await store.storage.getItem(guestKey),
