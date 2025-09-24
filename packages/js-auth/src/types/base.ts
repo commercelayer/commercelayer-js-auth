@@ -81,7 +81,7 @@ export interface TError {
     code: string
     detail: string
     meta: Record<string, unknown>
-    status: 401
+    status: 400 | 401 | 429 | 500
     title: string
   }>
 }

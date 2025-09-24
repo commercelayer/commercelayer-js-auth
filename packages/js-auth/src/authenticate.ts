@@ -67,6 +67,10 @@ export async function authenticate<TGrantType extends GrantType>(
     json.expires = new Date(Date.now() + json.expires_in * 1000)
   }
 
+  if (json.errors != null && !Array.isArray(json.errors)) {
+    json.errors = [json.errors]
+  }
+
   return mapKeys(
     json,
     snakeCaseToCamelCase,

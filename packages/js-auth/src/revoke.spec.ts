@@ -1,5 +1,12 @@
+import { autoRetryOnError429 } from "vitest.utility.js"
 import createFetchMock from "vitest-fetch-mock"
-import { authenticate, revoke } from "./index.js"
+import {
+  authenticate as originalAuthenticate,
+  revoke as originalRevoke,
+} from "./index.js"
+
+const authenticate = autoRetryOnError429(originalAuthenticate)
+const revoke = autoRetryOnError429(originalRevoke)
 
 const fetchMocker = createFetchMock(vi)
 
