@@ -144,14 +144,26 @@ This library provides a robust token caching system out-of-the-box, with support
 For example, you can combine in-memory and Redis storage to reduce load on Redis while maintaining persistence:
 
 ```ts
-import { createCompositeStorage, makeSalesChannel } from '@commercelayer/js-auth'
+import { createCompositeStorage, makeSalesChannel, type Storage, type StorageValue } from '@commercelayer/js-auth'
+
+// The `Storage` interface is fully-compatible with the `unstorage` library.
 import { createStorage } from 'unstorage'
-import memoryDriver from 'unstorage/drivers/memory'
 import redisDriver from 'unstorage/drivers/redis'
 
-const memoryStorage = createStorage({
-  driver: memoryDriver(),
-})
+function createMemoryStorage(): Storage {
+  const store: Record<string, StorageValue> = {}
+  return {
+    async getItem(key) {
+      return store[key] ?? null
+    },
+    async setItem(key: string, value: StorageValue) {
+      store[key] = value
+    },
+    async removeItem(key: string) {
+      delete store[key]
+    },
+  }
+}
 
 const redisStorage = createStorage({
   driver: redisDriver({
@@ -160,7 +172,7 @@ const redisStorage = createStorage({
 })
 
 const compositeStorage = createCompositeStorage([
-  memoryStorage,
+  createMemoryStorage(),
   redisStorage
 ])
 
