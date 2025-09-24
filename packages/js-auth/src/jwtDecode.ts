@@ -50,6 +50,8 @@ interface JWTBase {
     id: string
     public: boolean
     client_id: string
+    /** Whether the application is confidential (`true` when the `client_secret` is provided). */
+    confidential: boolean
   }
 
   /** Scope used to restrict access to a specific active market and/or stock location. */
