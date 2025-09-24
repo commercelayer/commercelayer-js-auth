@@ -1,3 +1,11 @@
+export {
+  type ApiCredentialsAuthorization,
+  createCompositeStorage,
+  makeIntegration,
+  makeSalesChannel,
+  type Storage,
+  type StorageValue,
+} from "./apiCredentials/index.js"
 export { authenticate } from "./authenticate.js"
 export { InvalidTokenError } from "./errors/InvalidTokenError.js"
 export { TokenError } from "./errors/TokenError.js"

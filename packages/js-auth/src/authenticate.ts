@@ -53,6 +53,7 @@ export async function authenticate<TGrantType extends GrantType>(
 
   const response = await fetch(`https://auth.${domain}/oauth/token`, {
     method: "POST",
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
       Accept: "application/json",

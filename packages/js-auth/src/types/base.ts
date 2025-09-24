@@ -56,7 +56,7 @@ export type TBaseReturn = {
    */
   tokenType: "bearer"
   /**
-   * The access token expiration time in seconds.
+   * The duration after which the token will expire, in seconds.
    */
   expiresIn: number
   /**

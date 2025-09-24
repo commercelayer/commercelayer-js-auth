@@ -1,10 +1,10 @@
 import { authenticate, getCoreApiBaseEndpoint, jwtVerify } from "@commercelayer/js-auth"
-import { NextResponse, type NextRequest } from "next/server"
+import { type NextRequest, NextResponse } from "next/server"
 
 export async function GET(_request: NextRequest) {
-  const auth = await authenticate('client_credentials', {
-    clientId: 'BISG8bb3GWpC8_D7Nt1SuWWdieS5bJq831A50LgB_Ig',
-    scope: 'market:id:KoaJYhMVVj'
+  const auth = await authenticate("client_credentials", {
+    clientId: process.env.NEXT_PUBLIC_CLIENT_ID as string,
+    scope: process.env.NEXT_PUBLIC_SCOPE as string,
   })
 
   const decodedJWT = await jwtVerify(auth.accessToken)

@@ -16,7 +16,10 @@ export interface TPasswordOptions extends TBaseOptions {
  * @see https://docs.commercelayer.io/core/authentication/password
  */
 export interface TPasswordReturn extends TBaseReturn {
+  /** The ID of the owner of the access token. */
   ownerId: string
+  /** The type of the owner of the access token. */
   ownerType: "customer"
+  /** The refresh token used to obtain a new access token. */
   refreshToken: string
 }
