@@ -10,7 +10,11 @@ import type {
   SetRequired,
 } from "./types.js"
 
-export { createCompositeStorage, type Storage } from "./storage.js"
+export {
+  createCompositeStorage,
+  type Storage,
+  type StorageValue,
+} from "./storage.js"
 export type { ApiCredentialsAuthorization } from "./types.js"
 
 /**

@@ -4,6 +4,7 @@ export {
   makeIntegration,
   makeSalesChannel,
   type Storage,
+  type StorageValue,
 } from "./apiCredentials/index.js"
 export { authenticate } from "./authenticate.js"
 export { InvalidTokenError } from "./errors/InvalidTokenError.js"
