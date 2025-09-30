@@ -36,6 +36,7 @@
     "lint": "pnpm biome check src",
     "lint:fix": "pnpm biome check src --write",
     "test": "pnpm run lint:fix && vitest run",
+    "test:production": "pnpm run lint:fix && vitest run --mode production",
     "test:watch": "vitest",
     "build": "tsup",
     "jsr:publish": "npx jsr publish"

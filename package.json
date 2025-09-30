@@ -14,7 +14,7 @@
     "lint": "pnpm --filter js-auth lint",
     "lint:fix": "pnpm --filter js-auth lint:fix",
     "test": "pnpm --filter js-auth test",
-    "test:production": "pnpm --filter js-auth test -- --mode production",
+    "test:production": "pnpm --filter js-auth test:production",
     "test:watch": "pnpm --filter js-auth test:watch",
     "make:version": "lerna version --no-private",
     "version": "node update-jsr-version.mjs && git add .",
