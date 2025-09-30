@@ -28,7 +28,7 @@
     "replace-in-file": "^8.3.0",
     "typescript": "^5.9.2"
   },
-  "resolutions": {
-    "tar": "^6.2.1"
+  "engines": {
+    "node": ">=20.0.0"
   }
 }

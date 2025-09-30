@@ -6,13 +6,13 @@
  */
 
 import { replaceInFileSync } from 'replace-in-file'
-import lernaJson from './lerna.json' assert { type: 'json' }
+import lernaJson from "./lerna.json" with { type: "json" }
 
 const options = {
   dry: false,
-  files: ['./packages/**/jsr.json'],
-  from: /("version":\s")([0-9a-z\.\-]+)(",)/,
-  to: `$1${lernaJson.version}$3`
+  files: ["./packages/**/jsr.json"],
+  from: /("version":\s")([0-9a-z.\-]+)(",)/,
+  to: `$1${lernaJson.version}$3`,
 }
 
 try {
