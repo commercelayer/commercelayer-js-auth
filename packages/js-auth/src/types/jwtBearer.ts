@@ -26,5 +26,6 @@ export interface TJwtBearerOptions extends TBaseOptions {
 }
 
 export interface TJwtBearerReturn extends Omit<TPasswordReturn, "ownerType"> {
+  /** The type of the owner of the access token. */
   ownerType: "user" | "customer"
 }
