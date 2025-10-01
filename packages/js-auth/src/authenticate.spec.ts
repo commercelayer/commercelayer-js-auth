@@ -1,9 +1,4 @@
-import { autoRetryOnError429 } from "vitest.utility.js"
-import {
-  createAssertion,
-  jwtDecode,
-  authenticate as originalAuthenticate,
-} from "./index.js"
+import { authenticate, createAssertion, jwtDecode } from "./index.js"
 
 const clientId = process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID
 const integrationClientId = process.env.VITE_TEST_INTEGRATION_CLIENT_ID
@@ -14,8 +9,6 @@ const storeScope = process.env.VITE_TEST_STORE_SCOPE
 const username = process.env.VITE_TEST_USERNAME
 const password = process.env.VITE_TEST_PASSWORD
 const tokenIss = process.env.VITE_TEST_TOKEN_ISS
-
-const authenticate = autoRetryOnError429(originalAuthenticate)
 
 describe("Organization auth", () => {
   it("should throw an error when the clientId is not valid.", async () => {
@@ -69,8 +62,9 @@ describe("Organization auth", () => {
       payload: {
         application: {
           kind: "sales_channel",
-          public: true,
           client_id: clientId,
+          public: true,
+          confidential: false,
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
@@ -118,8 +112,9 @@ describe("Organization auth", () => {
       payload: {
         application: {
           kind: "sales_channel",
-          public: true,
           client_id: clientId,
+          public: true,
+          confidential: false,
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
@@ -128,6 +123,57 @@ describe("Organization auth", () => {
         },
         iss: tokenIss,
         scope: storeScope,
+        test: true,
+      },
+    })
+
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      "organization.id",
+    )
+    expect(jwtDecode(response.accessToken).payload).toHaveProperty(
+      "application.id",
+    )
+  })
+
+  it("should return an access token with the application kind `sales_channel` (grantType: `client_credentials`) and a `client_secret` (this could change in the future since a sales_channel + secret does not make sense).", async () => {
+    const response = await authenticate("client_credentials", {
+      clientId,
+      clientSecret: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_SECRET,
+      domain,
+      scope,
+    })
+
+    expect(response).keys(
+      "accessToken",
+      "createdAt",
+      "expires",
+      "expiresIn",
+      "scope",
+      "tokenType",
+    )
+
+    expect(response.expires).toBeInstanceOf(Date)
+    expect(response.expires.getTime()).toBeGreaterThan(Date.now())
+
+    expect(jwtDecode(response.accessToken)).toMatchObject({
+      header: {
+        alg: "RS512",
+        typ: "JWT",
+      },
+      payload: {
+        application: {
+          kind: "sales_channel",
+          client_id: clientId,
+          public: true,
+          confidential: true,
+        },
+        organization: {
+          slug: process.env.VITE_TEST_SLUG,
+          enterprise: true,
+          region: "eu-west-1",
+        },
+        iss: tokenIss,
+        scope,
         test: true,
       },
     })
@@ -167,8 +213,9 @@ describe("Organization auth", () => {
       payload: {
         application: {
           kind: "integration",
-          public: false,
           client_id: integrationClientId,
+          public: false,
+          confidential: true,
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
@@ -221,8 +268,9 @@ describe("Organization auth", () => {
       payload: {
         application: {
           kind: "sales_channel",
-          public: true,
           client_id: clientId,
+          public: true,
+          confidential: false,
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
@@ -294,8 +342,9 @@ describe("Organization auth", () => {
       payload: {
         application: {
           kind: "sales_channel",
-          public: true,
           client_id: clientId,
+          public: true,
+          confidential: false,
         },
         organization: {
           slug: process.env.VITE_TEST_SLUG,
@@ -331,7 +380,7 @@ describe("Organization auth", () => {
   })
 })
 
-describe.skip("authorization_code", () => {})
+describe.todo("authorization_code", () => {})
 
 describe("Provisioning auth", () => {
   it("should return an access token with the application kind `user` (grantType: `client_credentials`)", async () => {
@@ -362,8 +411,9 @@ describe("Provisioning auth", () => {
         iss: tokenIss,
         application: {
           kind: "user",
-          public: false,
           client_id: process.env.VITE_TEST_PROVISIONING_CLIENT_ID,
+          public: false,
+          confidential: true,
         },
         test: false,
       },
@@ -384,8 +434,9 @@ describe("JWT Bearer", () => {
       {
         application: {
           kind: "sales_channel",
-          public: true,
           client_id: process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID,
+          public: true,
+          confidential: true,
         },
       },
     )
@@ -398,8 +449,9 @@ describe("JWT Bearer", () => {
       {
         application: {
           kind: "integration",
-          public: false,
           client_id: process.env.VITE_TEST_INTEGRATION_CLIENT_ID,
+          public: false,
+          confidential: true,
         },
       },
     )
@@ -412,8 +464,9 @@ describe("JWT Bearer", () => {
       {
         application: {
           kind: "webapp",
-          public: false,
           client_id: process.env.VITE_TEST_AUTHORIZATION_CODE_CLIENT_ID,
+          public: false,
+          confidential: true,
         },
       },
     )

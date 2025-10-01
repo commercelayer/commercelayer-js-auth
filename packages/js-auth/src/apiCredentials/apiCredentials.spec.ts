@@ -1,5 +1,4 @@
-import { autoRetryOnError429 } from "vitest.utility.js"
-import { authenticate as originalAuthenticate } from "../authenticate.js"
+import { authenticate } from "../authenticate.js"
 import {
   createCompositeStorage,
   makeIntegration,
@@ -15,8 +14,6 @@ const scope = process.env.VITE_TEST_SCOPE
 const username = process.env.VITE_TEST_USERNAME
 const password = process.env.VITE_TEST_PASSWORD
 const customerId = process.env.VITE_TEST_CUSTOMER_ID
-
-const authenticate = autoRetryOnError429(originalAuthenticate)
 
 describe("API Credentials", () => {
   describe("makeSalesChannel", () => {
