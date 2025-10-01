@@ -1,9 +1,4 @@
-import { autoRetryOnError429 } from "vitest.utility.js"
-import {
-  createAssertion,
-  jwtDecode,
-  authenticate as originalAuthenticate,
-} from "./index.js"
+import { authenticate, createAssertion, jwtDecode } from "./index.js"
 
 const clientId = process.env.VITE_TEST_SALES_CHANNEL_CLIENT_ID
 const integrationClientId = process.env.VITE_TEST_INTEGRATION_CLIENT_ID
@@ -14,8 +9,6 @@ const storeScope = process.env.VITE_TEST_STORE_SCOPE
 const username = process.env.VITE_TEST_USERNAME
 const password = process.env.VITE_TEST_PASSWORD
 const tokenIss = process.env.VITE_TEST_TOKEN_ISS
-
-const authenticate = autoRetryOnError429(originalAuthenticate)
 
 describe("Organization auth", () => {
   it("should throw an error when the clientId is not valid.", async () => {
