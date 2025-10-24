@@ -46,6 +46,10 @@ export function createCompositeStorage(storages: Storage[]): Storage {
     async removeItem(key: string) {
       await Promise.all(storages.map((storage) => storage.removeItem(key)))
     },
+
+    async dispose() {
+      await Promise.all(storages.map((storage) => storage.dispose?.()))
+    },
   }
 }
 
@@ -101,6 +105,12 @@ export interface Storage {
    * Removes the key/value pair with the given key, if a key/value pair with the given key exists.
    */
   removeItem: (key: string) => Promise<void>
+
+  /**
+   * Disposes all mounted storages to ensure there are no open-handles left.
+   * Call it before exiting process.
+   */
+  dispose?: () => Promise<void>
 }
 
 export type StorageValue = Pick<

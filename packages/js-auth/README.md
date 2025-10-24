@@ -141,16 +141,19 @@ This library provides a robust token caching system out-of-the-box, with support
 - **Composite storage** — Using the `createCompositeStorage` helper, you can combine multiple storage mechanisms (e.g., memory + Redis) to optimize performance and reduce load on the underlying configured storage.
 - **Customer storage** (*sales channel only*) — Optional dedicated storage for customer authentication tokens, separate from guest tokens.
 
-For example, you can combine in-memory and Redis storage to reduce load on Redis while maintaining persistence:
+Here below an example showing a basic setup with an in-memory storage:
 
 ```ts
-import { createCompositeStorage, makeSalesChannel, type Storage, type StorageValue } from '@commercelayer/js-auth'
+import {
+  makeSalesChannel,
+  type Storage,
+  type StorageValue,
+} from "@commercelayer/js-auth"
 
-// The `Storage` interface is fully-compatible with the `unstorage` library.
-import { createStorage } from 'unstorage'
-import redisDriver from 'unstorage/drivers/redis'
-
-function createMemoryStorage(): Storage {
+/**
+ * A valid storage must implement the `Storage` interface
+ */
+function memoryStorage(): Storage {
   const store: Record<string, StorageValue> = {}
   return {
     async getItem(key) {
@@ -161,29 +164,35 @@ function createMemoryStorage(): Storage {
     },
     async removeItem(key: string) {
       delete store[key]
-    },
+    }
   }
 }
 
-const redisStorage = createStorage({
-  driver: redisDriver({
-    url: process.env.REDIS_URL,
-  }),
-})
+const salesChannel = makeSalesChannel(
+  {
+    clientId: "<your_client_id>",
+    scope: "market:code:europe",
+    debug: true,
+  },
+  {
+    storage: memoryStorage(),
+  },
+)
 
-const compositeStorage = createCompositeStorage([
-  createMemoryStorage(),
-  redisStorage
-])
+/**
+ * At the beginning, you'll get a guest token
+ */
+const authorization1 = await salesChannel.getAuthorization()
 
-const salesChannel = makeSalesChannel({
-  clientId: 'your-client-id',
-  scope: 'market:code:europe'
-}, {
-  storage: compositeStorage
-})
+console.log("Guest access token:", authorization1.accessToken)
 
-const { accessToken } = await salesChannel.getAuthorization()
+/**
+ * For consecutive calls, you'll get the previous guest token
+ * from the storage or a new one if expired
+ */
+const authorization2 = await salesChannel.getAuthorization()
+
+console.log("Customer access token:", authorization2.accessToken)
 ```
 
 The following flowchart illustrates how the library manages token caching, validation, and refresh flow:
@@ -240,20 +249,27 @@ flowchart TB
 Below is a complete example showing how to use a sales channel for both guest and customer authentication:
 
 ```ts
-import { authenticate, makeSalesChannel } from '@commercelayer/js-auth'
+import { authenticate, makeSalesChannel } from "@commercelayer/js-auth"
 
-const salesChannel = makeSalesChannel({
-  clientId: 'your-client-id',
-  scope: 'market:code:europe'
-}, {
-  /**
-   * you can use any storage implementation you prefer or implement your own
-   * in this example we use `unstorage` with the `localStorage` driver
-   */
-  storage: createStorage({
-    driver: localStorageDriver({}),
-  })
-})
+// The `Storage` interface is fully-compatible with the `unstorage` library.
+import { createStorage } from "unstorage"
+import localStorageDriver from "unstorage/drivers/localstorage"
+
+const salesChannel = makeSalesChannel(
+  {
+    clientId: "<your_client_id>",
+    scope: "market:code:europe",
+  },
+  {
+    /**
+     * You can use any storage implementation you prefer or implement your own.
+     * In this example we use `unstorage` with the `localStorage` driver
+     */
+    storage: createStorage({
+      driver: localStorageDriver({}),
+    }),
+  },
+)
 
 /**
  * Get the current authorization state which includes the access token.
@@ -261,15 +277,17 @@ const salesChannel = makeSalesChannel({
  */
 const guestAuthorization = await salesChannel.getAuthorization()
 
+console.log("Guest access token:", guestAuthorization.accessToken)
+
 /**
  * Authenticate a customer using their email and password, or
  * though the JWT bearer flow.
  */
-const customerCredentials = await authenticate('password', {
-  clientId: 'your-client-id',
-  scope: 'market:code:europe',
-  username: 'john@example.com',
-  password: 'secret'
+const customerCredentials = await authenticate("password", {
+  clientId: "<your_client_id>",
+  scope: "market:code:europe",
+  username: "john@example.com",
+  password: "secret",
 })
 
 /**
@@ -280,10 +298,10 @@ await salesChannel.setCustomer({
   scope: customerCredentials.scope,
 
   /**
-   * when `refreshToken` is provided, it'll be used
-   * to automatically refresh the customer access token when it expires
+   * When `refreshToken` is provided, it'll be used to automatically
+   * refresh the customer access token when it expires.
    */
-  refreshToken: customerCredentials.refreshToken
+  refreshToken: customerCredentials.refreshToken,
 })
 
 /**
@@ -291,10 +309,11 @@ await salesChannel.setCustomer({
  */
 const customerAuthorization = await salesChannel.getAuthorization()
 
+console.log("Customer access token:", customerAuthorization.accessToken)
+
 /**
  * Logout the current customer.
- * This will remove the customer authorization from the storage,
- * and revoke the access token.
+ * This will remove the customer authorization from the storage, and revoke the access token.
  */
 await salesChannel.logoutCustomer()
 ```
@@ -306,29 +325,29 @@ Customer authentication is supported through two OAuth 2.0 grant types: [passwor
 Sales channels can use the [password](https://docs.commercelayer.io/developers/authentication/password) grant type to exchange customer credentials for an access token (i.e., to get a "logged" access token).
 
 ```ts
-import { authenticate } from '@commercelayer/js-auth'
+import { authenticate } from "@commercelayer/js-auth"
 
-const auth = await authenticate('password', {
-  clientId: 'your-client-id',
-  scope: 'market:code:europe',
-  username: 'john@example.com',
-  password: 'secret'
+const auth = await authenticate("password", {
+  clientId: "<your_client_id>",
+  scope: "market:code:europe"
+  username: "john@example.com",
+  password: "secret"
 })
 
-console.log('My access token:', auth.accessToken)
-console.log('Expiration date:', auth.expires)
-console.log('My refresh token:', auth.refreshToken)
+console.log("My access token:", auth.accessToken)
+console.log("Expiration date:", auth.expires)
+console.log("My refresh token:", auth.refreshToken)
 ```
 
 Sales channels can use the [refresh token](https://docs.commercelayer.io/developers/authentication/refresh-token) grant type to refresh a customer access token with a "remember me" option:
 
 ```ts
-import { authenticate } from '@commercelayer/js-auth'
+import { authenticate } from "@commercelayer/js-auth"
 
-const newToken = await authenticate('refresh_token', {
-  clientId: 'your-client-id',
-  scope: 'market:code:europe',
-  refreshToken: 'your-refresh-token'
+const newToken = await authenticate("refresh_token", {
+  clientId: "<your_client_id>",
+  scope: "market:code:europe"
+  refreshToken: "<your_refresh_token>"
 })
 ```
 
@@ -345,15 +364,15 @@ Commerce Layer supports OAuth 2.0 [JWT Bearer](https://docs.commercelayer.io/cor
     ```ts
     const assertion = await createAssertion({
       payload: {
-        'https://commercelayer.io/claims': {
+        "https://commercelayer.io/claims": {
           owner: {
-            type: 'Customer',
-            id: '4tepftJsT2'
+            type: "Customer",
+            id: "4tepftJsT2"
           },
           custom_claim: {
             customer: {
-              first_name: 'John',
-              last_name: 'Doe'
+              first_name: "John",
+              last_name: "Doe"
             }
           }
         }
@@ -364,18 +383,18 @@ Commerce Layer supports OAuth 2.0 [JWT Bearer](https://docs.commercelayer.io/cor
 2. Exchanging this assertion for an access token
 
     ```ts
-    import { authenticate } from '@commercelayer/js-auth'
+    import { authenticate } from "@commercelayer/js-auth"
 
-    const auth = await authenticate('urn:ietf:params:oauth:grant-type:jwt-bearer', {
-      clientId: 'your-client-id',
-      clientSecret: 'your-client-secret',
-      scope: 'market:code:europe',
+    const auth = await authenticate("urn:ietf:params:oauth:grant-type:jwt-bearer", {
+      clientId: "<your_client_id>",
+      clientSecret: "<your_client_secret>",
+      scope: "market:code:europe"
       assertion
     })
 
-    console.log('My access token:', auth.accessToken)
-    console.log('Expiration date:', auth.expires)
-    console.log('My refresh token:', auth.refreshToken)
+    console.log("My access token:", auth.accessToken)
+    console.log("Expiration date:", auth.expires)
+    console.log("My refresh token:", auth.refreshToken)
     ```
 
 Both sales channels and webapps can use this JWT bearer flow to implement secure delegated authentication.
@@ -385,31 +404,70 @@ Both sales channels and webapps can use this JWT bearer flow to implement secure
 [Integrations](https://docs.commercelayer.io/core/api-credentials#integration) are used to develop backend integrations with any 3rd-party system.
 
 ```ts
-const integration = makeIntegration({
-  clientId: '1234',
-  clientSecret: 'secret-5678',
-}, {
-  /**
-   * you can use any storage implementation you prefer or implement your own
-   * in this example we use `unstorage` with the `redis` driver
-   */
-  storage: createStorage({
-    driver: redisDriver({ ... }),
-  })
+import {
+  createCompositeStorage,
+  makeIntegration,
+} from "@commercelayer/js-auth"
+
+// The `Storage` interface is fully-compatible with the `unstorage` library.
+import { createStorage } from "unstorage"
+import memoryDriver from "unstorage/drivers/memory"
+import redisDriver from "unstorage/drivers/redis"
+
+const memoryStorage = createStorage({
+  driver: memoryDriver(),
 })
 
+const redisStorage = createStorage({
+  driver: redisDriver({
+    url: "<your_redis_connection_string>",
+  }),
+})
+
+const compositeStorage = createCompositeStorage([
+  memoryStorage,
+  redisStorage,
+])
+
+const integration = makeIntegration(
+  {
+    clientId: "<your_client_id>",
+    clientSecret: "<your_client_secret>",
+    debug: true,
+  },
+  {
+    storage: compositeStorage,
+  },
+)
+
 /**
- * Get the current authorization state which includes the access token.
+ * If you already requested an access token before, now you'll probably get it from Redis if not expired.
+ * Otherwise, a new one will be requested.
+ * 
  * This method handles caching and token refresh automatically.
  */
-const authorization = await integration.getAuthorization()
+const authorization1 = await integration.getAuthorization()
+
+console.log("Integration access token #1:", authorization1.accessToken)
+
+/**
+ * Subsequent calls will return the cached token from memory storage.
+ */
+const authorization2 = await integration.getAuthorization()
+
+console.log("Integration access token #2:", authorization2.accessToken)
 
 /**
  * Revoke the current integration authorization.
- * This will remove the authorization from memory and storage,
- * and revoke the access token.
+ * This will remove the authorization from memory and storage, and revoke the access token.
  */
 await integration.revokeAuthorization()
+
+/**
+ * Disposes all mounted storages to ensure there are no open-handles left.
+ * Call it before exiting process.
+ */
+await compositeStorage.dispose?.()
 ```
 
 ## Other flows
@@ -439,17 +497,17 @@ In this case, first, you need to get an authorization code, then you can exchang
    Use this code to get the access token:
 
   ```ts
-  import { authenticate } from '@commercelayer/js-auth'
+  import { authenticate } from "@commercelayer/js-auth"
 
-  const auth = await authenticate('authorization_code', {
-    clientId: 'your-client-id',
-    clientSecret: 'your-client-secret',
-    callbackUrl: '<https://yourdomain.com/callback>',
-    code: 'your-auth-code'
+  const auth = await authenticate("authorization_code", {
+    clientId: "<your_client_id>",
+    clientSecret: "<your_client_secret>",
+    callbackUrl: "<https://yourdomain.com/callback>",
+    code: "<your_auth_code>"
   })
 
-  console.log('My access token: ', auth.accessToken)
-  console.log('Expiration date: ', auth.expires)
+  console.log("My access token: ", auth.accessToken)
+  console.log("Expiration date: ", auth.expires)
   ```
 
 ### Provisioning application
@@ -463,15 +521,15 @@ Provisioning applications use the [client credentials](https://docs.commercelaye
 2. Use this code to get the access token:
 
 ```ts
-import { authenticate } from '@commercelayer/js-auth'
+import { authenticate } from "@commercelayer/js-auth"
 
-const auth = await authenticate('client_credentials', {
-  clientId: 'your-client-id',
-  clientSecret: 'your-client-secret'
+const auth = await authenticate("client_credentials", {
+  clientId: "<your_client_id>",
+  clientSecret: "<your_client_secret>"
 })
 
-console.log('My access token: ', auth.accessToken)
-console.log('Expiration date: ', auth.expires)
+console.log("My access token: ", auth.accessToken)
+console.log("Expiration date: ", auth.expires)
 ```
 
 ### Client credentials flow
@@ -484,29 +542,29 @@ For advanced use cases where you need direct control over token management, you 
 Sales channel applications use the [client credentials](https://docs.commercelayer.io/developers/authentication/client-credentials) grant type to get a "guest" access token.
 
 ```ts
-import { authenticate } from '@commercelayer/js-auth'
+import { authenticate } from "@commercelayer/js-auth"
 
-const auth = await authenticate('client_credentials', {
-  clientId: 'your-client-id',
-  scope: 'market:code:europe'
+const auth = await authenticate("client_credentials", {
+  clientId: "<your_client_id>",
+  scope: "market:code:europe"
 })
 
-console.log('My access token: ', auth.accessToken)
-console.log('Expiration date: ', auth.expires)
+console.log("My access token: ", auth.accessToken)
+console.log("Expiration date: ", auth.expires)
 ```
 
 Integration applications use the [client credentials](https://docs.commercelayer.io/developers/authentication/client-credentials) grant type to get an access token for themselves.
 
 ```ts
-import { authenticate } from '@commercelayer/js-auth'
+import { authenticate } from "@commercelayer/js-auth"
 
-const auth = await authenticate('client_credentials', {
-  clientId: 'your-client-id',
-  clientSecret: 'your-client-secret',
+const auth = await authenticate("client_credentials", {
+  clientId: "<your_client_id>",
+  clientSecret: "<your_client_secret>",
 })
 
-console.log('My access token: ', auth.accessToken)
-console.log('Expiration date: ', auth.expires)
+console.log("My access token: ", auth.accessToken)
+console.log("Expiration date: ", auth.expires)
 ```
 
 ## Utilities
@@ -516,12 +574,12 @@ console.log('Expiration date: ', auth.expires)
 Any previously generated access tokens (refresh tokens included) can be [revoked](https://docs.commercelayer.io/core/authentication/revoking-a-token) before their natural expiration date:
 
 ```ts
-import { revoke } from '@commercelayer/js-auth'
+import { revoke } from "@commercelayer/js-auth"
 
 await revoke({
-  clientId: 'your-client-id',
-  clientSecret: 'your-client-secret',
-  token: 'a-generated-access-token'
+  clientId: "<your_client_id>",
+  clientSecret: "<your_client_secret>",
+  token: "<a_generated_access_token>"
 })
 ```
 
@@ -533,17 +591,17 @@ We offer a helper method to decode an access token. The return is fully typed.
 > You should not use this for untrusted messages, since this helper method does not verify whether the signature is valid. If you need to [verify the access token](#verifying-an-access-token) before decoding, you can use `jwtVerify` instead.
 
 ```ts
-import { authenticate, jwtDecode, jwtIsSalesChannel } from '@commercelayer/js-auth'
+import { authenticate, jwtDecode, jwtIsSalesChannel } from "@commercelayer/js-auth"
 
-const auth = await authenticate('client_credentials', {
-  clientId: 'your-client-id',
-  scope: 'market:code:europe'
+const auth = await authenticate("client_credentials", {
+  clientId: "<your_client_id>",
+  scope: "market:code:europe"
 })
 
 const decodedJWT = jwtDecode(auth.accessToken)
 
 if (jwtIsSalesChannel(decodedJWT.payload)) {
-  console.log('organization slug is', decodedJWT.payload.organization.slug)
+  console.log("organization slug is", decodedJWT.payload.organization.slug)
 }
 ```
 
@@ -559,11 +617,11 @@ This is useful to ensure that the token hasn't been tampered with and originates
 The return is fully typed:
 
 ```ts
-import { authenticate, jwtVerify, jwtIsSalesChannel } from '@commercelayer/js-auth'
+import { authenticate, jwtVerify, jwtIsSalesChannel } from "@commercelayer/js-auth"
 
-const auth = await authenticate('client_credentials', {
-  clientId: 'your-client-id',
-  scope: 'market:code:europe'
+const auth = await authenticate("client_credentials", {
+  clientId: "<your_client_id>",
+  scope: "market:code:europe"
 })
 
 const decodedJWT = await jwtVerify(auth.accessToken, {
@@ -571,7 +629,7 @@ const decodedJWT = await jwtVerify(auth.accessToken, {
 })
 
 if (jwtIsSalesChannel(decodedJWT.payload)) {
-  console.log('organization slug is', decodedJWT.payload.organization.slug)
+  console.log("organization slug is", decodedJWT.payload.organization.slug)
 }
 ```
 
@@ -580,9 +638,9 @@ if (jwtIsSalesChannel(decodedJWT.payload)) {
 Derive the [Core API base endpoint](https://docs.commercelayer.io/core/api-specification#base-endpoint) given a valid access token.
 
 ```ts
-import { getCoreApiBaseEndpoint } from '@commercelayer/js-auth'
+import { getCoreApiBaseEndpoint } from "@commercelayer/js-auth"
 
-getCoreApiBaseEndpoint('a-valid-access-token') //= "https://yourdomain.commercelayer.io"
+getCoreApiBaseEndpoint("<a_valid_access_token>") //= "https://yourdomain.commercelayer.io"
 ```
 
 The method requires a valid access token with an `organization` in the payload. When the organization is not set (e.g., provisioning token), it throws an `InvalidTokenError` exception.
@@ -592,9 +650,9 @@ The method requires a valid access token with an `organization` in the payload. 
 It returns the [Provisioning API base endpoint](https://docs.commercelayer.io/provisioning/getting-started/api-specification#base-endpoint) given a valid access token.
 
 ```ts
-import { getProvisioningApiBaseEndpoint } from '@commercelayer/js-auth'
+import { getProvisioningApiBaseEndpoint } from "@commercelayer/js-auth"
 
-getProvisioningApiBaseEndpoint('a-valid-access-token') //= "https://provisioning.commercelayer.io"
+getProvisioningApiBaseEndpoint("<a_valid_access_token>") //= "https://provisioning.commercelayer.io"
 ```
 
 The method requires a valid access token (the token can be used with Provisioning API). When the token is not valid (e.g., core api token), it throws an `InvalidTokenError` exception.
