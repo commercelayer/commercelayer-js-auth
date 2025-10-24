@@ -10,6 +10,8 @@
     "../../packages/*"
   ],
   "dependencies": {
-    "@commercelayer/js-auth": "workspace:*"
+    "@commercelayer/js-auth": "workspace:*",
+    "unstorage": "^1.17.1",
+    "ioredis": "^5.8.2"
   }
 }

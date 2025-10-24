@@ -93,9 +93,9 @@ export function makeSalesChannel(
   /**
    * Get the current sales channel authorization.
    *
-   * This will return the authorization from memory or storage.
+   * This will return the authorization from the configured storage.
    * If the authorization is not found or expired, it will fetch a new one.
-   * IF the customer is logged in with a `refreshToken`, it will also attempt to refresh the token when expired.
+   * If the customer is logged in with a `refreshToken`, it will also attempt to refresh the token when expired.
    */
   getAuthorization: ReturnType<typeof makeAuth>["getAuthorization"]
   /**

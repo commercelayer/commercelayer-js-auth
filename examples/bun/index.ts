@@ -1,7 +1,7 @@
 import {
   type AuthenticateOptions,
-  type GrantType,
   authenticate,
+  type GrantType,
   getCoreApiBaseEndpoint,
   jwtVerify,
 } from "@commercelayer/js-auth"
