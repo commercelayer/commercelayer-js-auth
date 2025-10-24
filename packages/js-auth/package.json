@@ -50,8 +50,8 @@
     "@types/node": "^20",
     "jsonwebtoken": "^9.0.2",
     "tsup": "^8.5.0",
-    "typescript": "^5.9.2",
-    "vitest": "^3.2.4",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.3",
     "vitest-fetch-mock": "^0.4.5"
   },
   "engines": {
