@@ -12,10 +12,10 @@
     "@commercelayer/js-auth": "workspace:*"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.9.2",
-    "@cloudflare/workers-types": "^4.20250918.0",
-    "typescript": "^5.9.2",
-    "vitest": "3.2.4",
-    "wrangler": "^4.37.1"
+    "@cloudflare/vitest-pool-workers": "^0.10.0",
+    "@cloudflare/workers-types": "^4.20251014.0",
+    "typescript": "^5.9.3",
+    "vitest": "4.0.3",
+    "wrangler": "^4.45.0"
   }
 }

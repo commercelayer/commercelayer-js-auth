@@ -11,11 +11,11 @@
   "dependencies": {
     "@commercelayer/js-auth": "workspace:*",
     "@types/js-cookie": "^3.0.6",
-    "ioredis": "^5.6.1",
+    "ioredis": "^5.8.2",
     "js-cookie": "^3.0.5",
     "react": "^19",
     "react-dom": "^19",
-    "next": "15.5.3",
+    "next": "16.0.0",
     "unstorage": "^1.17.1"
   },
   "devDependencies": {
