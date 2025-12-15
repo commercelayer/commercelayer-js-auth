@@ -15,8 +15,8 @@
     "js-cookie": "^3.0.5",
     "react": "^19",
     "react-dom": "^19",
-    "next": "16.0.0",
-    "unstorage": "^1.17.1"
+    "next": "16.0.10",
+    "unstorage": "^1.17.3"
   },
   "devDependencies": {
     "typescript": "^5",

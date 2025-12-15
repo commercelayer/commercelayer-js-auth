@@ -48,10 +48,10 @@
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20",
-    "jsonwebtoken": "^9.0.2",
-    "tsup": "^8.5.0",
+    "jsonwebtoken": "^9.0.3",
+    "tsup": "^8.5.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.3",
+    "vitest": "^4.0.15",
     "vitest-fetch-mock": "^0.4.5"
   },
   "engines": {
