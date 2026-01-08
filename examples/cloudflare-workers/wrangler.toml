@@ -1,6 +1,6 @@
 name = "commercelayer-js-auth"
 main = "src/index.ts"
-compatibility_date = "2024-03-14"
+compatibility_date = "2025-08-07"
 compatibility_flags = ["nodejs_compat"]
 
 # Variable bindings. These are arbitrary, plaintext strings (similar to environment variables)

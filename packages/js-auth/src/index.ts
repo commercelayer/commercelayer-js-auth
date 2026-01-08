@@ -13,6 +13,7 @@ export { TokenExpiredError } from "./errors/TokenExpiredError.js"
 export { getCoreApiBaseEndpoint } from "./getCoreApiBaseEndpoint.js"
 export { getProvisioningApiBaseEndpoint } from "./getProvisioningApiBaseEndpoint.js"
 export {
+  type CommerceLayerJWT,
   type JWTDashboard,
   type JWTIntegration,
   type JWTSalesChannel,
