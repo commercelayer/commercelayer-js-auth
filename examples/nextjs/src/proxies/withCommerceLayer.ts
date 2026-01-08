@@ -8,16 +8,16 @@ import { NextResponse } from 'next/server'
 import { createStorage } from "unstorage"
 import memoryDriver from "unstorage/drivers/memory"
 import { makeCustomerStorage } from "@/app/utils/customerStorage"
-import type { WithMiddleware } from "./types"
+import type { WithProxy } from "./types"
 
 const clientId = process.env.NEXT_PUBLIC_CLIENT_ID as string
 const scope = process.env.NEXT_PUBLIC_SCOPE as string
 
-export const withCommerceLayer: WithMiddleware = (
+export const withCommerceLayer: WithProxy = (
   _next = () => NextResponse.next(),
 ) => {
   return async (request, _event) => {
-    if (request.nextUrl.pathname.endsWith("/middleware")) {
+    if (request.nextUrl.pathname.endsWith("/proxy")) {
       const auth = await authenticate("client_credentials", {
         clientId,
         scope,
@@ -30,7 +30,7 @@ export const withCommerceLayer: WithMiddleware = (
       }
 
       return NextResponse.json({
-        from: "middleware",
+        from: "proxy",
         orgSlug: decodedJWT.payload.organization.slug,
         baseEndpoint: getCoreApiBaseEndpoint(auth.accessToken),
       })

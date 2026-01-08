@@ -1,4 +1,4 @@
-import { withCommerceLayer } from './middlewares/withCommerceLayer'
+import { withCommerceLayer } from './proxies/withCommerceLayer'
 
 export default withCommerceLayer()
 

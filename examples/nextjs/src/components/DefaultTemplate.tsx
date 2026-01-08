@@ -1,4 +1,4 @@
-import Image from "next/image"
+
 import styles from "./DefaultTemplate.module.css"
 
 export default function DefaultTemplate({
@@ -9,23 +9,23 @@ export default function DefaultTemplate({
     <main className={styles.main}>
       <div className={styles.description}>
         <p>{title}</p>
-        <a href='/'>Back to home</a>
+        <a href="/">Back to home</a>
       </div>
 
       <div className={styles.center}>{children}</div>
 
       <div className={styles.grid}>
         <a
-          href="/middleware"
+          href="/proxy"
           className={styles.card}
           target="_blank"
           rel="noopener noreferrer"
         >
           <h2>
-            Middleware <span>-&gt;</span>
+            Proxy <span>-&gt;</span>
           </h2>
           <p>
-            <code>auth.js</code> within a middleware.
+            <code>auth.js</code> within a proxy.
           </p>
         </a>
 

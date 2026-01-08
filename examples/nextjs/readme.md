@@ -17,7 +17,7 @@ This example aims to test the `js-auth` library on Vercel and Netlify edges.
 ### Test link
 
 - https://commercelayer-js-auth-nextjs.vercel.app/
-- https://commercelayer-js-auth-nextjs.vercel.app/middleware
+- https://commercelayer-js-auth-nextjs.vercel.app/proxy
 - https://commercelayer-js-auth-nextjs.vercel.app/api/test
 
 ## Netlify
@@ -34,5 +34,5 @@ This example aims to test the `js-auth` library on Vercel and Netlify edges.
 ### Test link
 
 - https://commercelayer-js-auth-nextjs.netlify.app/
-- https://commercelayer-js-auth-nextjs.netlify.app/middleware
+- https://commercelayer-js-auth-nextjs.netlify.app/proxy
 - https://commercelayer-js-auth-nextjs.netlify.app/api/test
