@@ -424,10 +424,12 @@ const redisStorage = createStorage({
   }),
 })
 
-const compositeStorage = createCompositeStorage([
-  memoryStorage,
-  redisStorage,
-])
+const compositeStorage = createCompositeStorage({
+  storages: [
+    memoryStorage,
+    redisStorage,
+  ]
+})
 
 const integration = makeIntegration(
   {

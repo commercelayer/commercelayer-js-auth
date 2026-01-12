@@ -27,7 +27,10 @@ describe("API Credentials", () => {
           domain,
         },
         {
-          storage: createCompositeStorage([makeMockedStorage(), storage]),
+          storage: createCompositeStorage({
+            storages: [makeMockedStorage(), storage],
+            name: "composite-storage",
+          }),
         },
       )
 
@@ -97,7 +100,10 @@ describe("API Credentials", () => {
           domain,
         },
         {
-          storage: createCompositeStorage([makeMockedStorage(), storage]),
+          storage: createCompositeStorage({
+            storages: [makeMockedStorage(), storage],
+            name: "composite-storage",
+          }),
         },
       )
 
@@ -206,7 +212,10 @@ describe("API Credentials", () => {
           domain,
         },
         {
-          storage: createCompositeStorage([makeMockedStorage(), storage]),
+          storage: createCompositeStorage({
+            storages: [makeMockedStorage(), storage],
+            name: "composite-storage",
+          }),
         },
       )
 

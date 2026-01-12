@@ -20,9 +20,40 @@ type MakeAuthReturn = {
   ) => Promise<void>
 }
 
+function enhanceStorage<
+  Storage extends StoreOptions["storage"] | StoreOptions["customerStorage"],
+>(storage?: Storage): Storage {
+  if (storage === undefined) {
+    return storage as Storage
+  }
+
+  const originalGetItem = storage.getItem.bind(storage)
+
+  return {
+    ...storage,
+    async getItem(key: string) {
+      const value = await originalGetItem(key)
+      return value != null
+        ? {
+            ...value,
+            storageName: value.storageName ?? storage.name,
+          }
+        : null
+    },
+  }
+}
+
+function enhanceStoreOptions(store: StoreOptions): StoreOptions {
+  return {
+    ...store,
+    storage: enhanceStorage(store.storage),
+    customerStorage: enhanceStorage(store.customerStorage),
+  }
+}
+
 export function makeAuth(
   options: AuthOptions,
-  store: StoreOptions,
+  _store: StoreOptions,
   {
     logPrefix,
     guestOnly = false,
@@ -44,10 +75,16 @@ export function makeAuth(
     scope: options.scope ?? "market:all",
   }
 
-  function log(message: string, ...args: unknown[]) {
+  const store = enhanceStoreOptions(_store)
+
+  function log(
+    storageName: string | undefined,
+    message: string,
+    ...args: unknown[]
+  ) {
     if (authOptions.debug === true) {
       console.log(
-        `[CommerceLayer • auth.js] [${logPrefix}] ${message}`,
+        `[CommerceLayer • auth.js] [${logPrefix}]${storageName != null ? ` [${storageName}]` : ""} ${message}`,
         ...args,
       )
     }
@@ -86,23 +123,29 @@ export function makeAuth(
           "customer",
         )
 
-        log("Checking for customer key:", customerKey)
+        const storage = store.customerStorage ?? store.storage
 
-        const customerAuthorization = toAuthorization(
-          await (store.customerStorage ?? store.storage).getItem(customerKey),
-        )
+        log(storage.name, "Checking for customer key:", customerKey)
+
+        const storedValue = await storage.getItem(customerKey)
+        const customerAuthorization = toAuthorization(storedValue)
 
         if (customerAuthorization?.ownerType === "customer") {
           if (customerAuthorization.expiresIn >= expirationThreshold) {
             log(
-              "Found customer authorization in storage",
+              storedValue?.storageName,
+              'Found "customer" authorization in storage',
               customerAuthorization,
             )
 
             return customerAuthorization
           }
 
-          log("Customer authorization expired", customerAuthorization)
+          log(
+            storedValue?.storageName,
+            "Customer authorization expired",
+            customerAuthorization,
+          )
 
           if (customerAuthorization.refreshToken != null) {
             const refreshTokenResponse = await authenticate("refresh_token", {
@@ -116,7 +159,11 @@ export function makeAuth(
               refreshToken: refreshTokenResponse.refreshToken,
             })
 
-            log("Refreshed customer authorization", authorization)
+            log(
+              storedValue?.storageName,
+              "Refreshed customer authorization",
+              authorization,
+            )
 
             return authorization
           }
@@ -132,24 +179,32 @@ export function makeAuth(
         "guest",
       )
 
-      log("Checking for guest key:", guestKey)
+      const storage = store.storage
 
-      const guestAuthorization = toAuthorization(
-        await store.storage.getItem(guestKey),
-      )
+      log(storage.name, "Checking for guest key:", guestKey)
+
+      const storedValue = await storage.getItem(guestKey)
+      const guestAuthorization = toAuthorization(storedValue)
 
       if (
         guestAuthorization?.ownerType === "guest" &&
         guestAuthorization.expiresIn >= expirationThreshold
       ) {
-        log("Found guest authorization in storage", guestAuthorization)
+        log(
+          storedValue?.storageName,
+          'Found "guest" authorization in storage',
+          guestAuthorization,
+        )
 
         return guestAuthorization
       }
 
       // requesting a new token
 
-      log("No valid authorization found, requesting a new guest token")
+      log(
+        storage.name,
+        "No valid authorization found, requesting a new guest token",
+      )
 
       // create `guest` authorization
       const clientCredentialsResponse = await authenticate(
@@ -164,7 +219,7 @@ export function makeAuth(
 
       return authorization
     } catch (error) {
-      log("Error getting the authorization.", error)
+      log(undefined, "Error getting the authorization.", error)
       throw error
     }
   }
@@ -186,12 +241,24 @@ export function makeAuth(
           : undefined,
     }
 
-    await (authorization.ownerType === "customer"
-      ? (store.customerStorage ?? store.storage)
-      : store.storage
-    ).setItem(key, value)
+    const storage =
+      authorization.ownerType === "customer"
+        ? (store.customerStorage ?? store.storage)
+        : store.storage
 
-    log("Stored authorization in storage", authorization)
+    log(
+      storage.name,
+      `Storing "${authorization.ownerType}" authorization with key:`,
+      key,
+    )
+
+    await storage.setItem(key, value)
+
+    log(
+      storage.name,
+      `Stored "${authorization.ownerType}" authorization to storage`,
+      authorization,
+    )
 
     return authorization
   }
@@ -204,12 +271,14 @@ export function makeAuth(
       type,
     )
 
-    await (type === "customer"
-      ? (store.customerStorage ?? store.storage)
-      : store.storage
-    ).removeItem(key)
+    const storage =
+      type === "customer"
+        ? (store.customerStorage ?? store.storage)
+        : store.storage
 
-    log(`Removed "${type}" authorization from storage`, key)
+    await storage.removeItem(key)
+
+    log(storage.name, `Removed "${type}" authorization with key:`, key)
   }
 
   return {

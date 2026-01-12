@@ -3,6 +3,7 @@ import { cookies } from "next/headers"
 
 export function makeCustomerStorage(): Storage {
   return {
+    name: "headerCookies",
     getItem: async (key) => {
       "use server"
       const cookieStore = await cookies()
