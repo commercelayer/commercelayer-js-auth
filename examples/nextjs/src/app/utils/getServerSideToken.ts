@@ -1,11 +1,8 @@
-
 import {
   createCompositeStorage,
   makeSalesChannel,
 } from "@commercelayer/js-auth"
-import { createStorage } from "unstorage"
-import memoryDriver from "unstorage/drivers/memory"
-import redisDriver from "unstorage/drivers/redis"
+import { createStorage, memoryDriver, redisDriver } from "@/app/utils/unstorage"
 import { makeCustomerStorage } from "./customerStorage"
 
 const clientId = process.env.NEXT_PUBLIC_CLIENT_ID as string
@@ -18,16 +15,21 @@ const salesChannel = makeSalesChannel(
     debug: true,
   },
   {
-    storage: createCompositeStorage([
-      createStorage({
-        driver: memoryDriver(),
-      }),
-      createStorage({
-        driver: redisDriver({
-          url: process.env.REDIS_URL,
+    storage: createCompositeStorage({
+      name: "serverCompositeStorage",
+      storages: [
+        createStorage({
+          name: "memory-cache",
+          driver: memoryDriver(),
         }),
-      }),
-    ]),
+        createStorage({
+          name: "redis-persistent",
+          driver: redisDriver({
+            url: process.env.REDIS_URL,
+          }),
+        }),
+      ],
+    }),
     customerStorage: makeCustomerStorage(),
   },
 )

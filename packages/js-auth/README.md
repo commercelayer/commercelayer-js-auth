@@ -13,6 +13,8 @@ It works everywhere — on your browser, server, or at the edge.
 - [Getting started](#getting-started)
 - [API credentials](#api-credentials)
   - [Storage strategy](#storage-strategy)
+    - [Debugging and storage names](#debugging-and-storage-names)
+    - [Using unstorage](#using-unstorage)
   - [Sales channel](#sales-channel)
     - [Password-based customer authentication](#password-based-customer-authentication)
     - [JWT bearer authentication](#jwt-bearer-authentication)
@@ -154,17 +156,18 @@ import {
  * A valid storage must implement the `Storage` interface
  */
 function memoryStorage(): Storage {
-  const store: Record<string, StorageValue> = {}
+  const store = new Map<string, StorageValue>()
   return {
+    name: "in-memory",
     async getItem(key) {
-      return store[key] ?? null
+      return store.get(key) ?? null
     },
     async setItem(key: string, value: StorageValue) {
-      store[key] = value
+      store.set(key, value)
     },
     async removeItem(key: string) {
-      delete store[key]
-    }
+      store.delete(key)
+    },
   }
 }
 
@@ -241,6 +244,66 @@ flowchart TB
   class RefreshToken,StoreCustomerTokenInMemory,CreateNewGuest,StoreNewToken,StoreNewGuestToken process;
   class ReturnCustomerToken,ReturnGuestToken endState;
 ```
+
+#### Debugging and storage names
+
+You can enable debugging and assign custom names to your storage instances for better visibility into token operations:
+
+- **`debug`** — When set to `true`, logs detailed information about token operations (creation, retrieval, refresh, etc.).
+- **`name`** — A custom identifier for your storage instance, useful when using multiple storages or composite storage configurations. The `name` is an attribute of the storage itself (as shown in the [`memoryStorage` example above](#storage-strategy)).
+
+```diff
+ const salesChannel = makeSalesChannel(
+   {
+     clientId: "<your_client_id>",
+     scope: "market:code:europe",
++    debug: true,
+   },
+   {
+     storage: {
++      name: "storage-name",
+       async getItem(key) {
+         // implementation
+       },
+       // ...
+     }
+   },
+ )
+```
+
+#### Using unstorage
+
+The `Storage` interface is fully compatible with the [`unstorage`](https://unstorage.unjs.io) library. However, `unstorage` doesn't include a `name` property by default. To enable debugging and identify which storage is being used in your logs, wrap `createStorage` with this helper:
+
+```ts
+import type { Storage } from "@commercelayer/js-auth"
+import type { CreateStorageOptions } from "unstorage"
+import { createStorage as unstorageCreateStorage } from "unstorage"
+
+// Helper to create storage with explicit naming support
+function createStorage(
+  options: CreateStorageOptions & { name?: string },
+): Storage {
+  return {
+    name: options.name ?? options.driver?.name,
+    ...unstorageCreateStorage(options),
+  }
+}
+```
+
+```ts
+// Usage example
+import redisDriver from "unstorage/drivers/redis"
+
+const redisStorage = createStorage({
+  name: "redis-persistent",
+  driver: redisDriver({
+    url: "<your_redis_connection_string>",
+  }),
+})
+```
+
+When debugging is enabled, logs will include the storage name, making it easier to trace which storage layer is handling each operation.
 
 ### Sales channel
 
@@ -424,10 +487,13 @@ const redisStorage = createStorage({
   }),
 })
 
-const compositeStorage = createCompositeStorage([
-  memoryStorage,
-  redisStorage,
-])
+const compositeStorage = createCompositeStorage({
+  name: "composite-storage",
+  storages: [
+    memoryStorage,
+    redisStorage,
+  ]
+})
 
 const integration = makeIntegration(
   {

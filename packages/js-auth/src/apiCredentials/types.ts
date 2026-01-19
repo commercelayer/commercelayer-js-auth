@@ -31,6 +31,17 @@ export type SetRequired<T, K extends keyof T> = Omit<T, K> &
 export type AuthOptions = AuthenticateOptions<"client_credentials"> & {
   /**
    * Whether to enable debug mode.
+   *
+   * ⚠️ **WARNING**: When enabled, full authorization objects (including access tokens
+   * and refresh tokens) will be logged to the console. This is intended for local
+   * development only.
+   *
+   * **Security considerations**:
+   * - Tokens will be visible in browser DevTools or terminal output
+   * - In serverless/edge environments (Cloudflare Workers, Vercel Functions), logs may be
+   *   forwarded to external log aggregation services (e.g., Datadog, Sentry, Cloudflare Analytics)
+   * - Avoid enabling debug mode in production or shared environments
+   *
    * @default false
    */
   debug?: boolean

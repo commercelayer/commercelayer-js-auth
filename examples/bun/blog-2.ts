@@ -1,21 +1,37 @@
+import type { Storage } from "@commercelayer/js-auth"
 import { createCompositeStorage, makeIntegration } from "@commercelayer/js-auth"
-
+import type { CreateStorageOptions } from "unstorage"
 // The `Storage` interface is fully-compatible with the `unstorage` library.
-import { createStorage } from "unstorage"
+import { createStorage as unstorageCreateStorage } from "unstorage"
 import memoryDriver from "unstorage/drivers/memory"
 import redisDriver from "unstorage/drivers/redis"
 
+// Helper to create storage with explicit naming support
+function createStorage(
+  options: CreateStorageOptions & { name?: string },
+): Storage {
+  return {
+    name: options.name ?? options.driver?.name,
+    ...unstorageCreateStorage(options),
+  }
+}
+
 const memoryStorage = createStorage({
+  name: "memory-cache",
   driver: memoryDriver(),
 })
 
 const redisStorage = createStorage({
+  name: "redis-persistent",
   driver: redisDriver({
     url: "<your_redis_connection_string>",
   }),
 })
 
-const compositeStorage = createCompositeStorage([memoryStorage, redisStorage])
+const compositeStorage = createCompositeStorage({
+  name: "composite-storage",
+  storages: [memoryStorage, redisStorage],
+})
 
 const integration = makeIntegration(
   {

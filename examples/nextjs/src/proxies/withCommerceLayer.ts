@@ -4,10 +4,9 @@ import {
   jwtVerify,
   makeSalesChannel,
 } from "@commercelayer/js-auth"
-import { NextResponse } from 'next/server'
-import { createStorage } from "unstorage"
-import memoryDriver from "unstorage/drivers/memory"
+import { NextResponse } from "next/server"
 import { makeCustomerStorage } from "@/app/utils/customerStorage"
+import { createStorage, memoryDriver } from "@/app/utils/unstorage"
 import type { WithProxy } from "./types"
 
 const clientId = process.env.NEXT_PUBLIC_CLIENT_ID as string

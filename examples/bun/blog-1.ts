@@ -9,16 +9,17 @@ import {
  * A valid storage must implement the `Storage` interface
  */
 function memoryStorage(): Storage {
-  const store: Record<string, StorageValue> = {}
+  const store = new Map<string, StorageValue>()
   return {
+    name: "in-memory",
     async getItem(key) {
-      return store[key] ?? null
+      return store.get(key) ?? null
     },
     async setItem(key: string, value: StorageValue) {
-      store[key] = value
+      store.set(key, value)
     },
     async removeItem(key: string) {
-      delete store[key]
+      store.delete(key)
     },
   }
 }

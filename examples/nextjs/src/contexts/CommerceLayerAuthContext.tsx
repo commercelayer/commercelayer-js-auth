@@ -1,17 +1,20 @@
 "use client"
 
-import { type ApiCredentialsAuthorization, type AuthenticateReturn, authenticate, makeSalesChannel } from "@commercelayer/js-auth"
+import {
+  type AuthenticateReturn,
+  authenticate,
+  makeSalesChannel,
+} from "@commercelayer/js-auth"
 import cookies from 'js-cookie'
 import {
-  type ReactNode,
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useState,
 } from "react"
-import { createStorage } from "unstorage"
-import localStorageDriver from "unstorage/drivers/localstorage"
+import { createStorage, localstorageDriver } from "@/app/utils/unstorage"
 
 const clientId = process.env.NEXT_PUBLIC_CLIENT_ID as string
 
@@ -59,15 +62,15 @@ export function CommerceLayerAuthProvider({
         },
         {
           storage: createStorage({
-            driver: localStorageDriver({}),
+            driver: localstorageDriver({}),
           }),
           customerStorage: {
+            name: "browserCookies",
             getItem: async (key) => {
               const value = cookies.get(key)
               return value ? JSON.parse(value) : null
             },
             setItem: async (key, value) => {
-              console.log("Setting item in cookies:", key, value)
               cookies.set(key, JSON.stringify(value), { secure: true })
             },
             removeItem: async (key) => {
