@@ -167,6 +167,19 @@ export function makeAuth(
 
             return authorization
           }
+
+          log(
+            storedValue?.storageName,
+            "Customer authorization expired and has no refresh token, removing stale authorization",
+          )
+
+          await storage.removeItem(customerKey).catch((error) => {
+            log(
+              storedValue?.storageName,
+              "Unable to remove stale customer authorization",
+              error,
+            )
+          })
         }
       }
 
