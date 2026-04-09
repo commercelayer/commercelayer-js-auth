@@ -199,6 +199,45 @@ describe("API Credentials", () => {
 
       expect(storage.removeItem).toHaveBeenCalledTimes(1)
     })
+
+    it("removes the expired customer auth when there's no refresh token and falls back to guest.", async () => {
+      const customerStorage = makeMockedStorage()
+      const guestStorage = makeMockedStorage()
+
+      const tokenClientId = "client-id"
+      const tokenScope = "market:all"
+      const now = Math.floor(Date.now() / 1000)
+
+      await customerStorage.setItem(
+        `cl_customer-${tokenClientId}-${tokenScope}`,
+        {
+          accessToken: makeToken({
+            iat: now - 200,
+            exp: now - 10,
+            owner: { id: "cust_123", type: "Customer" },
+          }),
+          scope: tokenScope,
+        },
+      )
+
+      await guestStorage.setItem(`cl_guest-${tokenClientId}-${tokenScope}`, {
+        accessToken: makeToken({ iat: now - 200, exp: now + 3600 }),
+        scope: tokenScope,
+      })
+
+      const salesChannel = makeSalesChannel(
+        { clientId: tokenClientId, scope: tokenScope },
+        { storage: guestStorage, customerStorage },
+      )
+
+      const authorization = await salesChannel.getAuthorization()
+
+      expect(authorization.ownerType).toBe("guest")
+      expect(customerStorage.removeItem).toHaveBeenCalledTimes(1)
+      expect(customerStorage.removeItem).toHaveBeenCalledWith(
+        `cl_customer-${tokenClientId}-${tokenScope}`,
+      )
+    })
   })
 
   describe("makeIntegration", () => {
@@ -279,4 +318,15 @@ const makeMockedStorage: () => Storage = () => {
       delete state[key]
     }),
   }
+}
+
+function makeToken(payload: Record<string, unknown>): string {
+  const header = { alg: "HS256", typ: "JWT", kid: "test-key" }
+  const encodedHeader = Buffer.from(JSON.stringify(header), "binary").toString(
+    "base64url",
+  )
+  const encodedPayload = Buffer.from(JSON.stringify(payload), "utf-8").toString(
+    "base64url",
+  )
+  return `${encodedHeader}.${encodedPayload}.signature`
 }
