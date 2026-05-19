@@ -12,10 +12,10 @@
     "@commercelayer/js-auth": "workspace:*",
     "@types/js-cookie": "^3.0.6",
     "ioredis": "^5.10.1",
-    "js-cookie": "^3.0.5",
+    "js-cookie": "^3.0.7",
     "react": "^19",
     "react-dom": "^19",
-    "next": "16.2.3",
+    "next": "16.2.6",
     "unstorage": "^1.17.5"
   },
   "devDependencies": {
