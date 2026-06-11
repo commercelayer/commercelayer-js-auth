@@ -12,10 +12,15 @@ const salesChannel = makeSalesChannel(
   {
     clientId,
     scope,
-    debug: true,
+    debug: {
+      logLevel: "verbose",
+    },
   },
   {
     storage: createCompositeStorage({
+      debug: {
+        logLevel: "verbose",
+      },
       name: "serverCompositeStorage",
       storages: [
         createStorage({
@@ -34,7 +39,9 @@ const salesChannel = makeSalesChannel(
   },
 )
 
-export async function getServerSideAuth(): Promise<ReturnType<typeof makeSalesChannel>> {
+export async function getServerSideAuth(): Promise<
+  ReturnType<typeof makeSalesChannel>
+> {
   "use server"
 
   return {

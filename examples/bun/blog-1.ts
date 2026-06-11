@@ -28,7 +28,7 @@ const salesChannel = makeSalesChannel(
   {
     clientId: "<your_client_id>",
     scope: "<your_scope>",
-    debug: true, // useful to understand what happens behind the scene
+    debug: { logLevel: "info" }, // useful to understand what happens behind the scene
   },
   {
     storage: memoryStorage(),

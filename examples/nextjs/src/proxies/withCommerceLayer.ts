@@ -47,7 +47,9 @@ export const withCommerceLayer: WithProxy = (
         {
           clientId,
           scope,
-          debug: true,
+          debug: {
+            logLevel: "verbose",
+          },
         },
         {
           storage: createStorage({

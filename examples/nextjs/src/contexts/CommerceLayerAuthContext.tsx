@@ -5,7 +5,7 @@ import {
   authenticate,
   makeSalesChannel,
 } from "@commercelayer/js-auth"
-import cookies from 'js-cookie'
+import cookies from "js-cookie"
 import {
   createContext,
   type ReactNode,
@@ -22,11 +22,14 @@ type AuthState = {
   accessToken?: string
   ownerType?: "customer" | "guest"
   ownerId?: string
-  errors?: Extract<AuthenticateReturn<'password'>, { errors?: unknown }>['errors']
+  errors?: Extract<
+    AuthenticateReturn<"password">,
+    { errors?: unknown }
+  >["errors"]
 }
 
 interface CommerceLayerAuthContextType extends AuthState {
-  login: ( email: string, password: string ) => Promise<void>
+  login: (email: string, password: string) => Promise<void>
   logout: () => Promise<void>
 }
 
@@ -46,7 +49,10 @@ export function useCommerceLayerAuth() {
 export function CommerceLayerAuthProvider({
   children,
   scope,
-}: { children: ReactNode; scope: string }) {
+}: {
+  children: ReactNode
+  scope: string
+}) {
   const [salesChannel, setSalesChannel] =
     useState<ReturnType<typeof makeSalesChannel>>()
 
@@ -58,7 +64,9 @@ export function CommerceLayerAuthProvider({
         {
           clientId,
           scope,
-          debug: true,
+          debug: {
+            logLevel: "verbose",
+          },
         },
         {
           storage: createStorage({
@@ -111,7 +119,10 @@ export function CommerceLayerAuthProvider({
       setAuth({
         accessToken: authorization.accessToken,
         ownerType: authorization.ownerType,
-        ownerId: authorization.ownerType === 'customer' ? authorization.ownerId : undefined,
+        ownerId:
+          authorization.ownerType === "customer"
+            ? authorization.ownerId
+            : undefined,
         errors: authorization.errors,
       })
     },
@@ -132,10 +143,7 @@ export function CommerceLayerAuthProvider({
     void salesChannel?.getAuthorization().then((auth) => {
       setAuth({
         ownerType: auth.ownerType,
-        ownerId:
-          auth.ownerType === "customer"
-            ? auth.ownerId
-            : undefined,
+        ownerId: auth.ownerType === "customer" ? auth.ownerId : undefined,
         accessToken: auth.accessToken,
         errors: auth.errors,
       })

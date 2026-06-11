@@ -10,6 +10,7 @@ import type {
   SetRequired,
 } from "./types.js"
 
+export type { DebugConfig } from "./debugLog.js"
 export {
   createCompositeStorage,
   type Storage,
