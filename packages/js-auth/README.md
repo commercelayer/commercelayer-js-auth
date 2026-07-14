@@ -13,11 +13,13 @@ It works everywhere — on your browser, server, or at the edge.
 - [Getting started](#getting-started)
 - [API credentials](#api-credentials)
   - [Storage strategy](#storage-strategy)
+    - [Customer storage](#customer-storage)
     - [Debugging and storage names](#debugging-and-storage-names)
     - [Using unstorage](#using-unstorage)
   - [Sales channel](#sales-channel)
     - [Password-based customer authentication](#password-based-customer-authentication)
     - [JWT bearer authentication](#jwt-bearer-authentication)
+      - [Delegated login from an external identity provider](#delegated-login-from-an-external-identity-provider)
   - [Integration](#integration)
 - [Other flows](#other-flows)
   - [Webapp application with authorization code flow](#webapp-application-with-authorization-code-flow)
@@ -141,7 +143,7 @@ This library provides a robust token caching system out-of-the-box, with support
 
 - **Single storage** — Provides temporary or persistent storage that can survive page reloads. You can implement any storage solution.
 - **Composite storage** — Using the `createCompositeStorage` helper, you can combine multiple storage mechanisms (e.g., memory + Redis) to optimize performance and reduce load on the underlying configured storage.
-- **Customer storage** (*sales channel only*) — Optional dedicated storage for customer authentication tokens, separate from guest tokens.
+- **[Customer storage](#customer-storage)** (*sales channel only*) — Optional dedicated storage for customer authentication tokens, separate from guest tokens.
 
 Here below an example showing a basic setup with an in-memory storage:
 
@@ -246,6 +248,74 @@ flowchart TB
   class RefreshToken,StoreCustomerTokenInMemory,CreateNewGuest,StoreNewToken,StoreNewGuestToken process;
   class ReturnCustomerToken,ReturnGuestToken endState;
 ```
+
+#### Customer storage
+
+Sales channels deal with two kinds of tokens: the **guest** token, which is not tied to any identity and can be safely shared, and the **customer** token, which is personal. The optional `customerStorage` option lets you store customer tokens separately from guest tokens.
+
+By default, authorizations are stored using a key derived from the client ID and scope:
+
+```
+cl_${type}-${clientId}-${scope}
+```
+
+This works out-of-the-box in the browser, where the storage (e.g. `localStorage`) is already scoped to a single visitor.
+
+> [!WARNING]
+> The default key does **not** include any customer identity. If customer tokens are cached in a storage shared by all visitors (e.g. Redis or an in-memory map on the server) under the default key, one customer's token would be served to **every** visitor.
+
+There are two ways to store customer tokens safely on the server:
+
+1. **Use a per-visitor `customerStorage`.** When the customer storage is scoped to the visitor (e.g. cookies), the default key is perfectly fine, because the storage itself belongs to a single visitor. This pairs naturally with server-side rendered storefronts, where a single guest token can be cached server-side and shared by all visitors:
+
+    ```ts
+    const salesChannel = makeSalesChannel(
+      {
+        clientId: "<your_client_id>",
+        scope: "market:code:europe"
+      },
+      {
+        // The guest token carries no identity:
+        // one token, cached server-side, serves all visitors...
+        storage: memoryStorage(),
+        // ...while the customer token is personal
+        // and lives in a per-visitor storage (e.g. cookies).
+        customerStorage: cookieStorageAdapter,
+      },
+    )
+    ```
+
+2. **Use a shared storage with a custom key.** If you'd rather cache customer tokens in a shared server-side storage too (e.g. Redis), provide a custom `getKey` function that includes a customer or session identifier. Since `getKey` receives only the client ID, scope, and authorization type, the request context must be captured via closure. Create the helper per request, while keeping the storage backend shared:
+
+    ```ts
+    import { createCompositeStorage, makeSalesChannel } from "@commercelayer/js-auth"
+
+    // Shared, process-level storage (this is where tokens are actually cached).
+    const sharedStorage = createCompositeStorage({
+      name: "bff",
+      storages: [memoryStorage(), redisStorage],
+    })
+
+    // Per-request helper: creating it is cheap (no network calls, no timers).
+    function salesChannelFor(customerId: string) {
+      return makeSalesChannel(
+        {
+          clientId: "<your_client_id>",
+          scope: "market:code:europe"
+        },
+        {
+          storage: sharedStorage,
+          getKey: async ({ clientId, scope }, type) =>
+            type === "customer"
+              ? `cl_customer-${clientId}-${scope}-${customerId}`
+              : `cl_guest-${clientId}-${scope}`,
+        },
+      )
+    }
+    ```
+
+> [!NOTE]
+> The helpers returned by `makeSalesChannel` and `makeIntegration` are lightweight factories: they hold no token state themselves (tokens live in the configured storage) and perform no I/O at construction time. It's safe to create one per request, as long as the storage backend is shared. The only thing a long-lived instance adds is in-flight deduplication of concurrent `getAuthorization()` calls.
 
 #### Debugging and storage names
 
@@ -394,6 +464,12 @@ console.log("Customer access token:", customerAuthorization.accessToken)
  * This will remove the customer authorization from the storage, and revoke the access token.
  */
 await salesChannel.logoutCustomer()
+
+/**
+ * You can also clear stored authorizations without revoking the tokens,
+ * e.g. to force a fresh authorization on the next `getAuthorization()` call.
+ */
+await salesChannel.removeAuthorization("all") // or "customer" / "guest"
 ```
 
 Customer authentication is supported through two OAuth 2.0 grant types: [password](#password-based-customer-authentication) and [JWT bearer](#jwt-bearer-authentication). Both flows return an `accessToken`, `scope`, and `refreshToken` that can be stored using the `setCustomer` method.
@@ -407,7 +483,7 @@ import { authenticate } from "@commercelayer/js-auth"
 
 const auth = await authenticate("password", {
   clientId: "<your_client_id>",
-  scope: "market:code:europe"
+  scope: "market:code:europe",
   username: "john@example.com",
   password: "secret"
 })
@@ -424,7 +500,7 @@ import { authenticate } from "@commercelayer/js-auth"
 
 const newToken = await authenticate("refresh_token", {
   clientId: "<your_client_id>",
-  scope: "market:code:europe"
+  scope: "market:code:europe",
   refreshToken: "<your_refresh_token>"
 })
 ```
@@ -440,6 +516,8 @@ Commerce Layer supports OAuth 2.0 [JWT Bearer](https://docs.commercelayer.io/cor
 1. Creating a signed JWT assertion containing the customer's claims
 
     ```ts
+    import { createAssertion } from "@commercelayer/js-auth"
+
     const assertion = await createAssertion({
       payload: {
         "https://commercelayer.io/claims": {
@@ -466,7 +544,7 @@ Commerce Layer supports OAuth 2.0 [JWT Bearer](https://docs.commercelayer.io/cor
     const auth = await authenticate("urn:ietf:params:oauth:grant-type:jwt-bearer", {
       clientId: "<your_client_id>",
       clientSecret: "<your_client_secret>",
-      scope: "market:code:europe"
+      scope: "market:code:europe",
       assertion
     })
 
@@ -476,6 +554,51 @@ Commerce Layer supports OAuth 2.0 [JWT Bearer](https://docs.commercelayer.io/cor
     ```
 
 Both sales channels and webapps can use this JWT bearer flow to implement secure delegated authentication.
+
+#### Delegated login from an external identity provider
+
+When customers authenticate through an external identity provider (e.g. Okta, Auth0), your backend can exchange their identity for a Commerce Layer customer token using the JWT bearer flow, and hand it over to the `salesChannel` helper (since this flow runs server-side, see the [Customer storage](#customer-storage) section for a suitable setup):
+
+```ts
+import {
+  authenticate,
+  createAssertion,
+} from "@commercelayer/js-auth"
+
+// 1. Validate the external identity (e.g. verify the IdP-issued JWT)
+//    and resolve it to a Commerce Layer customer ID.
+const customerId = await resolveCustomerId(idpToken)
+
+// 2. Create the signed assertion and exchange it for a customer token.
+//    This step requires the client secret, so it must run server-side.
+const assertion = await createAssertion({
+  payload: {
+    "https://commercelayer.io/claims": {
+      owner: {
+        type: "Customer",
+        id: customerId
+      },
+    },
+  },
+})
+
+const customerCredentials = await authenticate("urn:ietf:params:oauth:grant-type:jwt-bearer", {
+  clientId: "<your_client_id>",
+  clientSecret: "<your_client_secret>",
+  scope: "market:code:europe",
+  assertion,
+})
+
+// 3. Hand the customer token over to the `salesChannel` helper
+//    created with `makeSalesChannel`.
+//    From now on, `getAuthorization()` returns the customer authorization
+//    and refreshes it automatically when it expires.
+await salesChannel.setCustomer({
+  accessToken: customerCredentials.accessToken,
+  scope: customerCredentials.scope,
+  refreshToken: customerCredentials.refreshToken,
+})
+```
 
 ### Integration
 
@@ -744,7 +867,7 @@ The method requires a valid access token (the token can be used with Provisionin
 
 ## Contributors guide
 
-1. Fork [this repository](https://github.com/BolajiAyodeji/commercelayer-js-auth) (learn how to do this [here](https://help.github.com/articles/fork-a-repo)).
+1. Fork [this repository](https://github.com/commercelayer/commercelayer-js-auth) (learn how to do this [here](https://help.github.com/articles/fork-a-repo)).
 
 2. Clone the forked repository like so:
 
