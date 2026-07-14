@@ -56,7 +56,7 @@
     "@types/node": "^20",
     "jsonwebtoken": "^9.0.3",
     "tsdown": "^0.22.7",
-    "typescript": "^5.9.3",
+    "typescript": "^6.0.3",
     "vitest": "^4.1.10",
     "vitest-fetch-mock": "^0.4.5"
   },

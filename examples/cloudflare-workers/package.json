@@ -6,15 +6,17 @@
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",
-    "test": "vitest"
+    "test": "vitest",
+    "generate-types": "wrangler types",
+    "type-check": "generate-types && tsc"
   },
   "dependencies": {
     "@commercelayer/js-auth": "workspace:*"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.18.4",
-    "@cloudflare/workers-types": "^4.20260702.1",
-    "typescript": "^5.9.3",
+  	"@types/node": "^20.19.43",
+    "typescript": "^6.0.3",
     "vitest": "4.1.10",
     "wrangler": "^4.110.0"
   }
