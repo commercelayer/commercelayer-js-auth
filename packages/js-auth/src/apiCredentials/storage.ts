@@ -40,33 +40,13 @@ export function createCompositeStorage(options: {
    * - `"verbose"` — also logs steady-state operations (hits on the first storage and total misses).
    */
   debug?: DebugConfig
-}): Storage
-
-/**
- * Creates a composite storage that combines multiple storages.
- *
- * @deprecated Use `createCompositeStorage` with options object instead.
- */
-export function createCompositeStorage(storages: Storage[]): Storage
-// TODO: remember to remove the deprecated overload in the next major release
-
-export function createCompositeStorage(
-  // TODO: remember to remove the deprecated overload in the next major release
-  storagesOrOptions:
-    | Storage[]
-    | { storages: Storage[]; name?: string; debug?: DebugConfig },
-): Storage {
-  // TODO: remember to remove the deprecated overload in the next major release
-  const options = Array.isArray(storagesOrOptions)
-    ? { storages: storagesOrOptions }
-    : storagesOrOptions
-
+}): Storage {
   const log = createDebugLog({
     debug: options.debug,
     logPrefix: "storage",
   })
 
-  const compositeName = "name" in options ? options.name : undefined
+  const compositeName = options.name
 
   return {
     name: compositeName,
