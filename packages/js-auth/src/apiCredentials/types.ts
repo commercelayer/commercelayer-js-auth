@@ -1,5 +1,6 @@
 import type { TBaseReturn } from "../types/base.js"
 import type { AuthenticateOptions } from "../types/index.js"
+import type { DebugConfig } from "./debugLog.js"
 
 export type ApiCredentialsAuthorization = TBaseReturn &
   (
@@ -32,19 +33,21 @@ export type AuthOptions = AuthenticateOptions<"client_credentials"> & {
   /**
    * Whether to enable debug mode.
    *
-   * ⚠️ **WARNING**: When enabled, full authorization objects (including access tokens
-   * and refresh tokens) will be logged to the console. This is intended for local
-   * development only.
+   * - `true` — shortcut for `{ logLevel: "info" }`: logs meaningful events only
+   *   (cache misses, token refreshes, authorizations stored/removed, errors).
+   *   Tokens are redacted by default.
+   * - `DebugConfig` — fine-grained control:
+   *   - `logLevel: "info"` — meaningful events only.
+   *   - `logLevel: "verbose"` — also logs steady-state operations (every storage read and cache hit).
+   *   - `maskToken` — whether to redact tokens (default `true`). Set to `false` to see
+   *     full tokens, e.g. for inspecting them at [jwt.io](https://jwt.io).
    *
    * **Security considerations**:
-   * - Tokens will be visible in browser DevTools or terminal output
    * - In serverless/edge environments (Cloudflare Workers, Vercel Functions), logs may be
    *   forwarded to external log aggregation services (e.g., Datadog, Sentry, Cloudflare Analytics)
-   * - Avoid enabling debug mode in production or shared environments
-   *
-   * @default false
+   * - Avoid setting `maskToken: false` in production or shared environments
    */
-  debug?: boolean
+  debug?: DebugConfig
 
   // dedupConcurrentCalls?: (
   //   fn: (...args: any[]) => any,

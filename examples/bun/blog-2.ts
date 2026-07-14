@@ -37,7 +37,7 @@ const integration = makeIntegration(
   {
     clientId: "<your_client_id>",
     clientSecret: "<your_client_secret>",
-    debug: true,
+    debug: { logLevel: "info" },
   },
   {
     storage: compositeStorage,

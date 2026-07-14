@@ -1,6 +1,7 @@
 import { authenticate } from "../authenticate.js"
 import { jwtDecode } from "../jwtDecode.js"
 import { hasOwner } from "../utils/hasOwner.js"
+import { createDebugLog } from "./debugLog.js"
 import { dedupConcurrentCalls } from "./dedupConcurrentCalls.js"
 import type { StorageValue, StoreOptions } from "./storage.js"
 import type {
@@ -77,18 +78,10 @@ export function makeAuth(
 
   const store = enhanceStoreOptions(_store)
 
-  function log(
-    storageName: string | undefined,
-    message: string,
-    ...args: unknown[]
-  ) {
-    if (authOptions.debug === true) {
-      console.log(
-        `[CommerceLayer • auth.js] [${logPrefix}]${storageName != null ? ` [${storageName}]` : ""} ${message}`,
-        ...args,
-      )
-    }
-  }
+  const log = createDebugLog({
+    debug: authOptions.debug,
+    logPrefix,
+  })
 
   const getStorageKey =
     store.getKey ??
@@ -125,7 +118,7 @@ export function makeAuth(
 
         const storage = store.customerStorage ?? store.storage
 
-        log(storage.name, "Checking for customer key:", customerKey)
+        log("verbose", storage.name, "Checking for customer key:", customerKey)
 
         const storedValue = await storage.getItem(customerKey)
         const customerAuthorization = toAuthorization(storedValue)
@@ -133,6 +126,7 @@ export function makeAuth(
         if (customerAuthorization?.ownerType === "customer") {
           if (customerAuthorization.expiresIn >= expirationThreshold) {
             log(
+              "verbose",
               storedValue?.storageName,
               'Found "customer" authorization in storage',
               customerAuthorization,
@@ -142,6 +136,7 @@ export function makeAuth(
           }
 
           log(
+            "info",
             storedValue?.storageName,
             "Customer authorization expired",
             customerAuthorization,
@@ -160,6 +155,7 @@ export function makeAuth(
             })
 
             log(
+              "info",
               storedValue?.storageName,
               "Refreshed customer authorization",
               authorization,
@@ -169,12 +165,14 @@ export function makeAuth(
           }
 
           log(
+            "info",
             storedValue?.storageName,
             "Customer authorization expired and has no refresh token, removing stale authorization",
           )
 
           await storage.removeItem(customerKey).catch((error) => {
             log(
+              "info",
               storedValue?.storageName,
               "Unable to remove stale customer authorization",
               error,
@@ -194,7 +192,7 @@ export function makeAuth(
 
       const storage = store.storage
 
-      log(storage.name, "Checking for guest key:", guestKey)
+      log("verbose", storage.name, "Checking for guest key:", guestKey)
 
       const storedValue = await storage.getItem(guestKey)
       const guestAuthorization = toAuthorization(storedValue)
@@ -204,6 +202,7 @@ export function makeAuth(
         guestAuthorization.expiresIn >= expirationThreshold
       ) {
         log(
+          "verbose",
           storedValue?.storageName,
           'Found "guest" authorization in storage',
           guestAuthorization,
@@ -215,6 +214,7 @@ export function makeAuth(
       // requesting a new token
 
       log(
+        "info",
         storage.name,
         "No valid authorization found, requesting a new guest token",
       )
@@ -232,7 +232,7 @@ export function makeAuth(
 
       return authorization
     } catch (error) {
-      log(undefined, "Error getting the authorization.", error)
+      log("info", undefined, "Error getting the authorization.", error)
       throw error
     }
   }
@@ -260,6 +260,7 @@ export function makeAuth(
         : store.storage
 
     log(
+      "verbose",
       storage.name,
       `Storing "${authorization.ownerType}" authorization with key:`,
       key,
@@ -268,6 +269,7 @@ export function makeAuth(
     await storage.setItem(key, value)
 
     log(
+      "info",
       storage.name,
       `Stored "${authorization.ownerType}" authorization to storage`,
       authorization,
@@ -291,7 +293,7 @@ export function makeAuth(
 
     await storage.removeItem(key)
 
-    log(storage.name, `Removed "${type}" authorization with key:`, key)
+    log("info", storage.name, `Removed "${type}" authorization with key:`, key)
   }
 
   return {

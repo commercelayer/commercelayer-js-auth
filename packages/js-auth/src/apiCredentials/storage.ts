@@ -1,4 +1,5 @@
 import type { AuthenticateReturn } from "../types/index.js"
+import { createDebugLog, type DebugConfig } from "./debugLog.js"
 import type { ApiCredentialsAuthorization } from "./types.js"
 
 /**
@@ -14,7 +15,7 @@ import type { ApiCredentialsAuthorization } from "./types.js"
  *
  * When setting or removing an item, the operation is performed on all configured storages to ensure consistency.
  *
- * @param options - An object containing an array of storage instances to combine and optionally a name.
+ * @param options - An object containing an array of storage instances to combine and optionally a name and a debug option.
  * @returns A composite storage instance.
  *
  * @example
@@ -31,6 +32,14 @@ import type { ApiCredentialsAuthorization } from "./types.js"
 export function createCompositeStorage(options: {
   storages: Storage[]
   name?: string
+  /**
+   * Whether to enable debug mode.
+   *
+   * - `"info"` — logs meaningful events only: a value found in a fallback
+   *   storage (i.e. a cache miss on the faster storages, with backfill).
+   * - `"verbose"` — also logs steady-state operations (hits on the first storage and total misses).
+   */
+  debug?: DebugConfig
 }): Storage
 
 /**
@@ -43,26 +52,48 @@ export function createCompositeStorage(storages: Storage[]): Storage
 
 export function createCompositeStorage(
   // TODO: remember to remove the deprecated overload in the next major release
-  storagesOrOptions: Storage[] | { storages: Storage[]; name?: string },
+  storagesOrOptions:
+    | Storage[]
+    | { storages: Storage[]; name?: string; debug?: DebugConfig },
 ): Storage {
   // TODO: remember to remove the deprecated overload in the next major release
   const options = Array.isArray(storagesOrOptions)
     ? { storages: storagesOrOptions }
     : storagesOrOptions
 
+  const log = createDebugLog({
+    debug: options.debug,
+    logPrefix: "storage",
+  })
+
+  const compositeName = "name" in options ? options.name : undefined
+
   return {
-    name: options.name,
+    name: compositeName,
 
     async getItem(key: string) {
-      for (const storage of options.storages) {
+      for (const [index, storage] of options.storages.entries()) {
         const value = await storage.getItem(key)
 
         if (value !== null) {
-          for (const previousStorage of options.storages.slice(
-            0,
-            options.storages.indexOf(storage),
-          )) {
-            await previousStorage.setItem(key, value)
+          if (index > 0) {
+            const missedStorages = options.storages.slice(0, index)
+
+            log(
+              "info",
+              compositeName,
+              `Value for key "${key}" found in fallback storage "${storage.name ?? `#${index}`}" after missing in [${missedStorages.map((missed, missedIndex) => missed.name ?? `#${missedIndex}`).join(", ")}], backfilling faster storages`,
+            )
+
+            for (const previousStorage of missedStorages) {
+              await previousStorage.setItem(key, value)
+            }
+          } else {
+            log(
+              "verbose",
+              compositeName,
+              `Value for key "${key}" found in storage "${storage.name ?? `#${index}`}"`,
+            )
           }
 
           return {
@@ -71,6 +102,13 @@ export function createCompositeStorage(
           }
         }
       }
+
+      log(
+        "verbose",
+        compositeName,
+        `Value for key "${key}" not found in any storage`,
+      )
+
       return null
     },
 

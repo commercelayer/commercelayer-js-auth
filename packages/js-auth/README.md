@@ -175,7 +175,9 @@ const salesChannel = makeSalesChannel(
   {
     clientId: "<your_client_id>",
     scope: "market:code:europe",
-    debug: true,
+    debug: {
+      logLevel: "info"
+    },
   },
   {
     storage: memoryStorage(),
@@ -249,19 +251,32 @@ flowchart TB
 
 You can enable debugging and assign custom names to your storage instances for better visibility into token operations:
 
-- **`debug`** — When set to `true`, logs detailed information about token operations (creation, retrieval, refresh, etc.).
+- **`debug`** — Accepts a `DebugConfig` object with two options:
+  - `logLevel: "info"` — logs meaningful events only: cache misses, token refreshes, authorizations stored/removed, and errors. Routine cache hits are silent, so setups that call `getAuthorization()` on every API request don't flood the logs.
+  - `logLevel: "verbose"` — also logs steady-state operations (every storage read and cache hit).
+  - `maskToken` — whether to mask access tokens and refresh tokens in the log output (e.g. `eyJh...A9Xz`). Defaults to `true`. Set to `false` to see full tokens, e.g. for inspecting them at [jwt.io](https://jwt.io).
 - **`name`** — A custom identifier for your storage instance, useful when using multiple storages or composite storage configurations. The `name` is an attribute of the storage itself (as shown in the [`memoryStorage` example above](#storage-strategy)).
+
+The `createCompositeStorage` helper accepts its own `debug` option, following the same rule: a hit on the first (fastest) storage is steady state, while falling back to a slower storage is a meaningful event worth logging.
+
+> [!WARNING]
+> When `maskToken` is set to `false`, full access tokens and refresh tokens are logged to the console. Intended for local development only — in serverless/edge environments, logs may be forwarded to external log aggregation services.
 
 ```diff
  const salesChannel = makeSalesChannel(
    {
      clientId: "<your_client_id>",
      scope: "market:code:europe",
-+    debug: true,
++    debug: {
++      logLevel: "info"
++    },
    },
    {
      storage: {
 +      name: "storage-name",
++      debug: {
++        logLevel: "info"
++      },
        async getItem(key) {
          // implementation
        },
@@ -499,7 +514,9 @@ const integration = makeIntegration(
   {
     clientId: "<your_client_id>",
     clientSecret: "<your_client_secret>",
-    debug: true,
+    debug: {
+      logLevel: "info"
+    },
   },
   {
     storage: compositeStorage,

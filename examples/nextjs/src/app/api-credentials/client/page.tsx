@@ -1,9 +1,12 @@
 "use client"
 
-import DefaultTemplate from "@/components/DefaultTemplate"
-import { CommerceLayerAuthProvider, useCommerceLayerAuth } from "@/contexts/CommerceLayerAuthContext"
 import { getCoreApiBaseEndpoint, jwtDecode } from "@commercelayer/js-auth"
 import { useEffect, useMemo, useState } from "react"
+import DefaultTemplate from "@/components/DefaultTemplate"
+import {
+  CommerceLayerAuthProvider,
+  useCommerceLayerAuth,
+} from "@/contexts/CommerceLayerAuthContext"
 
 const scope = process.env.NEXT_PUBLIC_SCOPE as string
 
@@ -153,7 +156,12 @@ function CustomerOrders() {
     } else {
       setOrders(null)
     }
-  }, [authorization.accessToken, authorization.ownerType, authorization.ownerId, organizationSlug])
+  }, [
+    authorization.accessToken,
+    authorization.ownerType,
+    authorization.ownerId,
+    organizationSlug,
+  ])
 
   if (orders == null) {
     return null
