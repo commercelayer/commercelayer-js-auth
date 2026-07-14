@@ -1,4 +1,4 @@
-import { defineConfig } from 'tsup'
+import { defineConfig } from 'tsdown'
 
 const env = process.env.NODE_ENV
 
@@ -8,7 +8,6 @@ export default defineConfig(() => ({
   dts: true, // generate dts file for main module
   format: ['cjs', 'esm'], // generate cjs and esm files
   minify: true,
-  bundle: true,
   watch: env === 'development',
   target: 'es2020',
   entry: ['src/index.ts'],
