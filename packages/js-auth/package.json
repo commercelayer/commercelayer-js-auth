@@ -1,6 +1,6 @@
 {
   "name": "@commercelayer/js-auth",
-  "version": "7.4.2",
+  "version": "8.0.0",
   "description": "A JavaScript library designed to simplify authentication when interacting with the Commerce Layer API.",
   "repository": {
     "url": "https://github.com/commercelayer/commercelayer-js-auth.git"
