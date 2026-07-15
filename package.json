@@ -23,7 +23,7 @@
     "dep:minor": "pnpm dep:major -t minor"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.3",
+    "@biomejs/biome": "^2.5.4",
     "husky": "^9.1.7",
     "lerna": "^9.0.7",
     "replace-in-file": "^8.4.0",
