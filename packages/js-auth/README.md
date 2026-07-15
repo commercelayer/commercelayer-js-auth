@@ -202,6 +202,28 @@ const authorization2 = await salesChannel.getAuthorization()
 console.log("Customer access token:", authorization2.accessToken)
 ```
 
+Authorizations are stored using a key derived from the client ID and scope, where `type` is the authorization type (`guest` or `customer`):
+
+```
+cl_${type}-${clientId}-${scope}
+```
+
+If you need different keys (e.g. a custom prefix, or extra identifiers), you can provide your own `getKey` function:
+
+```ts
+const salesChannel = makeSalesChannel(
+  {
+    clientId: "<your_client_id>",
+    scope: "market:code:europe"
+  },
+  {
+    storage: memoryStorage(),
+    getKey: async ({ clientId, scope }, type) =>
+      `myprefix_${type}-${clientId}-${scope}`,
+  },
+)
+```
+
 The following flowchart illustrates how the library manages token caching, validation, and refresh flow:
 
 ```mermaid
@@ -251,15 +273,9 @@ flowchart TB
 
 #### Customer storage
 
-Sales channels deal with two kinds of tokens: the **guest** token, which is not tied to any identity and can be safely shared, and the **customer** token, which is personal. The optional `customerStorage` option lets you store customer tokens separately from guest tokens.
+Sales channels deal with two kinds of tokens: the **guest** token, which is not tied to any identity and can be safely shared, and the **customer** token, which is personal. The optional `customerStorage` option lets you store customer tokens separately from guest tokens. Whether customer tokens stay isolated depends on two things: the storage they are written to, and the key they are stored under.
 
-By default, authorizations are stored using a key derived from the client ID and scope:
-
-```
-cl_${type}-${clientId}-${scope}
-```
-
-This works out-of-the-box in the browser, where the storage (e.g. `localStorage`) is already scoped to a single visitor.
+In the browser, everything works out-of-the-box: the storage (e.g. `localStorage`) is already scoped to a single visitor.
 
 > [!WARNING]
 > The default key does **not** include any customer identity. If customer tokens are cached in a storage shared by all visitors (e.g. Redis or an in-memory map on the server) under the default key, one customer's token would be served to **every** visitor.
@@ -285,10 +301,13 @@ There are two ways to store customer tokens safely on the server:
     )
     ```
 
-2. **Use a shared storage with a custom key.** If you'd rather cache customer tokens in a shared server-side storage too (e.g. Redis), provide a custom `getKey` function that includes a customer or session identifier. Since `getKey` receives only the client ID, scope, and authorization type, the request context must be captured via closure. Create the helper per request, while keeping the storage backend shared:
+2. **Use a shared storage with a custom key.** If you'd rather cache customer tokens in a shared server-side storage too (e.g. Redis), use the `getKey` function to include a customer or session identifier in the key. Since `getKey` receives only the client ID, scope, and authorization type, the request context must be captured via closure. Create the helper per request, while keeping the storage backend shared:
 
     ```ts
-    import { createCompositeStorage, makeSalesChannel } from "@commercelayer/js-auth"
+    import {
+      createCompositeStorage,
+      makeSalesChannel,
+    } from "@commercelayer/js-auth"
 
     // Shared, process-level storage (this is where tokens are actually cached).
     const sharedStorage = createCompositeStorage({
