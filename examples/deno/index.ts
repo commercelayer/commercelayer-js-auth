@@ -1,5 +1,5 @@
-// @deno-types="../../packages/js-auth/dist/index.d.ts"
-import { authenticate, getCoreApiBaseEndpoint, jwtVerify } from '../../packages/js-auth/dist/index.js'
+// @deno-types="../../packages/js-auth/dist/index.d.mts"
+import { authenticate, getCoreApiBaseEndpoint, jwtVerify } from '../../packages/js-auth/dist/index.mjs'
 
 const auth = await authenticate('client_credentials', {
   clientId: 'BISG8bb3GWpC8_D7Nt1SuWWdieS5bJq831A50LgB_Ig',

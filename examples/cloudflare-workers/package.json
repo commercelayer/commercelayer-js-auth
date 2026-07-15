@@ -6,16 +6,18 @@
     "deploy": "wrangler deploy",
     "dev": "wrangler dev",
     "start": "wrangler dev",
-    "test": "vitest"
+    "test": "vitest",
+    "generate-types": "wrangler types",
+    "type-check": "generate-types && tsc"
   },
   "dependencies": {
     "@commercelayer/js-auth": "workspace:*"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.16.7",
-    "@cloudflare/workers-types": "^4.20260519.1",
-    "typescript": "^5.9.3",
-    "vitest": "4.1.6",
-    "wrangler": "^4.93.0"
+    "@cloudflare/vitest-pool-workers": "^0.18.4",
+  	"@types/node": "^20.19.43",
+    "typescript": "^6.0.3",
+    "vitest": "4.1.10",
+    "wrangler": "^4.110.0"
   }
 }
