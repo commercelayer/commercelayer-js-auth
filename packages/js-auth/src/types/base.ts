@@ -76,6 +76,11 @@ export type TBaseReturn = {
 export interface TError {
   /**
    * The list of errors when something goes wrong.
+   *
+   * `authenticate` and `revoke` resolve with this array rather than rejecting, so a failed
+   * request never reaches a `catch` block. Check it before reading the access token:
+   * a `status` of `429` means the [rate limit](https://docs.commercelayer.io/core/rate-limits)
+   * was hit, which usually means tokens aren't being cached.
    */
   errors?: Array<{
     code: string

@@ -20,6 +20,19 @@ interface TokenJson {
  *
  * _Please note that the authentication endpoint is subject to a [rate limit](https://docs.commercelayer.io/core/rate-limits)
  * of **max 30 reqs / 1 min** both in live and test mode._
+ *
+ * **This performs a single uncached exchange.** For guest and integration tokens, prefer
+ * `makeSalesChannel` or `makeIntegration`: they cache the token in a required `storage` and
+ * handle expiry and refresh, which is what keeps an app under the rate limit. Reach for
+ * `authenticate` to log a customer in (`password` or JWT bearer), for a webapp
+ * `authorization_code` exchange, or for a provisioning application — and cache the result
+ * yourself in those cases.
+ *
+ * **This method does not throw when authentication fails.** It resolves with an `errors`
+ * array instead, so code that only handles rejection treats a failure as a success and
+ * passes `undefined` downstream as the access token. Always check `errors` before reading
+ * `accessToken`.
+ *
  * @param grantType The type of OAuth 2.0 grant being used for authentication.
  * @param options Authenticate options
  * @returns
@@ -31,6 +44,10 @@ interface TokenJson {
  *   clientId: '{{ clientId }}',
  *   scope: 'market:id:DGzAouppwn'
  * })
+ *
+ * if (auth.errors != null) {
+ *   throw new Error(auth.errors[0].detail)
+ * }
  *
  * console.log(auth.accessToken)
  * ```

@@ -8,6 +8,14 @@ import { mapKeys } from "./utils/mapKeys.js"
 /**
  * Revoke a previously generated access token (refresh tokens included) before its natural expiration date.
  *
+ * **This does not clear any cached authorization.** When the token is managed by
+ * `makeSalesChannel` or `makeIntegration`, the revoked token stays in the configured
+ * storage and the next `getAuthorization()` call reads it back and considers it valid
+ * until it expires. Prefer `salesChannel.logoutCustomer()` or
+ * `integration.revokeAuthorization()`, which revoke **and** clear the storage.
+ *
+ * Like `authenticate`, this resolves with an `errors` array instead of throwing.
+ *
  * @param options Revoke options
  * @returns
  * @example

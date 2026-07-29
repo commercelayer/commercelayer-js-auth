@@ -25,6 +25,7 @@ It works everywhere — on your browser, server, or at the edge.
   - [Webapp application with authorization code flow](#webapp-application-with-authorization-code-flow)
   - [Provisioning application](#provisioning-application)
   - [Client credentials flow](#client-credentials-flow)
+- [Error handling](#error-handling)
 - [Utilities](#utilities)
   - [Revoking a token](#revoking-a-token)
   - [Decoding an access token](#decoding-an-access-token)
@@ -792,6 +793,30 @@ console.log("My access token: ", auth.accessToken)
 console.log("Expiration date: ", auth.expires)
 ```
 
+## Error handling
+
+The `authenticate` and `revoke` methods **do not throw when the request fails**. They resolve with an `errors` array instead, so a failed authentication never reaches a `catch` block: code that only handles rejection carries on with `undefined` as the access token.
+
+```ts
+import { authenticate } from "@commercelayer/js-auth"
+
+const auth = await authenticate("client_credentials", {
+  clientId: "<your_client_id>",
+  scope: "market:code:europe"
+})
+
+if (auth.errors != null) {
+  // [{ code, detail, meta, status, title }]
+  throw new Error(auth.errors[0].detail)
+}
+
+console.log("My access token:", auth.accessToken)
+```
+
+Each error carries a `status` of `400`, `401`, `429`, or `500`. A `429` means the [rate limit](https://docs.commercelayer.io/core/rate-limits#authentication-endpoint) was hit — under normal traffic that points at tokens not being cached, so review your [storage strategy](#storage-strategy).
+
+The JWT and endpoint helpers behave the opposite way: `jwtDecode`, `jwtVerify`, `getCoreApiBaseEndpoint`, and `getProvisioningApiBaseEndpoint` **throw** a `TokenError` subclass — `InvalidTokenError` when the token is malformed or lacks the required claims, `TokenExpiredError` when the signature is valid but the expiration date has passed.
+
 ## Utilities
 
 ### Revoking a token
@@ -808,12 +833,19 @@ await revoke({
 })
 ```
 
+> [!WARNING]
+> `revoke` does not clear any cached authorization. When the token is managed by `makeSalesChannel` or `makeIntegration`, the revoked token stays in the configured storage and the next `getAuthorization()` call reads it back and treats it as valid until it expires.
+>
+> Use [`salesChannel.logoutCustomer()`](#sales-channel) or [`integration.revokeAuthorization()`](#integration) instead: both revoke the token **and** clear it from every configured storage.
+
 ### Decoding an access token
 
 We offer a helper method to decode an access token. The return is fully typed.
 
 > [!IMPORTANT]
-> You should not use this for untrusted messages, since this helper method does not verify whether the signature is valid. If you need to [verify the access token](#verifying-an-access-token) before decoding, you can use `jwtVerify` instead.
+> The rule of thumb: a token **your** code just obtained can be decoded, while a token **handed to you** — from a request header, a client, a webhook — must be [verified](#verifying-an-access-token) with `jwtVerify`.
+>
+> This helper does not check the signature, so deciding trust from the payload it returns accepts any well-formed JWT, including one an attacker constructed.
 
 ```ts
 import { authenticate, jwtDecode, jwtIsSalesChannel } from "@commercelayer/js-auth"
