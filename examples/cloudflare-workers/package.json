@@ -14,10 +14,10 @@
     "@commercelayer/js-auth": "workspace:*"
   },
   "devDependencies": {
-    "@cloudflare/vitest-pool-workers": "^0.18.4",
+    "@cloudflare/vitest-pool-workers": "^0.22.0",
   	"@types/node": "^20.19.43",
     "typescript": "^6.0.3",
-    "vitest": "4.1.10",
-    "wrangler": "^4.110.0"
+    "vitest": "4.1.11",
+    "wrangler": "^4.125.0"
   }
 }
