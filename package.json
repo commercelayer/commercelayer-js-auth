@@ -17,15 +17,15 @@
     "test": "pnpm --filter js-auth test",
     "test:production": "pnpm --filter js-auth test:production",
     "test:watch": "pnpm --filter js-auth test:watch",
-    "make:version": "lerna version --no-private",
+    "make:version": "pnpm dlx --allow-build=nx lerna@10.0.1 version --no-private",
     "version": "node update-jsr-version.mjs && git add .",
     "dep:major": "pnpm dlx npm-check-updates --packageFile '**/package.json' -u",
-    "dep:minor": "pnpm dep:major -t minor"
+    "dep:minor": "pnpm dep:major -t minor",
+    "dep:semver": "pnpm dep:major -t semver -u"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.9",
+    "@biomejs/biome": "^2.5.15",
     "husky": "^9.1.7",
-    "lerna": "^10.0.1",
     "replace-in-file": "^9.0.0",
     "typescript": "^6.0.3"
   },
