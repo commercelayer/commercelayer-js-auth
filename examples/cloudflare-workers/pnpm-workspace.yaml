@@ -15,3 +15,9 @@ minimumReleaseAgeExclude:
   - miniflare@5.20260820.0-alpha
   - workerd@1.20260820.1
   - wrangler@4.125.0
+
+# @cloudflare/vitest-pool-workers pins exact wrangler and miniflare versions
+# that pull in vulnerable undici and sharp releases.
+overrides:
+  undici: '^7.29.1'
+  sharp: '^0.35.5'

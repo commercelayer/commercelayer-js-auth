@@ -8,6 +8,7 @@
   "scripts": {
     "clean": "pnpx rimraf --glob **/node_modules **/pnpm-lock.yaml",
     "i:examples": "pnpm i -C examples/cjs && pnpm i -C examples/cloudflare-workers && pnpm i -C examples/esm && pnpm i -C examples/nextjs",
+    "audit:examples": "node audit-examples.mjs",
     "preinstall": "npx only-allow pnpm",
     "build": "pnpm --filter js-auth build",
     "prepare": "husky",
