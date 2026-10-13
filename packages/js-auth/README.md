@@ -83,7 +83,7 @@ flowchart TB
   classDef node stroke-width:2px;
 
   %% Main nodes
-  auth(<b>Auth API</b><br/><br/>https://<b>auth</b>.commercelayer.io)
+  auth("<b>Auth API</b><br/><br/>https://<b>auth</b>.commercelayer.io")
 
   dashboard("JWT Dashboard")
   user("JWT User")
@@ -91,10 +91,10 @@ flowchart TB
   integration("JWT Integration")
   webapp("JWT WebApp")
 
-  provisioningAPI(<b>Provisioning API</b><br/><br/>https://<b>provisioning</b>.commercelayer.io)
-  coreAPI(<b>Core API</b><br/><br/>https://&lt;<b>slug</b>&gt;.commercelayer.io)
-  metricsAPI(<b>Metrics API</b><br/><br/>https://&lt;<b>slug</b>&gt;.commercelayer.io/metrics)
-  comingSoon(<b>Metrics API</b> &lpar;coming soon&rpar;<br/><br/>https://<b>metrics</b>.commercelayer.io)
+  provisioningAPI("<b>Provisioning API</b><br/><br/>https://<b>provisioning</b>.commercelayer.io")
+  coreAPI("<b>Core API</b><br/><br/>https://#lt;<b>slug</b>#gt;.commercelayer.io")
+  metricsAPI("<b>Metrics API</b><br/><br/>https://#lt;<b>slug</b>#gt;.commercelayer.io/metrics")
+  comingSoon("<b>Metrics API</b> (coming soon)<br/><br/>https://<b>metrics</b>.commercelayer.io")
 
   %% Node styles
   style dashboard fill:#FFE6CC,stroke:#D79B00,color:#000
