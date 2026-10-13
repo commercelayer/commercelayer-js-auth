@@ -142,3 +142,11 @@ storybook-static
 # Test keys
 packages/js-auth/src/private.key
 packages/js-auth/src/public.key
+
+# Examples lock files (examples resolve the latest patched versions on install)
+examples/**/pnpm-lock.yaml
+examples/**/package-lock.json
+examples/**/yarn.lock
+examples/**/bun.lock
+examples/**/bun.lockb
+examples/**/deno.lock
