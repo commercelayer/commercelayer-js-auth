@@ -10,7 +10,12 @@ import type {
   SetRequired,
 } from "./types.js"
 
-export type { DebugConfig } from "./debugLog.js"
+export type {
+  DebugConfig,
+  DebugLogEntry,
+  DebugLogger,
+} from "./debugLog.js"
+export { jsonLogger } from "./jsonLogger.js"
 export {
   createCompositeStorage,
   type Storage,

@@ -147,4 +147,66 @@ describe("createDebugLog", () => {
       "some-key",
     )
   })
+  it("should keep objects as separate console arguments by default", () => {
+    const log = createDebugLog({
+      debug: { logLevel: "info", maskToken: false },
+      logPrefix: "sales_channel",
+    })
+    const authorization = { accessToken: token, scope: "market:all" }
+
+    log("info", "memory", "Stored authorization", authorization)
+
+    expect(consoleLog).toHaveBeenCalledWith(
+      "[CommerceLayer • auth.js] [sales_channel] [memory] Stored authorization",
+      authorization,
+    )
+  })
+
+  describe("logger: custom function", () => {
+    it("should receive the structured entry and bypass the console", () => {
+      const logger = vi.fn()
+      const log = createDebugLog({
+        debug: { logLevel: "info", logger },
+        logPrefix: "integration",
+      })
+      const authorization = { accessToken: token, scope: "market:all" }
+
+      log("info", "memory", "Stored authorization", authorization)
+
+      expect(consoleLog).not.toHaveBeenCalled()
+      expect(logger).toHaveBeenCalledWith({
+        level: "info",
+        source: "integration",
+        storageName: "memory",
+        message: "Stored authorization",
+        data: [{ accessToken: "eyJh...ture", scope: "market:all" }],
+      })
+    })
+
+    it("should not be called for filtered-out levels", () => {
+      const logger = vi.fn()
+      const log = createDebugLog({
+        debug: { logLevel: "info", logger },
+        logPrefix: "integration",
+      })
+
+      log("verbose", "memory", "a steady-state operation")
+
+      expect(logger).not.toHaveBeenCalled()
+    })
+
+    it("should not throw when the logger throws", () => {
+      const log = createDebugLog({
+        debug: {
+          logLevel: "info",
+          logger: () => {
+            throw new Error("logger is down")
+          },
+        },
+        logPrefix: "integration",
+      })
+
+      expect(() => log("info", "memory", "Stored authorization")).not.toThrow()
+    })
+  })
 })
