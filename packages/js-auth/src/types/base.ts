@@ -12,6 +12,8 @@ export interface TBaseOptions {
    *
    * * by **code** — `{{resource_name}}:code:{{resource_code}}`
    * Where `{{resource_name}}` can be one of market, store, or stock_location, and `{{resource_code}}` is the code of the resource (e.g. `market:code:europe`, `store:code:outlet_ny`, `stock_location:code:eu_warehouse`).
+   *
+   * Combine several scopes in one string, separated by a space.
    */
   scope?: string
   /**
