@@ -9,6 +9,35 @@
 type DebugLogLevel = "info" | "verbose"
 
 /**
+ * A single debug log entry, handed to a custom `logger`.
+ *
+ * All token values in `data` are already masked when `maskToken` is enabled.
+ */
+export type DebugLogEntry = {
+  /** The level of this entry. */
+  level: DebugLogLevel
+  /** What emitted the entry (e.g. `"sales_channel"`, `"integration"`, `"storage"`). */
+  source: string
+  /** The name of the storage involved, when there is one. */
+  storageName?: string
+  /** The human-readable message. */
+  message: string
+  /** Any structured values attached to the message (authorizations, keys, errors). */
+  data: unknown[]
+}
+
+/**
+ * How debug entries are written.
+ *
+ * - `"console"` (default) — `console.log(message, ...data)`, so objects stay
+ *   inspectable in browser devtools and readable in a terminal.
+ * - a function — receives the {@link DebugLogEntry} and writes it wherever you
+ *   want (pino, winston, a remote service, …). Use `jsonLogger` to write one
+ *   JSON object per line. Errors thrown by the function are ignored.
+ */
+export type DebugLogger = "console" | ((entry: DebugLogEntry) => void)
+
+/**
  * Fine-grained debug configuration.
  *
  * Pass this as the `debug` option to `makeSalesChannel`, `makeIntegration`,
@@ -32,6 +61,12 @@ export type DebugConfig = {
    * @default true
    */
   maskToken?: boolean
+  /**
+   * How entries are written: `"console"` (default) or your own function.
+   *
+   * @default "console"
+   */
+  logger?: DebugLogger
 }
 
 type DebugLog = (
@@ -64,6 +99,11 @@ function redactArgs(args: unknown[]): unknown[] {
   })
 }
 
+/** Formats the `[CommerceLayer • auth.js] [source] [storage] message` line written by the `"console"` logger. */
+function formatPrefix(entry: DebugLogEntry): string {
+  return `[CommerceLayer • auth.js] [${entry.source}]${entry.storageName != null ? ` [${entry.storageName}]` : ""} ${entry.message}`
+}
+
 /**
  * Creates the debug logger used by `makeAuth` and `createCompositeStorage`.
  */
@@ -83,9 +123,25 @@ export function createDebugLog({
       return
     }
 
-    const prefix = `[CommerceLayer • auth.js] [${logPrefix}]${storageName != null ? ` [${storageName}]` : ""} ${message}`
-    const finalArgs = (debug.maskToken ?? true) ? redactArgs(args) : args
+    const entry: DebugLogEntry = {
+      level,
+      source: logPrefix,
+      storageName,
+      message,
+      data: (debug.maskToken ?? true) ? redactArgs(args) : args,
+    }
 
-    console.log(prefix, ...finalArgs)
+    const logger = debug.logger ?? "console"
+
+    if (typeof logger === "function") {
+      try {
+        logger(entry)
+      } catch {
+        // A failing logger must not break the authorization flow it is logging.
+      }
+      return
+    }
+
+    console.log(formatPrefix(entry), ...entry.data)
   }
 }

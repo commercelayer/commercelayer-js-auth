@@ -1,6 +1,10 @@
 export {
   type ApiCredentialsAuthorization,
   createCompositeStorage,
+  type DebugConfig,
+  type DebugLogEntry,
+  type DebugLogger,
+  jsonLogger,
   makeIntegration,
   makeSalesChannel,
   type Storage,

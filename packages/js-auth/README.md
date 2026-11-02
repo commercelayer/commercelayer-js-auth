@@ -15,6 +15,7 @@ It works everywhere — on your browser, server, or at the edge.
   - [Storage strategy](#storage-strategy)
     - [Customer storage](#customer-storage)
     - [Debugging and storage names](#debugging-and-storage-names)
+      - [Forwarding logs to a log collector](#forwarding-logs-to-a-log-collector)
     - [Using unstorage](#using-unstorage)
   - [Sales channel](#sales-channel)
     - [Password-based customer authentication](#password-based-customer-authentication)
@@ -344,6 +345,7 @@ You can enable debugging and assign custom names to your storage instances for b
   - `logLevel: "info"` — logs meaningful events only: cache misses, token refreshes, authorizations stored/removed, and errors. Routine cache hits are silent, so setups that call `getAuthorization()` on every API request don't flood the logs.
   - `logLevel: "verbose"` — also logs steady-state operations (every storage read and cache hit).
   - `maskToken` — whether to mask access tokens and refresh tokens in the log output (e.g. `eyJh...A9Xz`). Defaults to `true`. Set to `false` to see full tokens, e.g. for inspecting them at [jwt.io](https://jwt.io).
+  - `logger` — how each entry is written. Either `"console"` (the default) or a function such as `jsonLogger`. See [Forwarding logs to a log collector](#forwarding-logs-to-a-log-collector).
 - **`name`** — A custom identifier for your storage instance, useful when using multiple storages or composite storage configurations. The `name` is an attribute of the storage itself (as shown in the [`memoryStorage` example above](#storage-strategy)).
 
 The `createCompositeStorage` helper accepts its own `debug` option, following the same rule: a hit on the first (fastest) storage is steady state, while falling back to a slower storage is a meaningful event worth logging.
@@ -408,6 +410,52 @@ const redisStorage = createStorage({
 ```
 
 When debugging is enabled, logs will include the storage name, making it easier to trace which storage layer is handling each operation.
+
+##### Forwarding logs to a log collector
+
+By default (`logger: "console"`) each entry is written with `console.log(message, ...data)`, so objects stay expandable in browser devtools and readable in a terminal. In Node.js, though, `console.log` prints objects across **multiple lines**, and log collectors that read stdout (Datadog, CloudWatch, Google Cloud Logging, Loki, …) ingest each of those lines as a separate log entry.
+
+`logger` also accepts a function that receives each entry. The `jsonLogger` helper is one such function: it writes one single-line JSON object per entry. You can pick it per environment:
+
+```ts
+import { jsonLogger, makeSalesChannel } from "@commercelayer/js-auth"
+
+const salesChannel = makeSalesChannel({
+  clientId: "<your_client_id>",
+  scope: "<your_scope>",
+  debug: {
+    logLevel: "info",
+    logger: process.env.NODE_ENV === "production" ? jsonLogger : "console",
+  },
+})
+```
+
+```json
+{"name":"@commercelayer/js-auth","level":"info","source":"sales_channel","storageName":"memory","message":"Stored \"customer\" authorization to storage","data":[{"accessToken":"eyJh...A9Xz","scope":"market:all"}]}
+```
+
+`Error` values are expanded to `{ name, message, stack, cause }` plus any custom properties, and an object that contains itself is replaced with `"[Circular]"`, so logging never throws.
+
+To route entries into your own logger (pino, winston, …), pass your own function:
+
+```ts
+import pino from "pino"
+
+const log = pino()
+
+const salesChannel = makeSalesChannel({
+  clientId: "<your_client_id>",
+  scope: "<your_scope>",
+  debug: {
+    logLevel: "info",
+    logger: ({ level, message, ...entry }) => {
+      log[level === "verbose" ? "debug" : "info"](entry, message)
+    },
+  },
+})
+```
+
+Token masking is applied before the entry reaches the logger, so `maskToken` works with every logger. Errors thrown by a logger function are ignored, so a failing logger never breaks authentication.
 
 ### Sales channel
 
