@@ -1,3 +1,4 @@
+import { generateKeyPairSync, type KeyObject } from "node:crypto"
 import jwt from "jsonwebtoken"
 import { vi } from "vitest"
 import createFetchMock from "vitest-fetch-mock"
@@ -96,6 +97,49 @@ describe("jwtVerify", () => {
     expect(verification1).toStrictEqual(jsonwebtokenDecoded)
     expect(verification2).toStrictEqual(jsonwebtokenDecoded)
     expect(fetchMocker.requests().length).toEqual(1)
+  })
+
+  it("should cache keys per issuer when two issuers share the same `kid`.", async () => {
+    fetchMocker.enableMocks()
+
+    const kid = "shared-kid-across-issuers"
+    const [ioKeyPair, coKeyPair] = [
+      generateRS512KeyPair(),
+      generateRS512KeyPair(),
+    ]
+
+    const jwksByUrl: Record<string, object> = {
+      "https://auth.commercelayer.io/.well-known/jwks.json": {
+        keys: [{ ...ioKeyPair.publicKey.export({ format: "jwk" }), kid }],
+      },
+      "https://auth.commercelayer.co/.well-known/jwks.json": {
+        keys: [{ ...coKeyPair.publicKey.export({ format: "jwk" }), kid }],
+      },
+    }
+
+    fetchMocker.mockIf(/\/\.well-known\/jwks\.json$/, (request) =>
+      JSON.stringify(jwksByUrl[request.url] ?? {}),
+    )
+
+    const signToken = (iss: string, privateKey: KeyObject) =>
+      jwt.sign({ iss }, privateKey, { algorithm: "RS512", keyid: kid })
+
+    const ioToken = signToken(
+      "https://auth.commercelayer.io",
+      ioKeyPair.privateKey,
+    )
+    const coToken = signToken(
+      "https://auth.commercelayer.co",
+      coKeyPair.privateKey,
+    )
+
+    await expect(jwtVerify(ioToken)).resolves.toBeDefined()
+    await expect(jwtVerify(coToken)).resolves.toBeDefined()
+    await expect(jwtVerify(ioToken)).resolves.toBeDefined()
+    expect(fetchMocker.requests().map(({ url }) => url)).toEqual([
+      "https://auth.commercelayer.io/.well-known/jwks.json",
+      "https://auth.commercelayer.co/.well-known/jwks.json",
+    ])
   })
 
   it("should use the provided JWK.", async () => {
@@ -203,3 +247,8 @@ const accessTokenWithFakeKid1 =
 
 const accessTokenWithFakeKid2 =
   "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCIsImtpZCI6IjM2N2E0OTI4Zjg5ODhlOGYxMjAxODNjNyJ9.eyJvcmdhbml6YXRpb24iOnsiaWQiOiJPblZOcUZPTUpuIiwic2x1ZyI6ImRyb3AtaW4tanMiLCJlbnRlcnByaXNlIjp0cnVlLCJyZWdpb24iOiJldS13ZXN0LTEifSwiYXBwbGljYXRpb24iOnsiaWQiOiJkTm5XbWl4eEtHIiwia2luZCI6InNhbGVzX2NoYW5uZWwiLCJwdWJsaWMiOnRydWV9LCJtYXJrZXQiOnsiaWQiOlsiQm93ZEdod1hkaiJdLCJzdG9ja19sb2NhdGlvbl9pZHMiOlsiRG5nZXB1Tm1PayIsIktHeU9qdXlLWE0iXSwiZ2VvY29kZXJfaWQiOm51bGwsImFsbG93c19leHRlcm5hbF9wcmljZXMiOmZhbHNlfSwic2NvcGUiOiJtYXJrZXQ6Y29kZTp1c2EiLCJleHAiOjE3MTk2MDgxODEsInRlc3QiOnRydWUsInJhbmQiOjAuNTEyMzk3ODczNDU5MjE2MSwiaWF0IjoxNzE5NTkzNzgxLCJpc3MiOiJodHRwczovL2F1dGguY29tbWVyY2VsYXllci5pbyJ9.VvnSwxhehxRLCXvJANE1Mh7Ckx3EXYrvWfhrDcxWr6dFgyVeCUDQcVmWDWG2OA_NTAsHfLDlRr9rpiBsVhnkMWQaLgjS_AohIklMeNY9sxZ9MorCdO2wig5u0nToqd8HOITQFZtHyMSrHJf2qCEFZV_vutZ5r_d8QGZXQDKthY8bXkranBzDgp3qi0333k2_LdngiQzGqzDYY7Dzh8cybHgTG-L_vI-hz3-GRF563kxRGaz4Yga0bbTb6d06SXYiAF03CuyWMTMPiXL8gvzZhPHrc7AUrXkmWkfCcLT8RQs6Jmh1bOXDAzxD_XNNjNnC43W3Du54jYW-YQnkLRc1OmR4QuqsBB49jMOn6yreeuuWYIwy3mjDWhfqrhUOYhLLBUKcteyR32dPkiUW79OOArHh35ZsDQaCDE8b9yzHAjAzayIYeYQNxb-0TptZ_p2Sn9D_4jBa8X_g0Q9D1oxs5o9h_-EQVja0gCLOa4Ufb1ZxZZxZBgK_N2YrEpxRWIBgXE_e26NMlNcQtiLal0O5qzIeJJyck6eQUIyCJI_bSoM3ba4l4GlfafbexmZfEf2SHHq5JOqz698nn-Az_XcZDmc52whD-CK77t6ZClfE4T-AhiCRUBMCFhVpRcmTCNra14ZJoUE2FSk74uuP2HAeqVu2uMt8WyPh1pJhlE-CWNk"
+
+/** Creates a fresh RSA key pair for signing RS512 test tokens. */
+function generateRS512KeyPair() {
+  return generateKeyPairSync("rsa", { modulusLength: 2048 })
+}

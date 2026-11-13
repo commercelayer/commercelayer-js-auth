@@ -85,28 +85,32 @@ interface JwtVerifyOptions {
   jwk?: CommerceLayerJsonWebKey
 }
 
-/** JWKS in-memory cache. */
-const JWKSCache: Record<string, CommerceLayerJsonWebKey | undefined> = {}
+/** JWKS in-memory cache, keyed by issuer and `kid` so environments never share keys. */
+const JWKSCache: Record<string, CommerceLayerJsonWebKey> = {}
 
 /**
- * Get the `JsonWebKey` given a key identifier.
- * @param kid Key identifier.
- * @returns
+ * Get the `JsonWebKey` that signed the JWT, from its issuer's JWKS.
+ * Only keys that were found are cached, so an unknown `kid` is fetched again next time.
  */
 async function getJsonWebKey(
   jwt: CommerceLayerJWT,
 ): Promise<CommerceLayerJsonWebKey | undefined> {
   const { kid } = jwt.header
+  const cacheKey = `${extractIssuer(jwt)}|${kid}`
 
-  if (JWKSCache[kid] != null) {
-    return JWKSCache[kid]
+  const cachedKey = JWKSCache[cacheKey]
+  if (cachedKey != null) {
+    return cachedKey
   }
 
   const keys = await getJsonWebKeys(jwt)
+  const key = keys.find((key) => key.kid === kid)
 
-  JWKSCache[kid] = keys.find((key) => key.kid === kid)
+  if (key != null) {
+    JWKSCache[cacheKey] = key
+  }
 
-  return JWKSCache[kid]
+  return key
 }
 
 /**

@@ -1,6 +1,7 @@
 import { InvalidTokenError } from "./errors/InvalidTokenError.js"
 import { TokenError } from "./errors/TokenError.js"
 import { getCoreApiBaseEndpoint } from "./getCoreApiBaseEndpoint.js"
+import { encodeBase64URLSafe } from "./utils/base64.js"
 
 describe("getCoreApiBaseEndpoint", () => {
   it('should throw when the access token does not have an "organization".', () => {
@@ -54,4 +55,54 @@ describe("getCoreApiBaseEndpoint", () => {
       "https://the-blue-brand-3.commercelayer.io",
     )
   })
+
+  it.each(["my-shop", "my_shop", "-shop-", "shop-2"])(
+    'should accept the organization slug "%s".',
+    (slug) => {
+      expect(getCoreApiBaseEndpoint(createUnsignedAccessToken(slug))).toEqual(
+        `https://${slug}.commercelayer.io`,
+      )
+    },
+  )
+
+  it.each([
+    "evil.example#",
+    "evil.example/x?",
+    "evil.example?",
+    "user@evil.example",
+    "evil.example:443",
+    "evil.example",
+    "evil%2eexample",
+    "evil\\example",
+    "my shop",
+    "MyShop",
+    "",
+  ])('should reject the organization slug "%s".', (slug) => {
+    const accessToken = createUnsignedAccessToken(slug)
+
+    expect(() => getCoreApiBaseEndpoint(accessToken)).toThrow(
+      "Invalid token format",
+    )
+    expect(getCoreApiBaseEndpoint(accessToken, { shouldThrow: false })).toBe(
+      null,
+    )
+  })
 })
+
+/** Builds an unsigned access token for `organization.slug`, issued by `https://auth.commercelayer.io`. */
+function createUnsignedAccessToken(slug: string): string {
+  const header = encodeBase64URLSafe(
+    JSON.stringify({ alg: "RS512", typ: "JWT", kid: "kid" }),
+    "utf-8",
+  )
+  const payload = encodeBase64URLSafe(
+    JSON.stringify({
+      organization: { id: "id", slug },
+      application: { id: "id", kind: "sales_channel", public: true },
+      iss: "https://auth.commercelayer.io",
+    }),
+    "utf-8",
+  )
+
+  return `${header}.${payload}.signature`
+}
