@@ -4,15 +4,18 @@ import type { CommerceLayerJWT } from "src/jwtDecode.js"
  * Commerce Layer auth servers whose keys and endpoints this package trusts.
  */
 type TrustedIssuer =
-  | "https://auth.commercelayer.io"
-  | "https://auth.commercelayer.co"
-  | `https://auth.stg${string}.commercelayer.co`
+  | `https://auth.commercelayer.${CommerceLayerTLD}`
+  | `https://auth.${string}.commercelayer.${CommerceLayerTLD}`
+
+/** Top-level domains Commerce Layer runs its auth servers on. */
+type CommerceLayerTLD = "io" | "co" | "dev"
 
 /**
- * Matches a trusted issuer exactly.
+ * Matches `https://auth.commercelayer.<tld>` or `https://auth.<environment>.commercelayer.<tld>`,
+ * where `<environment>` is a single label, so no other host can match.
  */
 const trustedIssuerPattern =
-  /^https:\/\/auth\.(commercelayer\.io|commercelayer\.co|stg\d*\.commercelayer\.co)$/
+  /^https:\/\/auth\.(?:[a-z0-9-]+\.)?commercelayer\.(?:io|co|dev)$/
 
 /**
  * Extract the `iss` from the decoded JWT.

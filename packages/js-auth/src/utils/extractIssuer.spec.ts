@@ -60,6 +60,19 @@ describe("extractIssuer", () => {
   })
 
   it.each([
+    "https://auth.commercelayer.dev",
+    "https://auth.stg1.commercelayer.io",
+    "https://auth.qa-2.commercelayer.dev",
+  ])("should keep the trusted issuer %s", (iss) => {
+    expect(
+      extractIssuer({
+        // @ts-expect-error I want to test this scenario
+        payload: { iss },
+      }),
+    ).toEqual(iss)
+  })
+
+  it.each([
     "https://auth.localhost:8443",
     "https://auth.attacker.example",
     "https://auth.commercelayer.io.attacker.example",
@@ -68,10 +81,14 @@ describe("extractIssuer", () => {
     "https://auth.commercelayer.io@attacker.example",
     "https://auth.commercelayer.io/../attacker",
     "http://auth.commercelayer.io",
-    "https://auth.stg1.commercelayer.io",
-    "https://auth.stgx.commercelayer.co",
     "https://auth.stg1.commercelayer.co.attacker.example",
     "https://auth.commercelayer.co\n",
+    "https://auth.commercelayer.com",
+    "https://auth.a.b.commercelayer.io",
+    "https://auth..commercelayer.io",
+    "https://auth.attacker-commercelayer.io",
+    "https://auth.STG1.commercelayer.co",
+    "https://evil.auth.commercelayer.io",
   ])("should fall back to the default issuer when `iss` is %s", (iss) => {
     expect(
       extractIssuer({
