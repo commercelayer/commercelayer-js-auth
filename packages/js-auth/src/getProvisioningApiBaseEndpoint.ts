@@ -71,5 +71,8 @@ export function getProvisioningApiBaseEndpoint(
     return null
   }
 
-  return extractIssuer(decodedJWT).replace("auth", "provisioning")
+  return extractIssuer(decodedJWT).replace(
+    "https://auth.",
+    "https://provisioning.",
+  )
 }

@@ -63,7 +63,10 @@ export function getCoreApiBaseEndpoint(
   const { shouldThrow = true } = options
   const decodedJWT = jwtDecode(accessToken)
 
-  if (!("organization" in decodedJWT.payload)) {
+  if (
+    !("organization" in decodedJWT.payload) ||
+    !isValidOrganizationSlug(decodedJWT.payload.organization.slug)
+  ) {
     if (shouldThrow) {
       throw new InvalidTokenError("Invalid token format")
     }
@@ -72,7 +75,14 @@ export function getCoreApiBaseEndpoint(
   }
 
   return extractIssuer(decodedJWT).replace(
-    "auth",
-    decodedJWT.payload.organization.slug,
+    "https://auth.",
+    `https://${decodedJWT.payload.organization.slug}.`,
   )
+}
+
+/**
+ * Whether `slug` can be used as the organization subdomain.
+ */
+function isValidOrganizationSlug(slug: unknown): slug is string {
+  return typeof slug === "string" && /^[a-z0-9_-]+$/.test(slug)
 }
